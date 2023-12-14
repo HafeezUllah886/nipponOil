@@ -52,8 +52,15 @@
                                     <a class="dropdown-item" href="#" onclick='addPrice({{ $product->productID }}, "{{ $product->name }}")'>
                                         Add Price
                                    </a>
-                                   <a class="dropdown-item" href="#" onclick='viewPrices({{ $product->productID }}, "{{ $product->name }}")'>
-                                    View Prices
+                                    <a class="dropdown-item" href="#" onclick='viewPrices({{ $product->productID }}, "{{ $product->name }}")'>
+                                        View Prices
+                                    </a>
+                                    <a class="dropdown-item" href="{{ url('/product/changeStatus/') }}/{{$product->productID}}">
+                                        @if($product->status == 1)
+                                            <span class="text-danger">Mark Inactive</span>
+                                        @else
+                                            <span class="text-success">Mark Active</span>
+                                        @endif
                                     </a>
                                     <a class="dropdown-item" href="{{ url('/product/supplier/') }}/{{$product->productID}}">
                                         View Supplier(s)

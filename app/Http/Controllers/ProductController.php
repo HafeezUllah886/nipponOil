@@ -192,4 +192,21 @@ class ProductController extends Controller
         productPrices::find($id)->delete();
         return back()->with("error", "Price Deleted");
     }
+
+    public function changeStatus($id)
+    {
+        $product = Product::find($id);
+
+        if($product->status == 1)
+        {
+            $product->status = 0;
+        }
+        else
+        {
+            $product->status = 1;
+        }
+        $product->save();
+
+        return back()->with("message", "Status Changed");
+    }
 }

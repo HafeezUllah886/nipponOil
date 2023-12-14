@@ -101,6 +101,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/product/addPrice', [ProductController::class, 'storePrice']);
     Route::get('/product/prices/{id}', [ProductController::class, 'getPrices']);
     Route::get('/product/price/delete/{id}', [ProductController::class, 'deletePrice']);
+    Route::get('/product/changeStatus/{id}', [ProductController::class, 'changeStatus']);
 
     Route::get('/unit/getValue/{id}', [UnitController::class, 'getValue']);
     Route::post('ajax/{method}', [App\Http\Controllers\AjaxController::class, 'handle'])->name('ajax.handle');
