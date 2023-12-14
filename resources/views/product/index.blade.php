@@ -21,11 +21,9 @@
                     <th>#</th>
                     <th>Code</th>
                     <th>Product Name</th>
-                    <th>Brand</th>
+                    <th>Ltrs</th>
+                    <th>Grade</th>
                     <th>Category</th>
-                    <th>Price</th>
-                    <th>Commission</th>
-                    <th>IsExpiry</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -35,11 +33,10 @@
                         <td>{{ $product->productID }}</td>
                         <td>{{ $product->code }}</td>
                         <td>{{ $product->name }}</td>
-                        <td>{{ $product->brand->name }}</td>
+                        <td>{{ $product->ltr }}</td>
+                        <td>{{ $product->grade }}</td>
                         <td>{{ $product->category->name }}</td>
-                        <td>{{ $product->salePrice }}</td>
-                        <td>{{ $product->commission ?? '0' }}</td>
-                        <td>{{ $product->isExpire == 0 ? "Yes" : "No" }}</td>
+
                         <td>
                             <div class="dropdown">
                                 <button class="btn dropdown-toggle form-select" type="button" id="dropdownMenuButton_{{ $product->productID }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -51,6 +48,12 @@
                                     </a>
                                     <a class="dropdown-item" href="{{ route('product.edit', $product->productID) }}">
                                          Edit
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick='addPrice({{ $product->productID }}, "{{ $product->name }}")'>
+                                        Add Price
+                                   </a>
+                                   <a class="dropdown-item" href="#" onclick='viewPrices({{ $product->productID }}, "{{ $product->name }}")'>
+                                    View Prices
                                     </a>
                                     <a class="dropdown-item" href="{{ url('/product/supplier/') }}/{{$product->productID}}">
                                         View Supplier(s)
@@ -79,5 +82,84 @@
         </div>
     </div>
 </div>
+  <div class="modal fade" id="addPriceModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Add "modal-dialog-white" class -->
+        <div class="modal-content"> <!-- Add "modal-content-white" class -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPaymentModalLabel">Add Price(s) for <span id="productName"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url('/product/addPrice') }}" method="post">
+                @csrf
+                <input type="hidden" name="id" id="productID">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" name="title" required id="title" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input type="number" name="price" required id="price" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="viewPriceModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Add "modal-dialog-white" class -->
+        <div class="modal-content"> <!-- Add "modal-content-white" class -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPaymentModalLabel">Price(s) of <span id="productName1"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <th>Title</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody id="viewBody">
+                        </tbody>
+                    </table>
+                </div>
+    </div>
+</div>
 @endsection
+@section('more-script')
+<script>
+    function addPrice(id, name)
+    {
+        $("#productName").html(name);
+        $("#productID").val(id);
+        $("#addPriceModal").modal('show');
+    }
 
+    function viewPrices(id, name)
+    {
+        $("#productName1").html(name);
+        var htmlP = "";
+        $.ajax({
+            url: "{{ url('/product/prices/') }}/"+id,
+            method: 'get',
+            success: function(response){
+                response.prices.forEach(function(p){
+                    htmlP += '<tr>';
+                    htmlP += '<td>'+p.title+'</td>';
+                    htmlP += '<td>'+p.price+'</td>';
+                    htmlP += '<td><a href="{{ url("/product/price/delete/") }}/'+p.id+'">Delete</a></td>';
+                    htmlP += '</tr>';
+                });
+                $("#viewBody").html(htmlP);
+                $("#viewPriceModal").modal('show');
+            },
+        });
+
+    }
+</script>
+@endsection

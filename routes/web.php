@@ -62,6 +62,8 @@ Auth::routes();
 });
 Route::middleware('auth')->group(function () {
 
+    Route::get('/account/{type}', [AccountController::class, "index"]);
+
     Route::get('/account/depositWithdrawals', [WithdrawalDepositController::class, 'index']);
     Route::get('/account/depositWithdrawals/create', [WithdrawalDepositController::class, 'create']);
     Route::post('/account/depositWithdrawals/store', [WithdrawalDepositController::class, 'store']);
@@ -96,6 +98,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/product/generateCode', [ProductController::class, 'generateCode']);
     Route::get('/product/supplier/{id}', [ProductController::class, 'supplier']);
+    Route::post('/product/addPrice', [ProductController::class, 'storePrice']);
+    Route::get('/product/prices/{id}', [ProductController::class, 'getPrices']);
+    Route::get('/product/price/delete/{id}', [ProductController::class, 'deletePrice']);
+
     Route::get('/unit/getValue/{id}', [UnitController::class, 'getValue']);
     Route::post('ajax/{method}', [App\Http\Controllers\AjaxController::class, 'handle'])->name('ajax.handle');
     Route::get('/getCatItems/{id}', [App\Http\Controllers\AjaxController::class, 'getCatItems']);

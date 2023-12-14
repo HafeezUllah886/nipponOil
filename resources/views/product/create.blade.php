@@ -5,20 +5,18 @@
 @section('title', 'Product Create')
 @section('content')
     <div class="middle-content container-xxl p-0">
-
-        <div class="card card-default color-palette-box">
-            <div class="card-header">
+        <div class="card card-default color-palette-box mt-2">
+            <div class="card-header d-flex justify-content-between">
                 <h4 class="card-title fw-semibold">
                     <i class="fas fa-users-cog"></i> Add New Product
                 </h4>
-
-                <div class="text-center">
-                    <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addBrandModal">
-                        <span class="fs-6">Add Brand</span>
-                    </button>
-                    <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                        <span class="fs-6">Add Category</span>
-                    </button>
+                <div class="span">
+                        <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addBrandModal">
+                            <span class="fs-6">Add Brand</span>
+                        </button>
+                        <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                            <span class="fs-6">Add Category</span>
+                        </button>
                 </div>
             </div>
             <div class="card-body">
@@ -29,23 +27,31 @@
                         <div class="col-sm-8 col-md-6 col-lg-4">
                             <input type="text" name="name" class="form-control" id="autoComplete" value="{{ old('name') }}" required placeholder="Product Name">
                         </div>
-
                         <label for="code" class="form-label required col-sm-4 col-md-6 col-lg-2 col-form-label">Product Code: </label>
                         <div class="col-sm-8 col-md-6 col-lg-4">
                             {{-- <input type="number" name="code" class="form-control" value="{{ old('code') }}" required placeholder="Product Code" onchange="productCode(this.value)"> --}}
                             <div class="input-group">
                             <input type="number" name="code" id="code" class="form-control" value="{{ old('code') }}" required placeholder="Product Code" onchange="productCode(this.value)" aria-label="Recipient's username" aria-describedby="button-addon2">
-                            <button class="btn btn-primary" type="button" onclick="generateCode()">Generate</button>
+                            <button class="btn btn-info" type="button" onclick="generateCode()">Generate</button>
                             </div>
                         </div>
 
+                    </div>
+                    <div class="form-group row mb-1">
+                        <label for="Litters" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Litters : </label>
+                        <div class="col-sm-6 col-md-6 col-lg-4">
+                            <input type="number" step="any" placeholder="Enter Litters" required class="form-control" name="ltr" id="">
+                        </div>
+                        <label for="grade" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Grade / Viscosity : </label>
+                        <div class="col-sm-6 col-md-6 col-lg-4" >
+                            <input type="text" class="form-control" placeholder="Enter Grade / Viscosity" name="grade" id="">
+                        </div>
                     </div>
 
                     <div class="form-group row mb-1">
                         <label for="brandID" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Brand : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
                             <select name="brandID" class="form-select" required>
-                                <option value="">Select Brand</option>
                                 @foreach ($brands as $brand)
                                     <option value="{{ $brand->brandID }}" {{ old('brandID') == $brand->brandID ? 'selected' : '' }}>{{ $brand->name }}</option>
                                 @endforeach
@@ -77,101 +83,19 @@
                             <input type="number" name="alertQuantity" class="form-control" value="{{ old('alertQuantity') }}" placeholder="Alert Quantity">
                         </div>
                     </div>
-
-                    <div class="form-group row mb-1">
-                        <label for="description" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Description: </label>
-                        <div class=" col-sm-6 col-md-6 col-lg-4">
-                            <input type="text" name="description" class="form-control" value="{{ old('description') }}" placeholder="Description">
-                        </div>
-                        <label for="code" class="form-label required col-sm-4 col-md-6 col-lg-2 col-form-label">Commission: </label>
-                        <div class="col-sm-8 col-md-6 col-lg-4">
-                            {{-- <input type="number" name="code" class="form-control" value="{{ old('code') }}" required placeholder="Product Code" onchange="productCode(this.value)"> --}}
-                            <div class="input-group">
-                            <input type="number" name="commission" step="any" id="commission" class="form-control" value="0.00" placeholder="Commission per Unit" aria-label="Recipient's username" aria-describedby="button-addon2">
-                            <span class="input-group-text" id="basic-addon2">%</span>
-                            </div>
-                        </div>
-                    </div>
                     <div class="form-group row mb-1">
 
                         <label for="image" class=" form-label col-sm-6 col-md-6 col-lg-2 col-form-label">Picture: </label>
                         <div class=" col-sm-6 col-md-6 col-lg-4">
                             <input type="file" name="image" class="form-control">
                         </div>
-                        <label for="name" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Is-expiry: </label>
-                        <div class="col-sm-6 col-md-6 col-lg-4 py-2">
-                            <label class="form-check form-check-inline">
-                                <input type="radio" class="form-check-input" name="isExpire" value="1" > <span class="form-check-label">Yes</span>
-                            </label>
-                            <label class="form-check form-check-inline">
-                                <input type="radio" class="form-check-input" name="isExpire" value="1" checked> <span class="form-check-label">No</span>
-                            </label>
-                        </div>
+
                     </div>
-                    <div class="col-12 mt-3">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <h6>Purchase Price</h6>
-                                <div class="row">
-                                    <div class="col-3">
-                                        <label class="mt-2" for="purchasePrice">Per Pack</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input type="number"  step="any"  onchange="getppp()" class="form-control" id="ppp" value="{{ old('ppp') }}" required placeholder="Purchase Price per Box/Pack">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">
-                                        <label class="mt-2" for="purchasePrice">Per Nos</label></div>
-                                    <div class="col-9">
-                                        <input type="number"  step="any" name="purchasePrice" class="form-control" id="purchasePrice" value="{{ old('purchasePrice') }}" required placeholder="Purchase Price">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <h6>Sale Price</h6>
-                                <div class="row">
-                                    <div class="col-3">
-                                        <label class="mt-2" for="SalePrice">Per Pack</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input type="number" step="any"  onchange="getspp()" class="form-control" id="spp" value="{{ old('spp') }}" required placeholder="Sale Price per Box/Pack">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">
-                                        <label class="mt-2" for="purchasePrice">Per Nos</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input type="number"  step="any" name="salePrice" id="salePrice" class="form-control  @if($errors->has('salePrice')) is-invalid @endif" value="{{ old('salePrice') }}" required placeholder="Sale Price">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <h6>Whole Sale Price</h6>
-                                <div class="row">
-                                    <div class="col-3">
-                                        <label class="mt-2" for="WholeSalePrice">Per Pack</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input type="number"  step="any"  class="form-control" onchange="getwpp()" id="wpp" value="{{ old('wpp') }}" required placeholder="Whole Sale Price per Box/Pack">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">
-                                        <label class="mt-2" for="WholeSalePrice">Per Nos</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input type="number"  step="any" name="wholeSalePrice" id="wholeSalePrice" class="form-control" value="{{ old('wholeSalePrice') }}" required placeholder="Whole Sale Price">
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="row mt-2">
+                        <div class="col d-flex justify-content-end">
+                            <input class="btn btn-success" id="saveButton" type="submit" value="Create Product">
                         </div>
-                    </div>
-                    <div class="form-group d-flex justify-content-end row mt-2">
-                        <div class="offset-2">
-                            <input class="btn btn-primary" id="saveButton" type="submit" value="Save">
-                        </div>
+
                     </div>
                 </form>
             </div>
@@ -216,6 +140,8 @@
                     </div>
                 </div>
             </div>
+
+
             <!-- Category Modal -->
             <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

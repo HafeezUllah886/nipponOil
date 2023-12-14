@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,6 +15,7 @@ class productFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    protected $model = Product::class;
     public function definition(): array
     {
         return [
@@ -23,15 +25,32 @@ class productFactory extends Factory
             'brandID' => $this->faker->numberBetween(1,2),
             'categoryID' => $this->faker->numberBetween(1,2),
             'isExpire' => 1,
+            'status' => 1,
             'productUnit' => $this->faker->numberBetween(1,3),
-            'purchasePrice' => $this->faker->numberBetween(100,1000),
-            'salePrice' => $this->faker->numberBetween(100,1000),
-            'wholeSalePrice' => $this->faker->numberBetween(100,1000),
+            'grade' => $this->faker->numberBetween(100,100000),
+            'ltr' => $this->faker->numberBetween(1 ,10),
             'alertQuantity' => $this->faker->numberBetween(20,100),
-            'commission' => $this->faker->numberBetween(0,30),
-            'description' => $this->faker->sentence(),
             'image' => $this->faker->imageUrl(200,200),
             'createdBy' => "System@email.com",
+            /* 'prices' => function () {
+                return [
+                    [
+                        'title' => "Retail",
+                        'price' => $this->faker->numberBetween(500, 10000),
+                    ],
+                ];
+            }, */
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Product $product) {
+            // Assuming you have a relationship between Product and ProductPrices
+            $product->prices()->create([
+                'title' => "Retail",
+                'price' => $this->faker->numberBetween(500, 10000),
+            ]);
+        });
     }
 }

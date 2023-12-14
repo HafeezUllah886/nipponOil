@@ -21,26 +21,22 @@
                     </div>
 
                     <div class="row fs-5 mt-3 text-dark">
+                        <div class="col-sm-12 col-md-6 col-lg-6">Product Litters: {{ $product->ltr}}</div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">Product Grade / Viscosity: {{ $product->grade}}</div>
+                    </div>
+
+                    <div class="row fs-5 mt-3 text-dark">
                         <div class="col-sm-12 col-md-6 col-lg-6">Product Brand: {{ $product->brand->name}}</div>
                         <div class="col-sm-12 col-md-6 col-lg-6">Product Category: {{ $product->category->name}}</div>
                     </div>
 
                     <div class="row fs-5 mt-3 text-dark">
                         <div class="col-sm-12 col-md-6 col-lg-6">Product Unit: {{ $product->unit->name}}</div>
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Sale Price: {{ $product->salePrice}}</div>
-                    </div>
-
-                    <div class="row fs-5 mt-3 text-dark">
                         <div class="col-sm-12 col-md-6 col-lg-6">Product Alert Quantity: {{ $product->alertQuantity}}</div>
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Purchase Price: {{ $product->purchasePrice}}</div>
                     </div>
 
                     <div class="row fs-5 mt-3 text-dark">
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Description: {{ $product->description}}</div>
-                    </div>
 
-                    <div class="row fs-5 mt-3 text-dark">
-                        <div class="col-sm-12 col-md-6 col-lg-6">Expire:{{ $product->isExpire == 0 ? "Yes" : "No" }}</div>
                         <div class="col-sm-12 col-md-6 col-lg-6">
                             <img width="40%" class="mt-2 img-circle" src="{{ asset($product->image) }}" />
                         </div>

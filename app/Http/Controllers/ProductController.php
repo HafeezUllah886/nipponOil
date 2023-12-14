@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\productPrices;
 use App\Models\Purchase;
 use App\Models\PurchaseOrder;
 use App\Models\Unit;
@@ -38,11 +39,12 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $check = Product::where('name', $request->name)->where('brandID', $request->brandID)->orWhere('code', $request->code)->count();
+        $check = Product::where('name', $request->name)->orWhere('code', $request->code)->count();
         if($check > 0)
         {
             return back()->with('error', "Product already existing");
         }
+        $request->merge(['isExpire' => 1]);
         if($request->isExpire == 1)
         {
             gen:
@@ -151,7 +153,7 @@ class ProductController extends Controller
             $totalQuantity = $supplier->pluck('purchaseOrders.quantity')->sum();
             $totalPrice = $supplier->pluck('purchaseOrders.subTotal')->sum();
             $averagePrice = $totalPrice ?? 1 / $totalQuantity ?? 1;
-        
+
             return [
                 'supplierID' => $supplier->first()->supplierID,
                 'totalQuantity' => $totalQuantity,
@@ -160,5 +162,34 @@ class ProductController extends Controller
         }); */
 
         return view('product.suppliers', compact('suppliers', 'product'));
+    }
+
+    public function storePrice(request $req)
+    {
+        productPrices::create(
+            [
+                'productID' => $req->id,
+                'title' => $req->title,
+                'price' => $req->price
+            ]
+        );
+
+        return back()->with("message", "Price Added");
+    }
+
+    public function getPrices($id)
+    {
+        $prices = productPrices::where("productID", $id)->get();
+        return response()->json(
+            [
+                'prices' => $prices
+            ]
+        );
+    }
+
+    public function deletePrice($id)
+    {
+        productPrices::find($id)->delete();
+        return back()->with("error", "Price Deleted");
     }
 }

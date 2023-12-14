@@ -17,13 +17,11 @@ return new class extends Migration
             $table->foreignId('categoryID')->constrained('categories', 'categoryID');
             $table->tinyInteger('isExpire');
             $table->integer('productUnit');
-            $table->unsignedFloat('purchasePrice');
-            $table->unsignedFloat('salePrice');
-            $table->unsignedFloat('wholeSalePrice');
+            $table->float('ltr');
+            $table->string('grade');
             $table->integer('alertQuantity')->nullable();
-            $table->float('commission', 10,2)->nullable();
-            $table->string('description')->nullable();
             $table->string('image')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->string('createdBy')->nullable();
             $table->timestamps();
         });

@@ -25,12 +25,21 @@
                         <input type="number" name="code" class="form-control" value="{{ old('code',  $product->code) }}" required onchange="productCode(this.value)">
                     </div>
                 </div>
+                <div class="form-group row mb-1">
+                    <label for="Litters" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Litters : </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4">
+                        <input type="number" step="any" placeholder="Enter Litters" required class="form-control" name="ltr" value="{{ $product->ltr }}">
+                    </div>
+                    <label for="grade" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Grade / Viscosity : </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4" >
+                        <input type="text" class="form-control" placeholder="Enter Grade / Viscosity" value="{{ $product->grade }}" name="grade" id="">
+                    </div>
+                </div>
 
                 <div class="form-group row mb-1">
                     <label for="brandID" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Brand : </label>
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         <select name="brandID" class="form-select" required>
-                            <option value="">Select Brand</option>
                             @foreach ($brands as $brand)
                                 <option value="{{ $brand->brandID }}" {{ old('brandID', $product->brandID) == $brand->brandID ? 'selected' : '' }}>{{ $brand->name }}</option>
                             @endforeach
@@ -39,7 +48,6 @@
                     <label for="categoryID" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Category : </label>
                     <div class="col-sm-6 col-md-6 col-lg-4" >
                         <select name="categoryID" class="form-select" required>
-                            <option value="">Select Category</option>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->categoryID }}" {{ old('categoryID', $product->categoryID) == $category->categoryID ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
@@ -57,56 +65,14 @@
                             @endforeach
                         </select>
                     </div>
-                    <label for="purchasePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Purchase Price: </label>
-                    <div class="col-sm-6 col-md-6 col-lg-4">
-                        <input type="number" name="purchasePrice" class="form-control" value="{{ old('purchasePrice', $product->purchasePrice) }}" required>
-                    </div>
-                </div>
-
-
-                <div class="form-group row mb-1">
-                    <label for="salePrice" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Sale Price: </label>
-                    <div class="col-sm-6 col-md-6 col-lg-4">
-                        <input type="number" name="salePrice" class="form-control" value="{{ old('salePrice', $product->salePrice) }}" required>
-                    </div>
-                    <label for="wholeSalePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Whole Sale Price: </label>
-                    <div class="col-sm-6 col-md-6 col-lg-4">
-                        <input type="number" name="wholeSalePrice" class="form-control" value="{{ old('wholeSalePrice', $product->wholeSalePrice) }}" required>
-                    </div>
-                </div>
-
-                <div class="form-group row mb-1">
                     <label for="alertQuantity" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Alert Quantity: </label>
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         <input type="number" name="alertQuantity" class="form-control" value="{{ old('alertQuantity', $product->alertQuantity) }}">
                     </div>
-                    <label for="description" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Description: </label>
-                    <div class=" col-sm-6 col-md-6 col-lg-4">
-                        <input type="text" name="description" class="form-control" value="{{ old('description', $product->description) }}">
-                    </div>
+
                 </div>
 
                 <div class="form-group row mb-1">
-
-
-                    <label for="code" class="form-label required col-sm-4 col-md-6 col-lg-2 col-form-label">Commission: </label>
-                    <div class="col-sm-8 col-md-6 col-lg-4">
-                        {{-- <input type="number" name="code" class="form-control" value="{{ old('code') }}" required placeholder="Product Code" onchange="productCode(this.value)"> --}}
-                        <div class="input-group">
-                        <input type="number" name="commission" step="any" id="commission" class="form-control" value="{{ $product->commission }}" placeholder="Commission per Unit" aria-label="Recipient's username" aria-describedby="button-addon2">
-                        <span class="input-group-text" id="basic-addon2">%</span>
-                        </div>
-                    </div>
-
-                    <label for="name" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Is-Expiry: </label>
-                    <div class="col-sm-6 col-md-6 col-lg-4 py-2">
-                        <label class="form-check form-check-inline">
-                            <input type="radio" class="form-check-input" name="isExpire" value="1" @if($product->isExpire == 0) checked @endif> <span class="form-check-label">Yes</span>
-                        </label>
-                        <label class="form-check form-check-inline">
-                            <input type="radio" class="form-check-input" name="isExpire" value="1" @if( $product->isExpire == 1) checked @endif> <span class="form-check-label">No</span>
-                        </label>
-                    </div>
                     <label for="image" class="form-label col-sm-6 col-md-6 col-lg-2 col-form-label mt-2">Picture: </label>
                     <div class=" col-sm-6 col-md-6 col-lg-4 mt-1">
                         <input type="file" name="image" class="form-control" value="{{ $product->image }}">

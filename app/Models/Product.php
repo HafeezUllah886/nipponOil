@@ -49,4 +49,8 @@ public function stocks(){
     {
         return $this->hasMany(SaleReturnDetail::class, 'productID', 'productID');
     }
+    public function prices()
+    {
+        return $this->hasMany(productPrices::class, 'productID', 'productID');
+    }
 }

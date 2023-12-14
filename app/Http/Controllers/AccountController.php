@@ -13,9 +13,9 @@ class AccountController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($type)
     {
-        $accounts = Account::with('warehouse')->get();
+        $accounts = Account::with('warehouse')->where('type', $type)->get();
         return view('account.index', compact('accounts'));
     }
 

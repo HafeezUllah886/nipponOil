@@ -560,7 +560,9 @@ $("#addTask").on("click", function(){
             menuHTML += '<a href="{{ url("/repair") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/repair.svg") }}"> Repair</a>';
         }
         if(name == "accounts"){
-            menuHTML = '@can("View Accounts")<a href="{{ route("account.index") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/accounts.svg") }}"> Accounts</a>@endcan';
+            menuHTML = '@can("View Accounts")<a href="{{ url("/account/business") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/accounts.svg") }}"> Business</a>@endcan';
+            menuHTML += '@can("View Accounts")<a href="{{ url("/account/supplier") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/accounts.svg") }}"> Suppliers</a>@endcan';
+            menuHTML += '@can("View Accounts")<a href="{{ url("/account/customer") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/accounts.svg") }}"> Customers</a>@endcan';
             menuHTML += '@can("View Deposit/Withdrawals")<a href="{{ url("/account/depositWithdrawals") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/depositWithdraw.svg") }}"> Deposit/Withdrawals</a>@endcan';
             menuHTML += '@can("View Transfer")<a href="{{ url("/account/transfer") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/transfer.svg") }}"> Transfer</a>@endcan';
             menuHTML += '@can("View Expenses")<a href="{{ url("/account/expense") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/expense.svg") }}"> Expenses</a>@endcan';
