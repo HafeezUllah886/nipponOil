@@ -15,9 +15,9 @@
                 @csrf
                 @method('PUT')
                 <div class="form-group row mb-1">
-                    <label for="name" class="form-label required col-sm-4 col-md-6 col-lg-2  col-form-label">Product Name: </label>
+                    <label for="autoComplete1" class="form-label required col-sm-4 col-md-6 col-lg-2  col-form-label">Product Name: </label>
                     <div class="col-sm-8 col-md-6 col-lg-4">
-                        <input type="text" name="name" id="autoComplete" class="form-control" value="{{ old('name', $product->name) }}" required>
+                        <input type="text" name="name" id="autoComplete1" class="form-control" value="{{ old('name', $product->name) }}" required>
                     </div>
 
                     <label for="code" class="form-label required col-sm-4 col-md-6 col-lg-2 col-form-label">Product Code: </label>
@@ -28,15 +28,24 @@
                 <div class="form-group row mb-1">
                     <label for="Litters" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Litters : </label>
                     <div class="col-sm-6 col-md-6 col-lg-4">
-                        <input type="number" step="any" placeholder="Enter Litters" required class="form-control" name="ltr" value="{{ $product->ltr }}">
+                        <div class="input-group">
+                            <input type="number" step="any" placeholder="Enter Litters" value="{{ $product->ltr }}" required class="form-control" name="ltr" aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <button class="btn btn-default">Ltrs</button>
+                        </div>
                     </div>
+                    <label for="weight" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Weight : </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4" >
+                        <div class="input-group">
+                            <input type="number" class="form-control" step="any" placeholder="Enter Weight" value="{{ $product->weight }}" name="weight"  aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <button class="btn btn-default">KG</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
                     <label for="grade" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Grade / Viscosity : </label>
                     <div class="col-sm-6 col-md-6 col-lg-4" >
                         <input type="text" class="form-control" placeholder="Enter Grade / Viscosity" value="{{ $product->grade }}" name="grade" id="">
                     </div>
-                </div>
-
-                <div class="form-group row mb-1">
                     <label for="brandID" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Brand : </label>
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         <select name="brandID" class="form-select" required>
@@ -45,6 +54,10 @@
                             @endforeach
                         </select>
                     </div>
+
+                </div>
+
+                <div class="form-group row mb-1">
                     <label for="categoryID" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Category : </label>
                     <div class="col-sm-6 col-md-6 col-lg-4" >
                         <select name="categoryID" class="form-select" required>
@@ -53,9 +66,6 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
-
-                <div class="form-group row mb-1">
                     <label for="productUnit" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Product Unit: </label>
                     <div class="col-sm-6 col-md-6 col-lg-4" >
                         <select name="productUnit" class="form-select" required>
@@ -65,14 +75,13 @@
                             @endforeach
                         </select>
                     </div>
+
+                </div>
+                <div class="form-group row mb-1">
                     <label for="alertQuantity" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Alert Quantity: </label>
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         <input type="number" name="alertQuantity" class="form-control" value="{{ old('alertQuantity', $product->alertQuantity) }}">
                     </div>
-
-                </div>
-
-                <div class="form-group row mb-1">
                     <label for="image" class="form-label col-sm-6 col-md-6 col-lg-2 col-form-label mt-2">Picture: </label>
                     <div class=" col-sm-6 col-md-6 col-lg-4 mt-1">
                         <input type="file" name="image" class="form-control" value="{{ $product->image }}">

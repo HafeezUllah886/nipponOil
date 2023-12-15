@@ -18,6 +18,8 @@ use App\Http\Controllers\payrollController;
 use App\Http\Controllers\permissionsController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\PurchaseReceiveController;
 use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReconditionedController;
@@ -121,6 +123,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/account', \App\Http\Controllers\AccountController::class);
 
     Route::get('/purchase', [\App\Http\Controllers\PurchaseController::class, 'payment'])->name('purchase.payment');
+    Route::get('/purchase/delete/{id}', [\App\Http\Controllers\PurchaseController::class, 'destroy']);
+    Route::get('/purchase/receiveProducts/create/{id}', [PurchaseReceiveController::class, 'receiveProducts']);
     Route::resource('/purchase', \App\Http\Controllers\PurchaseController::class);
     Route::resource('/unit', \App\Http\Controllers\UnitController::class);
     Route::resource('/purchaseReceive', \App\Http\Controllers\PurchaseReceiveController::class);

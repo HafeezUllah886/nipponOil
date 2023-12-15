@@ -11,21 +11,21 @@
                     <i class="fas fa-users-cog"></i> Add New Product
                 </h4>
                 <div class="span">
-                        <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addBrandModal">
-                            <span class="fs-6">Add Brand</span>
-                        </button>
-                        <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                            <span class="fs-6">Add Category</span>
-                        </button>
+                    <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addBrandModal">
+                        <span class="fs-6">Add Brand</span>
+                    </button>
+                    <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                        <span class="fs-6">Add Category</span>
+                    </button>
                 </div>
             </div>
             <div class="card-body">
                 <form class="form-horizontal" action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group row mb-1">
-                        <label for="name" class="form-label required col-sm-4 col-md-6 col-lg-2  col-form-label">Product Name: </label>
+                        <label for="autoComplete1" class="form-label required col-sm-4 col-md-6 col-lg-2 col-form-label">Product Name: </label>
                         <div class="col-sm-8 col-md-6 col-lg-4">
-                            <input type="text" name="name" class="form-control" id="autoComplete" value="{{ old('name') }}" required placeholder="Product Name">
+                            <input type="text" name="name" class="form-control" id="autoComplete1" value="{{ old('name') }}" required placeholder="Product Name">
                         </div>
                         <label for="code" class="form-label required col-sm-4 col-md-6 col-lg-2 col-form-label">Product Code: </label>
                         <div class="col-sm-8 col-md-6 col-lg-4">
@@ -35,20 +35,28 @@
                             <button class="btn btn-info" type="button" onclick="generateCode()">Generate</button>
                             </div>
                         </div>
-
                     </div>
                     <div class="form-group row mb-1">
                         <label for="Litters" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Litters : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
-                            <input type="number" step="any" placeholder="Enter Litters" required class="form-control" name="ltr" id="">
+                            <div class="input-group">
+                                <input type="number" step="any" placeholder="Enter Litters" required class="form-control" name="ltr" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <button class="btn btn-default">Ltrs</button>
+                            </div>
                         </div>
+                        <label for="weight" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Weight : </label>
+                        <div class="col-sm-6 col-md-6 col-lg-4" >
+                            <div class="input-group">
+                                <input type="number" class="form-control" step="any" placeholder="Enter Weight" name="weight"  aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <button class="btn btn-default">KG</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-1">
                         <label for="grade" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Grade / Viscosity : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4" >
                             <input type="text" class="form-control" placeholder="Enter Grade / Viscosity" name="grade" id="">
                         </div>
-                    </div>
-
-                    <div class="form-group row mb-1">
                         <label for="brandID" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Brand : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
                             <select name="brandID" class="form-select" required>
@@ -57,6 +65,8 @@
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+                    <div class="form-group row mb-1">
                         <label for="categoryID" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Category : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4" >
                             <select name="categoryID" class="form-select" required>
@@ -66,9 +76,6 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div>
-
-                    <div class="form-group row mb-1">
                         <label for="productUnit" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Product Unit : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
                             <select name="productUnit" id="unit" class="form-select" required>
@@ -78,29 +85,24 @@
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+                    <div class="form-group row mb-1">
                         <label for="alertQuantity" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Alert Quantity: </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
                             <input type="number" name="alertQuantity" class="form-control" value="{{ old('alertQuantity') }}" placeholder="Alert Quantity">
                         </div>
-                    </div>
-                    <div class="form-group row mb-1">
-
                         <label for="image" class=" form-label col-sm-6 col-md-6 col-lg-2 col-form-label">Picture: </label>
                         <div class=" col-sm-6 col-md-6 col-lg-4">
                             <input type="file" name="image" class="form-control">
                         </div>
-
                     </div>
                     <div class="row mt-2">
                         <div class="col d-flex justify-content-end">
                             <input class="btn btn-success" id="saveButton" type="submit" value="Create Product">
                         </div>
-
                     </div>
                 </form>
             </div>
-
-
             <!-- Brand Modal -->
             <div class="modal fade" id="addBrandModal" tabindex="-1" aria-labelledby="addBrandModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -140,8 +142,6 @@
                     </div>
                 </div>
             </div>
-
-
             <!-- Category Modal -->
             <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

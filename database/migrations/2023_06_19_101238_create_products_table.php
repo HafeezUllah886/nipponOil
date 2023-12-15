@@ -18,6 +18,7 @@ return new class extends Migration
             $table->tinyInteger('isExpire');
             $table->integer('productUnit');
             $table->float('ltr');
+            $table->float('weight');
             $table->string('grade');
             $table->integer('alertQuantity')->nullable();
             $table->string('image')->nullable();

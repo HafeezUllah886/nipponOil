@@ -29,24 +29,16 @@ class productFactory extends Factory
             'productUnit' => $this->faker->numberBetween(1,3),
             'grade' => $this->faker->numberBetween(100,100000),
             'ltr' => $this->faker->numberBetween(1 ,10),
+            'weight' => $this->faker->numberBetween(1 ,10),
             'alertQuantity' => $this->faker->numberBetween(20,100),
             'image' => $this->faker->imageUrl(200,200),
             'createdBy' => "System@email.com",
-            /* 'prices' => function () {
-                return [
-                    [
-                        'title' => "Retail",
-                        'price' => $this->faker->numberBetween(500, 10000),
-                    ],
-                ];
-            }, */
         ];
     }
 
     public function configure()
     {
         return $this->afterCreating(function (Product $product) {
-            // Assuming you have a relationship between Product and ProductPrices
             $product->prices()->create([
                 'title' => "Retail",
                 'price' => $this->faker->numberBetween(500, 10000),

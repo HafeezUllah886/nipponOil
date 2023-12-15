@@ -30,7 +30,6 @@
                     @can('All Warehouses')
                     <label for="warehouse" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Warehouse:
                         <select name="warehouseID" class="form-select" required>
-                            <option value="">Select Warehouse</option>
                             @foreach ($warehouses as $warehouse)
                                 <option value="{{ $warehouse->warehouseID }}" {{ old('warehouseID') == $warehouse->warehouseID ? 'selected' : '' }}>{{ $warehouse->name }}</option>
                             @endforeach
@@ -47,7 +46,6 @@
 
                     <label for="supplier" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Supplier:
                         <select name="supplierID" class="form-select" required>
-                            <option value="">Select Supplier</option>
                             @foreach ($accounts as $account)
                                 <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
                             @endforeach
@@ -73,7 +71,7 @@
                             <select name="productID" id="productID"  class="selectize"  onchange="getProduct(this.value)">
                                 <option value="">Select Product</option>
                                 @foreach ($products as $product)
-                                    <option value="{{ $product->productID }}">{{  $product->code .' | '. $product->name .' | '. $product->brand->name }}</option>
+                                    <option value="{{ $product->productID }}">{{  $product->code .' | '. $product->name .' | '. $product->ltr .' ltrs | '. $product->grade }} </option>
                                 @endforeach
                             </select>
 
@@ -195,20 +193,7 @@
         var currentDate = new Date().toISOString().split("T")[0];
         document.getElementById("date").value = currentDate;
         var selectized = $('.selectize').selectize()[0].selectize;
-        /* selectized.focus(); */
-            setTimeout(function() {
 
-              /*   selectized.on("type", function(str) {
-                selectized.focus();
-                const results = selectized.search(str);
-                console.log(this.currentResults.items.length);
-                if (this.currentResults.items.length === 1) {
-
-                    getProduct(this.currentResults.items[0].id);
-                    selectized.setTextboxValue('');
-                }
-                }); */
-                }, 100);
 
         var units = @json($units);
         var existingProducts = [];
@@ -270,28 +255,8 @@
                             result.forEach(function (v) {
                             let id = v.productID;
                             strHTML += '<tr id="rowID_'+ v.productID +'">';
-                            strHTML += '<td class="no-padding"><span class="cut-text" title="'+v.name+'">' + v.name + '('+v.brand.name+')</span></td>';
+                            strHTML += '<td class="no-padding"><span class="cut-text" title="'+v.name+'">' + v.name + ' | '+v.ltr+' ltrs | ' +v.grade+'</span></td>';
                             strHTML += '<td class="no-padding"><input type="number" class="form-control" required style="padding-left:0px;padding-right:0px;text-align:center;" name="quantity_'+v.productID+'" min="1" value="1" oninput="changeQuantity(this, '+id+')" style="border: none"></td>';
-                            /* if(isNaN(v.defaultBatch))
-                            {
-                                strHTML += '<td class="no-padding"><input type="text" style="padding-left:0px;padding-right:0px;text-align:center;color:black;background-color:white;" readonly class="form-control" name="batchNumber_'+v.productID+'" value="'+v.defaultBatch+'"></td>';
-                            }
-                            else{
-                                strHTML += '<td class="no-padding"><input type="text" style="padding-left:0px;padding-right:0px;text-align:center;" class="form-control" onkeydown="preventUnderscore(event)" name="batchNumber_'+v.productID+'" value="" required></td>';
-                            }
-                            strHTML += '<td style="text-align: center;" class="no-padding">';
-                            if (v.isExpire == 0) {
-                                const inputElement = document.createElement('input');
-                                inputElement.type = 'date';
-                                inputElement.className = 'form-control';
-                                inputElement.name = `expiryDate_${v.productID}`;
-                                inputElement.setAttribute('required', 'required');
-                                inputElement.setAttribute('style', 'padding-left:0px;padding-right:0px;text-align:center;');
-                                strHTML += inputElement.outerHTML;
-                            } else {
-                                strHTML += '<div style="display: inline-block; text-align: center;">N/A</div>';
-                            }
-                            strHTML += '</td>'; */
                             strHTML += '<td width="15%" class="no-padding"><select class="form-control" style="padding-left:5px;padding-right:0px;" name="purchaseUnit_'+v.productID+'" required onchange="changePurchaseUnit(this,'+id+')"> <option value="">Select Unit</option>';
                                 var unit_value = 0;
                                 units.forEach(function(unit) {
@@ -303,7 +268,7 @@
                             });
                             var new_price = unit_value * v.purchasePrice;
                             strHTML += '</select></td>';
-                            strHTML += '<td class="no-padding"><input type="number" style="padding-left:0px;padding-right:0px;text-align:center;" class="form-control" name="netUnitCost_'+v.productID+'" min="0.1" step="any" value="' + v.purchasePrice + '" oninput="changeNetUnitCost(this, '+id+')" > </td>';
+                            strHTML += '<td class="no-padding"><input type="number" style="padding-left:0px;padding-right:0px;text-align:center;" class="form-control" name="netUnitCost_'+v.productID+'" min="0.1" required step="any" value="" oninput="changeNetUnitCost(this, '+id+')" > </td>';
                             strHTML += '<td class="no-padding"><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="discount_'+v.productID+'" min="0" value="0" oninput="changeDiscount(this, '+id+')"></td>';
                             strHTML += '<td class="no-padding"><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="tax_'+v.productID+'" min="0" value="0" oninput="changeTax(this, '+id+')"></td>';
                             strHTML += '<td class="no-padding"> <span id="subTotal_'+v.productID+'">' + new_price + '</span></td>';

@@ -66,7 +66,7 @@
                                         <i class="text-yellow fa fa-edit"></i> Edit
                                     </a>
 
-                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#receiveProductModal_{{ $purchase->purchaseID }}">
+                                    <a class="dropdown-item" href="#" onclick="receiveProducts({{ $purchase->purchaseID }})">
                                         <i class="text-yellow fa fa-plus"></i> Receive Products
                                     </a>
 
@@ -78,13 +78,9 @@
                                         <i class="text-yellow fa fa-plus"></i> View Payments
                                     </a>
 
-                                    <form action="{{ route('purchase.destroy', $purchase->purchaseID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
-                                        @method('DELETE')
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="text-red fa fa-trash"></i> Delete
-                                        </button>
-                                    </form>
+                                    <a href="{{ url("purchase/delete/") }}/{{ $purchase->purchaseID }}" class="dropdown-item text-danger" onsubmit="return confirm('Are you sure you want to delete this?');">
+                                        Delete
+                                    </a>
                                 </div>
                             </div>
                         </td>
@@ -182,122 +178,40 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="receiveProductModal_{{ $purchase->purchaseID }}" tabindex="-1" aria-labelledby="receiveProductModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl"> <!-- Add "modal-dialog-white" class -->
-                            <div class="modal-content" style="background-color: white; color: #000000"> <!-- Add "modal-content-white" class -->
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="receiveProductModalLabel" style="color: black; font-weight: bold">Receive Order Products {{ $purchase->purchaseID }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form class="form-horizontal" action="{{ route('purchaseReceive.store') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="purchaseID" value="{{ $purchase->purchaseID }}">
-                                        <input type="hidden" name="warehouseID" value="{{ $purchase->warehouseID }}">
-                                        <?php
-                                            $uniqueProducts = [];
-                                            $receivedQuantity = [];
-                                            $summedData = [];
-                                        ?>
-                                        @foreach ($purchase->purchaseReceive as $order)
-                                            <?php
-                                                $batchNumber = $order['batchNumber'];
-                                                $expiryDate = $order['expiryDate'];
-                                                $productID = $order['productID'];
-                                                $purchaseUnit = $order->purchaseUnit;
-                                                $unit = \App\Models\Unit::where('unitID', $purchaseUnit)->first();
-                                                $orderedQty = $order['orderedQty'] /  $unit->value;
-                                                $receivedQty = $order['receivedQty'] /  $unit->value ;
 
-                                                if (!isset($summedData[$productID])) {
-                                                    $summedData[$productID] = [
-                                                        'productID' => $productID,
-                                                        'expiryDate' => $expiryDate,
-                                                        'batchNumber' => $batchNumber,
-                                                        'orderedQty' => $orderedQty,
-                                                        'receivedQty' => $receivedQty,
-                                                        'purchaseUnit' => $purchaseUnit
-
-                                                    ];
-                                                } else {
-                                                    $summedData[$productID]['orderedQty'] += $orderedQty;
-                                                    $summedData[$productID]['receivedQty'] += $receivedQty;
-                                                }
-                                            ?>
-                                        @endforeach
-
-                                        @php
-                                            $allProductsReceived = true;
-                                        @endphp
-                                        @forelse ($summedData as $index => $data)
-                                            @php
-                                                $modifiedOrderedQty = $data['orderedQty'] - $data['receivedQty'];
-                                                $productID = $data['productID'];
-                                                $productName = \App\Models\Product::where('productID', $productID)->pluck('name');
-                                            @endphp
-                                            @if ($modifiedOrderedQty != 0)
-                                                @php $allProductsReceived = false;@endphp
-                                                <input type="hidden" name="batchNumber_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['batchNumber'] }}">
-                                                <input type="hidden" name="expiryDate_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['expiryDate'] }}">
-                                                <input type="hidden" name="purchaseUnit_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['purchaseUnit'] }}">
-                                                <div class="form-group row mb-3">
-                                                    <div class="col-sm-12 col-md-3">
-                                                        <label class="form-label font-weight-bold">Product Name:</label>
-                                                        <div class="form-control-plaintext">{{ $productName[0] }}</div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-3">
-                                                        <label class="form-label font-weight-bold">Order Quantity:</label>
-                                                        <div class="form-control-plaintext order-quantity">{{ $modifiedOrderedQty  }}</div>
-                                                    </div>
-                                                    @can('All Warehouses')
-                                                    <div class="col-sm-12 col-md-3">
-                                                        <label class="form-label font-weight-bold">Warehouse:</label>
-                                                        <select name="warehouseID_{{ $data['productID'] }}" class="form-select" required>
-                                                            @foreach($warehouses as $warehouse)
-                                                                <option value="{{ $warehouse->warehouseID }}"> {{ $warehouse->name }} </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    @endcan
-                                                    @cannot('All Warehouses')
-                                                    <div class="col-sm-12 col-md-3">
-                                                        <label class="form-label font-weight-bold">Warehouse:</label>
-                                                        <select name="warehouseID_{{ $data['productID'] }}" class="form-select" required>
-                                                                <option value="{{ auth()->user()->warehouse->warehouseID }}"> {{ auth()->user()->warehouse->name }} </option>
-                                                        </select>
-                                                    </div>
-                                                    @endcannot
-
-                                                    <div class="col-sm-12 col-md-3">
-                                                        <label class="form-label font-weight-bold">Receive Quantity:</label>
-                                                        <input type="number" name="receiveQty_{{ $data['productID'] }}" min="0" data-row-index="{{ $index }}"  class="form-control receive-quantity" value="{{ $modifiedOrderedQty }}">
-                                                        <div class="invalid-feedback" style="display: none;">Receive quantity cannot exceed from order quantity.</div>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                            @endif
-                                        @empty
-                                            <p>No</p>
-                                        @endforelse
-
-                                        @if ($allProductsReceived)
-                                            <div class="text-center mb-3 ">
-                                                <span class="fw-bold" style="font-size: 1.2rem;">All Products Received</span>
-                                            </div>
-                                        @endif
-
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <input class="btn btn-primary" type="submit" value="Save">
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @endforeach
                 </tbody>
             </table>
+        </div>
+    </div>
+    {{-- Products Receiving Modal --}}
+    <div class="modal fade" id="receiveProductModal" tabindex="-1" aria-labelledby="receiveProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl"> <!-- Add "modal-dialog-white" class -->
+            <div class="modal-content" > <!-- Add "modal-content-white" class -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="receiveProductModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" action="{{ route('purchaseReceive.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="purchaseID" id="receivingPurchaseID">
+                        <table class="table">
+                            <thead>
+                                <th>Product</th>
+                                <th>Balance Quantity</th>
+                                <th>Receiving Quantity</th>
+                            </thead>
+                            <tbody id="receivingProducts">
+                            </tbody>
+                        </table>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <input class="btn btn-primary" type="submit" value="Save">
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -324,8 +238,6 @@
             });
         });
 
-
-
     $(document).ready(function() {
             $('.paying-amount').on('input', function() {
                 var maxAmount = parseFloat($(this).next('.max-amount').text());
@@ -339,6 +251,22 @@
                 }
             });
         });
+
+        function receiveProducts(id)
+        {
+            $("#receiveProductModalLabel").html("Products Receiving of Purchase # " + id);
+            $("#receivingPurchaseID").val(id);
+            $.ajax({
+                url: '{{ url("/purchase/receiveProducts/create/") }}/'+id,
+                method: 'get',
+                success: function(data){
+                    console.log(data);
+                        $("#receivingProducts").html(data.data);
+                        $("#receiveProductModal").modal('show');
+                    }
+            });
+
+        }
     </script>
 @endsection
 

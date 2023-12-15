@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Purchase;
 use App\Models\PurchaseReceive;
 use App\Models\Reference;
 use App\Models\Stock;
@@ -12,73 +14,57 @@ use Illuminate\Http\Request;
 class PurchaseReceiveController extends Controller
 {
 
-    public function index()
+    public function receiveProducts($id)
     {
-        //
-    }
+        // Assuming you have a purchase order ID, replace 'your_purchase_id' with the actual ID.
+    $purchaseId = $id;
 
-    public function create()
-    {
-        //
-    }
+    // Get the unique product IDs for the specified purchase order
+    $productIds = PurchaseReceive::where('purchaseID', $purchaseId)
+        ->distinct('productID')
+        ->pluck('productID');
 
-    public function store(Request $request)
-    {
-        $ref = Reference::getRef();
-        $requestData = $request->all();
-        $productQuantities = [];
-        $date = Carbon::now();
-        foreach ($requestData as $key => $value) {
-            if (strpos($key, 'receiveQty_') === 0) {
-                $productId = substr($key, strlen('receiveQty_'));
-                $productQuantities[$productId] = $value;
-            }
+    // Loop through each product and calculate remaining quantity
+    $remainingQuantities = [];
+        $data = null;
+    foreach ($productIds as $productId) {
+        $orderedQty = PurchaseReceive::where('purchaseID', $purchaseId)
+            ->where('productID', $productId)
+            ->where('orderedQty', '>', 0)
+            ->sum('orderedQty');
+
+        $receivedQty = PurchaseReceive::where('purchaseID', $purchaseId)
+            ->where('productID', $productId)
+            ->where('receivedQty', '>', 0)
+            ->sum('receivedQty');
+
+        $remainingQty = $orderedQty - $receivedQty;
+
+        // Store the result in an array or use it as needed
+        $remainingQuantities[$productId] = $remainingQty;
+        if($remainingQty > 0){
+        $product = Product::find($productId);
+        $data .= "<tr>";
+        $data .= "<td>$product->name</td>";
+        $data .= "<td>$remainingQty</td>";
+        $data .= "<td> <input type='number' name='qty[]' max='$remainingQty' value='$remainingQty' class='form-control' required min='1' ></td>";
+        $data .= "<input type='hidden' name='product[]' value='$productId'>";
+        $data .= "</tr>";
         }
-        foreach ($productQuantities as $productId => $receiveQty) {
-            $unit = Unit::where('unitID', $request['purchaseUnit_'.$productId])->first();
-
-            if ($receiveQty == 0){
-                continue;
-            }
-            PurchaseReceive::create([
-                'purchaseID' => $request['purchaseID'],
-                'productID' => $productId,
-                'batchNumber' => $request['batchNumber_'.$productId],
-                'expiryDate' => $request['expiryDate_'.$productId],
-                'receivedQty' => $receiveQty * $unit['value'],
-                'date' => $date,
-                'purchaseUnit' => $request['purchaseUnit_'.$productId],
-                'createdBy' => auth()->user()->email,
-            ]);
-
-            Stock::create([
-                'warehouseID' =>  $request['warehouseID_'.$productId],
-                'productID' => $productId,
-                'batchNumber' => $request['batchNumber_'.$productId],
-                'expiryDate' => $request['expiryDate_'.$productId],
-                'date' => $date,
-                'credit' => $receiveQty * $unit['value'],
-                'refID' => $ref,
-                'createdBy' => auth()->user()->email,
-            ]);
-        }
-        $request->session()->flash('message', 'Product Received Successfully!');
-        return to_route('purchase.index');
     }
 
-    public function show(PurchaseReceive $purchaseReceive)
-    {
-        //
+    // Now $remainingQuantities contains the remaining quantity for each product ID
+    // You can return, display, or further process this data as needed
+    return response()->json(
+        [
+            "data" => $data,
+        ]
+    );
     }
 
-    public function edit(PurchaseReceive $purchaseReceive)
+    public function store(Request $req)
     {
-        //
-    }
-
-    public function update(Request $request, PurchaseReceive $purchaseReceive)
-    {
-        //
+       dd($req);
     }
 
     public function destroy(Request $request)

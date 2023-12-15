@@ -16,32 +16,32 @@
             <div class="container-fluid">
                 <dt>
                     <div class="row fs-5 mt-3 text-dark">
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Name: {{ $product->name}}</div>
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Code: {{ $product->code}}</div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">Name: {{ $product->name}}</div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">Code: {{ $product->code}}</div>
                     </div>
 
                     <div class="row fs-5 mt-3 text-dark">
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Litters: {{ $product->ltr}}</div>
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Grade / Viscosity: {{ $product->grade}}</div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">Litters: {{ $product->ltr}} Ltrs</div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">Weight: {{ $product->weight}} KGs</div>
+
                     </div>
 
                     <div class="row fs-5 mt-3 text-dark">
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Brand: {{ $product->brand->name}}</div>
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Category: {{ $product->category->name}}</div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">Grade / Viscosity: {{ $product->grade}}</div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">Brand: {{ $product->brand->name}}</div>
                     </div>
 
                     <div class="row fs-5 mt-3 text-dark">
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Unit: {{ $product->unit->name}}</div>
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Alert Quantity: {{ $product->alertQuantity}}</div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">Category: {{ $product->category->name}}</div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">Unit: {{ $product->unit->name}}</div>
+
                     </div>
 
                     <div class="row fs-5 mt-3 text-dark">
-
                         <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div class="col-sm-12 col-md-6 col-lg-6">Alert Quantity: {{ $product->alertQuantity}}</div>
                             <img width="40%" class="mt-2 img-circle" src="{{ asset($product->image) }}" />
                         </div>
-
-
                     </div>
                 </dt>
             </div>

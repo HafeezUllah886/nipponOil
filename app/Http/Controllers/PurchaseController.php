@@ -42,7 +42,7 @@ class PurchaseController extends Controller
         $warehouses = Warehouse::all();
         $accounts = Account::where('type', 'supplier')->get();
         $purchaseStatuses = PurchaseStatus::all();
-        $products = Product::with('brand', 'category')->orderBy('productID', 'desc')->get();
+        $products = Product::with('prices')->orderBy('productID', 'desc')->get();
         return view('purchase.create', compact('warehouses', 'accounts', 'purchaseStatuses', 'products', 'units'));
     }
 
@@ -310,22 +310,14 @@ class PurchaseController extends Controller
 
     }
 
-    public function destroy(Purchase $purchase , Request $request)
+    public function destroy($id)
     {
-        $receive = $purchase->purchaseReceive->count();
-        $payment = $purchase->purchasePayments->count();
-        if ($receive > 0){
-            return back()->with('error', 'You can not delete this purchase as it has some products received');
-        }elseif($payment > 0){
-            return back()->with('error', 'You can not delete this purchase as it has some payments received');
-        }else {
-            $purchase->purchaseOrders()->delete();
-            $purchase->purchaseReceive()->delete();
-            $purchase->purchasePayments()->delete();
-            Transaction::where('refID', $purchase->refID)->delete();
-            $purchase->delete();
-            $request->session()->flash('message', 'Purchase Deleted Successfully!');
-            return to_route('purchase.index');
-        }
+        $purchase = Purchase::find($id);
+        $purchase->purchaseOrders()->delete();
+        $purchase->purchaseReceive()->delete();
+        $purchase->purchasePayments()->delete();
+        Transaction::where('refID', $purchase->refID)->delete();
+        $purchase->delete();
+        return to_route('purchase.index')->with('message', 'Purchase Deleted Successfully!');
     }
 }
