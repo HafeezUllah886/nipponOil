@@ -37,10 +37,10 @@
                         </div>
                     </div>
                     <div class="form-group row mb-1">
-                        <label for="Litters" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Litters : </label>
+                        <label for="Litters" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Liters : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
                             <div class="input-group">
-                                <input type="number" step="any" placeholder="Enter Litters" required class="form-control" name="ltr" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <input type="number" step="any" placeholder="Enter Liters" required class="form-control" name="ltr" aria-label="Recipient's username" aria-describedby="button-addon2">
                                 <button class="btn btn-default">Ltrs</button>
                             </div>
                         </div>
