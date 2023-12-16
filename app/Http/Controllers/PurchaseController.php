@@ -323,4 +323,10 @@ class PurchaseController extends Controller
         $purchase->delete();
         return to_route('purchase.index')->with('message', 'Purchase Deleted Successfully!');
     }
+
+    public function print_order($id)
+    {
+        $purchase = purchase::find($id);
+        return view('purchase.print_order', compact('purchase'));
+    }
 }

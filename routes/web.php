@@ -124,6 +124,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/purchase', [\App\Http\Controllers\PurchaseController::class, 'payment'])->name('purchase.payment');
     Route::get('/purchase/delete/{id}', [\App\Http\Controllers\PurchaseController::class, 'destroy']);
+    Route::get('/purchase/print/order/{id}', [PurchaseController::class, 'print_order']);
     Route::get('/purchase/receiveProducts/create/{id}', [PurchaseReceiveController::class, 'receiveProducts']);
     Route::resource('/purchase', \App\Http\Controllers\PurchaseController::class);
     Route::resource('/unit', \App\Http\Controllers\UnitController::class);

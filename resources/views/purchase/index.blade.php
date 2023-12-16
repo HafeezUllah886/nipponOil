@@ -78,6 +78,10 @@
                                         <i class="text-yellow fa fa-plus"></i> View Payments
                                     </a>
 
+                                    <a class="dropdown-item" href="{{ url('/purchase/print/order/') }}/{{ $purchase->purchaseID  }}">
+                                        Print Order
+                                    </a>
+
                                     <a href="{{ url("purchase/delete/") }}/{{ $purchase->purchaseID }}" class="dropdown-item text-danger" onsubmit="return confirm('Are you sure you want to delete this?');">
                                         Delete
                                     </a>
