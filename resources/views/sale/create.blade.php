@@ -100,7 +100,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row d-none">
                     <label for="orderTax" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Order Tax:
                         <select name="orderTax" readonly id="orderTax" class="form-select">
                             <option value="No">No</option>
@@ -170,16 +170,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4">
-                        <p class="btn btn-info" style="font-size: 18px" onclick="points(this)">خریدا ہوا مال 1 دن میں واپس یا تبدیل کیا جا سکتا ہے۔</p>
-                    </div>
-                    <div class="col-md-4">
-                        <p class="btn btn-warning" style="font-size: 18px" onclick="points(this)">خریدا ہوا مال واپس یا تبدیل نہیں ہو سکتا۔</p>
-                    </div>
+
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="point">Invoice Notes:</label>
-                            <input type="text" name="point" value=".خریدا ہوا مال واپس یا تبدیل نہیں ہو سکتا" id="point" class="form-control">
+                            <input type="text" name="point" value="" id="point" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -331,7 +326,7 @@
                         $('#productID').empty();
                         $('#productID').append('<option value="">Select Product</option>');
                         var data = $.each(response.productsWithCreditDebtSum, function(index, product) {
-                            $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">' + product.product.name +' | '+ product.batchNumber +' | '+ product.difference +' | '+ product.product.brand_name +' | '+ product.product.category_name + '</option>');
+                            $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">'  + product.product.code +' | '+ product.product.name + product.product.grade +' | '+ product.product.ltr + ' Ltrs | '+ product.difference +'</option>');
                         });
                         $('.selectize').removeClass("form-select");
                         selectized = $('.selectize').selectize({
@@ -340,18 +335,7 @@
                             } */
                         })[0].selectize;
 
-                      /*   setTimeout(function() {
 
-                        selectized.on("type", function(str) {
-                        selectized.focus();
-                        const results = selectized.search(str);
-                        if (this.currentResults.items.length === 1) {
-                            console.log(this.currentResults.items[0].id);
-                            productDetails(this.currentResults.items[0].id);
-                            selectized.setTextboxValue('');
-                        }
-                        });
-                        }, 100); */
                     },
                     error: function() {
                         alert('Failed to fetch products.');
@@ -395,8 +379,7 @@
                             var rowId = result[0].stockID;
                             var row = $("#tbody #" +'rowID_'+ rowId);
                             var quantityInput = row.find('[name="quantity_' + rowId + '"]');
-                            var netUnitCostInput = row.find('input[name="netUnitCost_' + rowId + '"]');
-
+                            var netUnitCostInput = $('select[name="netUnitCost_' + rowId + '"]');
                             let saleUnit = row.find('select[name="saleUnit_' + rowId + '"]').val()
                             if (saleUnit === '') {
                                 alert('Please select Sale Unit First');
@@ -407,11 +390,11 @@
                                     unitValue = unit.value;
                                 }
                             });
-
                             var discountInput = row.find('[name="discount_' + rowId + '"]');
                             var taxInput = row.find('[name="tax_' + rowId + '"]');
                             var quantity = parseInt(quantityInput.val());
-                            var netUnitCost = parseInt(netUnitCostInput.val());
+                            var netUnitCost = parseInt(netUnitCostInput.find(":selected").val());
+                            console.log(netUnitCost);
                             var discount = parseInt(discountInput.val());
                             var tax = parseInt(taxInput.val());
                             quantity++;
@@ -425,12 +408,11 @@
 
                                 let id = v.stockID;
                                 strHTML += '<tr id="rowID_' + id + '">';
-                                strHTML += '<td style="text-align:left;"><i class="fa fa-history" title="Sale History" onclick="proHistory('+v.product.productID+')" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></i> ' + v.product.name + ' ('+v.brand+')</td>';
+                                strHTML += '<td style="text-align:left;"><i class="fa fa-history" title="Sale History" onclick="proHistory('+v.product.productID+')" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></i> ' + v.product.name + ' ('+v.ltr+' Ltrs)</td>';
                                 strHTML += '<td class="row align-items-center">';
                                 strHTML += '<div class="input-group">';
                                 strHTML += '<input type="number" id="qty_'+id+'" name="quantity_' + id + '" style="padding-left:0px;padding-right:0px;text-align:center;" min="1" max="' + v.difference + '" value="1" class="form-control" required oninput="changeQuantity(this, ' + id + ')" aria-label="Recipients username" aria-describedby="button-addon2">';
                                 strHTML += '<span class="badge badge-success d-flex align-items-center" id="totalQuantity_' + id + '"">'+v.difference+'</span></div>';
-
                                 strHTML += '<td width="15%"><select class="form-select" name="saleUnit_' + id + '" required onchange="changeSaleUnit(this,'+ id +')">';
                                     var unit_value = 0;
                                     units.forEach(function (unit) {
@@ -440,10 +422,15 @@
                                     unit_value = unit.value;
                                 }
                                 });
-                                var new_price = unit_value * v.product.salePrice;
+                                var new_price = unit_value * v.prices[0].price;
 
                                 strHTML += '</select></td>';
-                                strHTML += '<td width="10%"><input type="number" step="any" style="padding-left:0px;padding-right:0px;text-align:center;" class="form-control" name="netUnitCost_' + id + '" min="0.01" value="' + v.product.salePrice + '" oninput="changeNetUnitCost(this,'+ id +')" > </td>';
+
+                                strHTML += '<td width="15%"><select class="form-select" onchange="changeNetUnitCost(this,'+ id +')" name="netUnitCost_' + id + '" required>';
+                                    v.prices.forEach(function (item) {
+                                    strHTML += '<option value="' + item.price + '">' + item.title + ' | ' + item.price +'</option>';
+                                });
+                                strHTML += '</select></td>';
                                 strHTML += '<td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="discount_' + id + '" min="0" value="0" oninput="changeDiscount(this, ' + id + ')"></td>';
                                 strHTML += '<td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="tax_' + id + '" min="0" value="0" oninput="changeTax(this, ' + id + ')"></td>';
                                 strHTML += '<td><span id="subTotal_' + id + '">' + new_price.toFixed(2) + '</span></td>';
@@ -472,7 +459,7 @@
             let row = $(input).closest('tr');
             let quantityElement = row.find('input[name="quantity_' + id + '"]');
             let quantity = quantityElement.val();
-            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            let netUnitCost = row.find('select[name="' + 'netUnitCost_' + id + '"]').val();
 
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
@@ -509,7 +496,7 @@
 
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
-            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            let netUnitCost = row.find('select[name="' + 'netUnitCost_' + id + '"]').val();
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
@@ -547,7 +534,7 @@
 
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
-            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            let netUnitCost = row.find('select[name="' + 'netUnitCost_' + id + '"]').val();
 
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
@@ -587,7 +574,7 @@
 
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
-            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            let netUnitCost = row.find('select[name="' + 'netUnitCost_' + id + '"]').val();
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
@@ -626,7 +613,7 @@
             let row = $(input).closest('tr');
             let quantityElement = row.find('input[name="quantity_' + id + '"]');
             let quantity = quantityElement.val();
-            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            let netUnitCost = row.find('select[name="' + 'netUnitCost_' + id + '"]').val();
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {

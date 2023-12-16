@@ -45,15 +45,7 @@
                             <input type="number" name="salary" required id="salary" class="form-control">
                         </div>
                     </div>
-                    <div class="col-md-6 mt-2">
-                        <div class="form-group">
-                            <label for="salaryType">Salary Type</label>
-                            <select name="salaryType" class="form-control">
-                                <option value="Only Salary">Only Salary</option>
-                                <option value="Salary + Commission">Salary + Commission</option>
-                            </select>
-                        </div>
-                    </div>
+
                     <div class="col-md-6 mt-2">
                         <div class="form-group">
                             <label for="doe">Date of Enrollment</label>
@@ -89,7 +81,7 @@
                         @endcannot
                     </div>
                     <div class="col-12 mt-3">
-                        <input type="checkbox" class="form-check-input" onchange="checkCheckBox()" name="addUser" checked id="addUser"> 
+                        <input type="checkbox" class="form-check-input" onchange="checkCheckBox()" name="addUser" checked id="addUser">
                         <label for="addUser" class="form-check-label">Add as User</label>
                     </div>
                     <div class="col-md-6 mt-2" id="passwordField">
@@ -126,8 +118,8 @@
             $("#password").prop('required', false);
         }
             });
-           
+
         }
-       
+
     </script>
 @endsection

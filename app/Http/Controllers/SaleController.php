@@ -65,7 +65,7 @@ class SaleController extends Controller
         $accounts = Account::where('type', 'customer')->get();
         $purchaseStatuses = PurchaseStatus::all();
         $products = Product::all();
-        $emps = employees::where('salary_type', '!=', 'Only Salary')->orderBy('id', 'desc')->get();
+        $emps = employees::orderBy('id', 'desc')->get();
         return view('sale.create', compact('warehouses', 'accounts', 'purchaseStatuses', 'products', 'units', 'paymentAccounts', 'emps'));
     }
 
@@ -135,7 +135,6 @@ class SaleController extends Controller
                     'subTotal' => $subTotal,
                     'saleUnit' => $productSaleUnit,
                     'salesManID' => $request->salesManID,
-                    'commission' => ($product->commission / 100) * $subTotal,
                     'createdBy' => auth()->user()->email,
                     'date' => $sale->date,
                 ]);

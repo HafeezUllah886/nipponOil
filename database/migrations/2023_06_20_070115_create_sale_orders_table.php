@@ -26,7 +26,6 @@ return new class extends Migration
             $table->unsignedFloat('subTotal', 10,2);
             $table->foreignId('saleUnit')->constrained('units', 'unitID');
             $table->foreignId('salesManID')->constrained('employees', 'id');
-            $table->float('commission',10,2)->nullable();
             $table->string('createdBy')->nullable();
             $table->date('date');
             $table->timestamps();

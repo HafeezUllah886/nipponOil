@@ -55,7 +55,6 @@ class hrmController extends Controller
                 'phone' => $req->phone,
                 'address' => $req->address,
                 'warehouseID' => $req->warehouseID,
-                'salary_type' => $req->salaryType,
                 'salary' => $req->salary,
                 'status' => 'Active',
                 'doe' => $req->doe,
@@ -93,7 +92,6 @@ class hrmController extends Controller
         $emp->name = $req->name;
         $emp->designation = $req->desg;
         $emp->salary = $req->salary;
-        $emp->salary_type = $req->salaryType;
         $emp->address = $req->address;
         $emp->phone = $req->phone;
         $emp->email = $req->email;

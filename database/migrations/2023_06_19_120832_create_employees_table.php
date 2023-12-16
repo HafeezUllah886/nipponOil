@@ -19,8 +19,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('status');
             $table->text('address')->nullable();
-            $table->string("salary_type");
-            $table->unsignedBigInteger('salary')->nullable();
+            $table->integer('salary')->nullable();
             $table->string('image')->nullable();
             $table->date('doe');
             $table->foreignId('warehouseID')->constrained('warehouses', 'warehouseID');

@@ -81,7 +81,6 @@ class POSController extends Controller
             'subTotal' => $req->amount[$key],
             'saleUnit' => 1,
             'salesManID' => $req->salesManID,
-            'commission' => ($pro->commission / 100) * $req->amount[$key],
             'createdBy' => auth()->user()->email,
             'date' => $req->date
         ]);

@@ -47,15 +47,6 @@
                     </div>
                     <div class="col-md-6 mt-2">
                         <div class="form-group">
-                            <label for="salaryType">Salary Type</label>
-                            <select name="salaryType" class="form-control">
-                                <option value="Only Salary" {{"Only Salary" == $emp->salary_type ? "selected" : ""}}>Only Salary</option>
-                                <option value="Salary + Commission" {{"Salary + Commission" == $emp->salary_type ? "selected" : ""}}>Salary + Commission</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mt-2">
-                        <div class="form-group">
                             <label for="doe">Date of Enrollment</label>
                             <input type="date" name="doe" required value="{{$emp->doe}}" id="doe" class="form-control">
                         </div>

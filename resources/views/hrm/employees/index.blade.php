@@ -24,7 +24,6 @@
                     <th>Designation</th>
                     <th>Phone</th>
                     <th>Email</th>
-                    <th>Salary Type</th>
                     <th>Salary</th>
                     <th>DOE</th>
                     <th>Status</th>
@@ -47,7 +46,6 @@
                             <td>{{ $employee->designation }}</td>
                             <td>{{ $employee->phone }}</td>
                             <td>{{ $employee->email }}</td>
-                            <td>{{ $employee->salary_type }}</td>
                             <td>{{ $employee->salary }}</td>
                             <td>{{ $employee->doe }}</td>
                             <td><span class="badge {{ $employee->status == 'Active' ? 'badge-success' : 'badge-danger' }}">{{ $employee->status }}</span></td>

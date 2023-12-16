@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\productPrices;
 use App\Models\Purchase;
 use App\Models\PurchaseReceive;
 use App\Models\Sale;
@@ -87,9 +88,9 @@ class AjaxController extends Controller
         $productsWithCreditDebtSum->each(function ($stock) use ($prevSale, $product) {
             $stock->difference = $stock->credit_sum - $stock->debt_sum;
             $stock->lastSaleUnit = $prevSale->saleUnit ?? 1;
-            $stock->brand = $product->brand->name;
+            $stock->ltr = $product->ltr;
+            $stock->prices = productPrices::where('productID', $product->productID)->get(['title', 'price']);
         });
-
         return response()->json($productsWithCreditDebtSum);
     }
     public function getProductCode($arguments)
