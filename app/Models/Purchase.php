@@ -41,7 +41,7 @@ class Purchase extends Model
 
     public function purchaseReceive()
     {
-        return $this->hasMany(purchaseReceive::class, 'purchaseID');
+        return $this->hasMany(PurchaseReceive::class, 'purchaseID', 'purchaseID');
     }
 }
 

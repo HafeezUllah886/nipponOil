@@ -24,6 +24,7 @@ class AccountController extends Controller
      */
     public function create()
     {
+
         $warehouses = Warehouse::all();
         return view('account.create', compact('warehouses'));
     }
@@ -66,7 +67,7 @@ class AccountController extends Controller
             addTransaction($account->accountID, now(), "Initial Amount", $request->initialBalance, 0, $ref, "Initial Account Balance");
         }
         $request->session()->flash('message', 'Account created Successfully!');
-        return to_route('account.index');
+        return redirect('account/index/'.$request->type);
     }
 
     /**

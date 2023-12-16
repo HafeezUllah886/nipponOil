@@ -64,7 +64,8 @@ Auth::routes();
 });
 Route::middleware('auth')->group(function () {
 
-    Route::get('/account/{type}', [AccountController::class, "index"]);
+    Route::get('/account/index/{type}', [AccountController::class, "index"]);
+
 
     Route::get('/account/depositWithdrawals', [WithdrawalDepositController::class, 'index']);
     Route::get('/account/depositWithdrawals/create', [WithdrawalDepositController::class, 'create']);
