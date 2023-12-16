@@ -135,8 +135,9 @@ class PurchaseController extends Controller
                         'batchNumber' => $productBatchNumber,
                         'expiryDate' => $productExpiryDate,
                         'orderedQty' => $productQuantity * $unit->value,
-                        'purchaseUnit' => $productPurchaseUnit,
+
                         'createdBy' => auth()->user()->email,
+                        'refID' => $purchase->refID,
                     ]);
                     if($request['purchaseStatus'] === 'received'){
                         PurchaseReceive::create([
@@ -145,8 +146,9 @@ class PurchaseController extends Controller
                             'batchNumber' => $productBatchNumber,
                             'expiryDate' => $productExpiryDate,
                             'receivedQty' => $productQuantity * $unit->value ?? 'NULL',
-                            'purchaseUnit' => $productPurchaseUnit,
+
                             'createdBy' => auth()->user()->email,
+                            'refID' => $purchase->refID,
                         ]);
 
                         Stock::create([
@@ -158,6 +160,7 @@ class PurchaseController extends Controller
                             'credit' => $productQuantity * $unit->value,
                             'refID' => $purchase->refID,
                             'createdBy' => auth()->user()->email,
+
                         ]);
                     }
 
@@ -270,12 +273,6 @@ class PurchaseController extends Controller
                     'warehouseID' => $warehouseID,
                     'purchaseUnit' => $productPurchaseUnit
                 ]);
-//                PurchaseReceive::create([
-//                    'purchaseID' => $purchase->purchaseID,
-//                    'productID' => $productID,
-//                    'orderedQty' => $productQuantity * $unit->value,
-//                    'purchaseUnit' => $productPurchaseUnit
-//                ]);
                 if($request['purchaseStatus'] === 'received'){
 
                     PurchaseReceive::create([
@@ -284,8 +281,8 @@ class PurchaseController extends Controller
                         'batchNumber' => $productBatchNumber,
                         'expiryDate' => $productExpiryDate,
                         'receivedQty' => $productQuantity * $unit->value,
-                        'purchaseUnit' => $productPurchaseUnit,
                         'createdBy' => auth()->user()->email,
+                        'refID' => $purchase->refID,
                     ]);
 
                     Stock::create([
@@ -314,6 +311,12 @@ class PurchaseController extends Controller
     {
         $purchase = Purchase::find($id);
         $purchase->purchaseOrders()->delete();
+        $purchaseReceive = PurchaseReceive::where('purchaseID', $id)->get();
+
+        foreach($purchaseReceive as $receive)
+        {
+            Stock::where('refID', $receive->refID)->delete();
+        }
         $purchase->purchaseReceive()->delete();
         $purchase->purchasePayments()->delete();
         Transaction::where('refID', $purchase->refID)->delete();

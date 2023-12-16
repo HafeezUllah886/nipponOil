@@ -19,8 +19,8 @@ return new class extends Migration
             $table->date('expiryDate')->nullable();
             $table->integer('orderedQty')->nullable();
             $table->integer('receivedQty')->nullable();
-            $table->foreignId('purchaseUnit')->constrained('units', 'unitID');
             $table->timestamp('date')->nullable();
+            $table->integer('refID');
             $table->string('createdBy')->nullable();
         });
     }

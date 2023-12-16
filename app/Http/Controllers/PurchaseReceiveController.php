@@ -64,7 +64,41 @@ class PurchaseReceiveController extends Controller
 
     public function store(Request $req)
     {
-       dd($req);
+       $ids = $req->product;
+
+       $purchase = Purchase::find($req->purchaseID);
+       foreach($ids as $key => $product)
+       {
+
+        $ref = getRef();
+        $pro = Product::find($product);
+        PurchaseReceive::create(
+            [
+                'purchaseID' => $req->purchaseID,
+                'productID' => $pro->productID,
+                'batchNumber' => $pro->defaultBatch,
+                'receivedQty' => $req->qty[$key],
+                'date' => now(),
+                'createdBy' => auth()->user()->email,
+                'refID' => $ref,
+            ]
+        );
+
+        Stock::create(
+            [
+                'warehouseID' => $purchase->warehouseID,
+                'productID' => $pro->productID,
+                'batchNumber' => $pro->defaultBatch,
+                'date' => now(),
+                'credit' => $req->qty[$key],
+                'refID' => $ref,
+                'description' => "Stock Purchased",
+                'createdBy' => auth()->user()->email,
+            ]
+        );
+       }
+
+       return back()->with('message', "Products Received");
     }
 
     public function destroy(Request $request)

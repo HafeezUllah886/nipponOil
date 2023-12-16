@@ -217,8 +217,6 @@
 @endsection
 @section('more-script')
     <script>
-
-
         $(document).ready(function() {
             // Attach an event listener to all input elements with the class "receive-quantity"
             $('.receive-quantity').on('input', function() {
