@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\stockTransfer;
 use App\Models\stockTransferDetails;
+use App\Models\Transaction;
 use App\Models\Unit;
 use App\Models\Warehouse;
 use Database\Seeders\warehousesSeeder;
@@ -44,7 +46,8 @@ class StockController extends Controller
     public function transferCreate(){
         $warehouses = Warehouse::all();
         $units = Unit::all();
-        return view('stock.transfer.create', compact('warehouses', 'units'));
+        $accounts = Account::where('type', 'business')->get();
+        return view('stock.transfer.create', compact('warehouses', 'units', 'accounts'));
     }
 
     public function getProducts(request $req){
@@ -79,6 +82,9 @@ class StockController extends Controller
                 'to' => $req->warehouseTo,
                 'date' => $req->date,
                 'status' => "Pending",
+                'expense' => $req->expense,
+                'accountID' => $req->account,
+                'notes' => $req->notes,
                 'refID' => $ref,
                 'createdBy' => auth()->user()->email,
             ]
@@ -117,6 +123,11 @@ class StockController extends Controller
                     'createdBy' => auth()->user()->email,
                 ]
             );
+        }
+
+        if($req->expense > 0)
+        {
+            addTransaction($req->account, $req->date, "Stock Transfer Expense", 0, $req->expense, $ref, $req->notes);
         }
         return redirect('/stock/transfer')->with('message', "Stock transfered to $warehouseTo->name");
     }
@@ -187,6 +198,7 @@ class StockController extends Controller
         stockTransferDetails::where('refID', $ref)->delete();
         stockTransfer::where('refID', $ref)->delete();
         stock::where('refID', $ref)->delete();
+        Transaction::where('refID', $ref)->delete();
 
         return back()->with('error', "Stock Transfer Deleted");
     }

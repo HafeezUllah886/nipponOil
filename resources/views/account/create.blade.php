@@ -15,7 +15,6 @@
                     <label for="type" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Warehouse: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         <select name="warehouseID" required class="form-select" id="warehouseID">
-                            <option value="">Select Warehouse</option>
                             @foreach ($warehouses as $warehouse)
                             <option value="{{ $warehouse->warehouseID }}">{{ $warehouse->name }}</option>
                             @endforeach

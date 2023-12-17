@@ -15,8 +15,8 @@
                     <tr>
                         <th>#</th>
                         <th>Product Name</th>
-                        <th>Code </th>
-                        <th>Batch Number</th>
+                        <th>Ltrs </th>
+                        <th>Viscosity</th>
                         <th>Remaining Quantity</th>
                         <th>Unit Price</th>
                         <th>Stock Value</th>
@@ -31,8 +31,8 @@
                         <tr>
                             <td>{{ $product->productID }}</td>
                             <td>{{ $product->product->name }}</td>
-                            <td>{{ $product->product->code }}</td>
-                            <td>{{ $product->batchNumber }}</td>
+                            <td>{{ $product->product->ltr }} Ltrs</td>
+                            <td>{{ $product->grade }}</td>
                             <td>{{ $product->credit_sum - $product->debt_sum }}</td>
                             <td>{{ $product->product->purchasePrice }}</td>
                             <td>{{ ($product->product->purchasePrice) * ($product->credit_sum - $product->debt_sum) }}</td>

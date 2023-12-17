@@ -81,7 +81,7 @@
 <body>
     <div class="main" id="main">
         <div class="logo">
-            <img src="{{ asset('images/header.jpeg') }}" alt="">
+            <img src="{{ asset('images/logo.jpeg') }}" alt="">
         </div>
         <div class="header">
           {{--   <p class="text-center"><strong>{{ $sale->warehouse->phone }}</strong></p>

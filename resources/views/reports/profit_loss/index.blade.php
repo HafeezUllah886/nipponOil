@@ -58,26 +58,21 @@
                                 <th>Sale Price</th>
                                 <th>Profit</th>
                                 <th>Quantity</th>
-                                <th>Commission</th>
                                 <th>Sub Profit</th>
                             </thead>
                             <tbody id="data">
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="7" class="text-end">Gross Profit</th>
+                                    <th colspan="6" class="text-end">Gross Profit</th>
                                     <th id="grossProfit" class="text-end"></th>
                                 </tr>
                                 <tr>
-                                    <th colspan="7" class="text-end">Fixed Expenses (-)</th>
-                                    <th id="fixed" class="text-end"></th>
-                                </tr>
-                                <tr>
-                                    <th colspan="7" class="text-end">Salaries (-)</th>
+                                    <th colspan="6" class="text-end">Salaries (-)</th>
                                     <th id="salary" class="text-end"></th>
                                 </tr>
                                 <tr id="netProfit">
-                                    <th colspan="7" class="text-end">Net Profit</th>
+                                    <th colspan="6" class="text-end">Net Profit</th>
                                     <th id="net" class="text-end"></th>
                                 </tr>
                             </tfoot>
@@ -179,7 +174,6 @@ function fetchData(start, end){
                 html += '<td class="text-end">'+pa.salePrice+'</td>';
                 html += '<td class="text-end">'+pa.profit+'</td>';
                 html += '<td class="text-end">'+pa.quantity+'</td>';
-                html += '<td class="text-end">'+pa.commission+'</td>';
                 html += '<td class="text-end">'+pa.netProfit+'</td>';
                 html += '</tr>';
                 grossProfit += pa.netProfit;
@@ -187,9 +181,8 @@ function fetchData(start, end){
                html += '</table>';
                $("#data").html(html);
                $("#grossProfit").html(grossProfit);
-               $("#fixed").html(response.fixed);
                $("#salary").html(response.salary);
-               var net = grossProfit - response.salary - response.fixed;
+               var net = grossProfit - response.salary;
                $("#net").html(net);
                $("#loader").addClass("d-none");
                if(net > 0)

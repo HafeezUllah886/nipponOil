@@ -23,4 +23,9 @@ class stockTransfer extends Model
     public function details(){
         return $this->hasMany(stockTransferDetails::class, 'transferID');
     }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class, 'accountID');
+    }
 }

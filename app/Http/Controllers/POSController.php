@@ -7,6 +7,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\employees;
 use App\Models\Product;
+use App\Models\productPrices;
 use App\Models\Sale;
 use App\Models\SaleDelivered;
 use App\Models\SaleOrder;
@@ -30,7 +31,7 @@ class POSController extends Controller
         $accounts = Account::where('type', 'business')->get();
         $brands = Brand::with('products')->get();
         $categories = Category::with('products')->get();
-        $emps = employees::where('salary_type', '!=', 'Only Salary')->orderBy('id', 'desc')->get();
+        $emps = employees::orderBy('id', 'desc')->get();
 
        return view('pos.pos', compact('availableQuantities', 'customers', 'accounts', 'brands', 'categories', 'emps'));
     }
@@ -44,6 +45,7 @@ class POSController extends Controller
 
         $stock->availQty = $credit - $debit;
         $stock->brand = $product->brand->name;
+        $stock->price = productPrices::where("productID", $stock->productID)->first();
         return $stock;
     }
 

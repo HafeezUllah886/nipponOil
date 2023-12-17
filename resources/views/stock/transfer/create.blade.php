@@ -84,8 +84,32 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-success" type="submit">Transfer</button>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group mr-3">
+                            <label for="expense">Expense</label>
+                            <input type="number" name="expense" id="expense" value="0" required class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group mr-3">
+                            <label for="account">Account</label>
+                            <select name="account" id="account" class="form-control">
+                                @foreach ($accounts as $account)
+                                    <option value="{{ $account->accountID }}">{{ $account->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mr-3">
+                            <label for="notes">Notes</label>
+                            <input type="text" name="notes" id="notes" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-end">
+                        <button class="btn btn-success mt-4" type="submit">Transfer</button>
+                    </div>
                 </div>
             </form>
         </div>

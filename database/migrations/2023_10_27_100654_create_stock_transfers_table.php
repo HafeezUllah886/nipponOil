@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('from')->constrained('warehouses', 'warehouseID');
             $table->foreignId('to')->constrained('warehouses', 'warehouseID');
+            $table->foreignId('accountID')->constrained('accounts', 'accountID');
+            $table->integer('expense');
             $table->date('date');
             $table->string('status');
+            $table->string('notes')->nullable();
             $table->integer('refID');
             $table->string('createdBy');
             $table->string('acceptedBy')->nullable();

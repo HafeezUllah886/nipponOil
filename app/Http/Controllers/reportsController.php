@@ -333,7 +333,7 @@ class reportsController extends Controller
             $sales = SaleOrder::with("product")->whereBetween('date', [$start, $end])
             ->where("warehouseID", auth()->user()->warehouseID)
             ->groupBy('productID')
-            ->selectRaw('productID, sum(quantity) as quantity, sum(subTotal) as total, sum(commission) as commission')
+            ->selectRaw('productID, sum(quantity) as quantity, sum(subTotal) as total')
             ->get();
 
 
@@ -357,17 +357,13 @@ class reportsController extends Controller
                 $purchasePrice = $purchase->subTotal / $purchase->quantity;
                 $sale->purchasePrice = round($purchasePrice);
                 $sale->salePrice = round($sale->total / $sale->quantity);
-                $sale->saleCommission = round($sale->commission / $sale->quantity);
-                $sale->profit = round($sale->salePrice - $sale->purchasePrice - $sale->saleCommission);
+                $sale->profit = round($sale->salePrice - $sale->purchasePrice);
                 $sale->brand = $product->brand->name;
-                $sale->netProfit = round(($sale->profit * $sale->quantity) - $sale->commission);
+                $sale->netProfit = round(($sale->profit * $sale->quantity));
             }
 
-            $fixed = fixed_expenses::where("warehouseID", auth()->user()->warehouseID)->sum('amount');
-            $fixed = $fixed * $totalMonths;
-            $perDayFixed = $fixed / $totalDays;
+
             $days = $dateDifference->days + 1;
-            $currentFixed = $perDayFixed * $days;
 
             $salaries = employees::where("warehouseID", auth()->user()->warehouseID)->sum('salary');
             $salaries = $salaries * $totalMonths;
@@ -377,7 +373,6 @@ class reportsController extends Controller
             return response()->json(
                 [
                     'items' => $sales,
-                    'fixed' => round($currentFixed),
                     'salary' => round($currentSalary),
                 ]
             );

@@ -33,6 +33,12 @@
                                 <div class="col-sm-6">
                                     <dt class="fs-5">Accepted / Rejected By: {{ $transfer->acceptedBy }}</dt>
                                 </div>
+                                <div class="col-sm-6">
+                                    <dt class="fs-5">Expense: {{ $transfer->expense }}</dt>
+                                </div>
+                                <div class="col-sm-6">
+                                    <dt class="fs-5">Account: {{ $transfer->account->name }}</dt>
+                                </div>
                             </dl>
                         </div>
 
@@ -43,8 +49,8 @@
                                     <thead class="thead-dark">
                                     <tr class="bg-info">
                                         <th scope="col">Product Name</th>
-                                        <th scope="col">Batch Number</th>
-                                        <th scope="col">Expiry Date</th>
+                                        <th scope="col">Ltrs</th>
+                                        <th scope="col">Viscosity</th>
                                         <th scope="col">Quantity</th>
                                     </tr>
                                     </thead>
@@ -52,8 +58,8 @@
                                     @foreach($transfer->details as $product)
                                         <tr>
                                             <td>{{ $product->product->name }}</td>
-                                            <td>{{ $product->batchNumber }}</td>
-                                            <td>{{ $product->expiryDate }}</td>
+                                            <td>{{ $product->ltr }} Ltrs</td>
+                                            <td>{{ $product->grade }}</td>
                                             <td>{{ $product->qty}}</td>
                                         </tr>
                                     @endforeach

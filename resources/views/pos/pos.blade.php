@@ -84,7 +84,7 @@
                                     <select name="product" class="selectize" placeholder="Search Product" id="product" onchange="proChanged()">
                                         <option value=""></option>
                                         @foreach ($availableQuantities as $key => $stock)
-                                        <option value="{{$stock->batchNumber}}">{{$stock->product->code}} | {{$stock->product->name}} | {{$stock->availableQuantity}}</option>
+                                        <option value="{{$stock->batchNumber}}">{{$stock->product->code}} | {{$stock->product->name}}  | {{$stock->product->grade}} | {{$stock->product->ltr}} Ltrs | {{$stock->availableQuantity}}</option>
                                     @endforeach
                                     </select>
                                 </div>
@@ -238,16 +238,11 @@
                     <span id="change" class="text-warning" style="font-weight: 900; font-size:30px;">0</span>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-md-4">
-                        <p class="btn btn-info" style="font-size: 18px" onclick="points(this)">خریدا ہوا مال 1 دن میں واپس یا تبدیل کیا جا سکتا ہے۔</p>
-                    </div>
-                    <div class="col-md-4">
-                        <p class="btn btn-warning" style="font-size: 18px" onclick="points(this)">خریدا ہوا مال واپس یا تبدیل نہیں ہو سکتا۔</p>
-                    </div>
+
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="point">Invoice Notes:</label>
-                            <input type="text" name="point" id="point" value="خریدا ہوا مال واپس یا تبدیل نہیں ہو سکتا۔" class="form-control">
+                            <input type="text" name="point" id="point" value="" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -472,14 +467,13 @@
             url: "{{url('/pos/getSingleProduct/')}}/" + batch,
             method: "get",
             success: function (result){
-
                 if (!existingProducts.includes(result.stockID) && result.availQty !== 0) {
                     proHTML += '<tr id="row_'+result.stockID+'">';
                     proHTML += '<td style="text-align:left;"><i class="fa fa-history" onclick="proHistory('+result.product.productID+')" aria-hidden="true"></i> '+result.product.name+' ('+result.brand+')</td>';
-                    /* proHTML += '<td>'+result.batchNumber+'</td>'; */
-                    proHTML += '<td><input type="number" name="price[]" step="any" id="price_'+result.stockID+'" class="form-control form-control-sm bg-white text-dark" style="background: transparent;outline: none;border: none;text-align: center;padding:0;" readonly value="'+result.product.salePrice+'"></td>';
+
+                    proHTML += '<td><input type="number" name="price[]" step="any" id="price_'+result.stockID+'" class="form-control form-control-sm bg-white text-dark" style="background: transparent;outline: none;border: none;text-align: center;padding:0;" readonly value="'+result.price.price+'"></td>';
                     proHTML += '<td><input type="number" name="qty[]" oninput="updateQty('+result.stockID+')" min="1" max="'+result.availQty+'" id="qty_'+result.stockID+'" class="form-control form-control-sm" style="padding:0px;text-align:center;" value="1"></td>';
-                    proHTML += '<td><input type="number" name="amount[]" step="any" id="amount_'+result.stockID+'" class="form-control form-control-sm bg-white text-dark" style="background: transparent;outline: none;border: none;text-align: center;padding:0;" readonly value="'+result.product.salePrice+'"></td>';
+                    proHTML += '<td><input type="number" name="amount[]" step="any" id="amount_'+result.stockID+'" class="form-control form-control-sm bg-white text-dark" style="background: transparent;outline: none;border: none;text-align: center;padding:0;" readonly value="'+result.price.price+'"></td>';
                     proHTML += '<td><i class="fa-solid fa-trash text-danger" onclick="deleteRow('+result.stockID+')"></i></td>';
                     proHTML += '</tr>';
                     proHTML += '<input type="hidden" name="stockID[]" value="'+result.stockID+'">';
