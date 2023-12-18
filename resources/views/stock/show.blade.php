@@ -7,6 +7,7 @@
                 <div class="card-body">
                     <dl class="row">
                         <h3 class="text-center">Stock Details</h3>
+                        <h5 class="text-center">{{ $stocks[0]->product->name }}</h5>
                         <div class="col-md-12">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -14,25 +15,30 @@
                                     <tr>
                                         <th scope="col">Stock ID</th>
                                         <th scope="col">Warehouse</th>
-                                        <th scope="col">Product</th>
-                                        <th scope="col">Batch Number</th>
+                                        <th scope="col">Description</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Credit</th>
                                         <th scope="col">Debt</th>
-                                        <th scope="col">Description</th>
+                                        <th scope="col">Balance</th>
                                     </tr>
                                     </thead>
                                     <tbody>
+                                        @php
+                                            $balance = 0;
+                                        @endphp
                                     @foreach($stocks as $stock)
+                                        @php
+                                            $balance += $stock->credit;
+                                            $balance -= $stock->debt;
+                                        @endphp
                                         <tr>
                                             <td>{{ $stock->stockID }}</td>
                                             <td>{{ $stock->warehouse->name }}</td>
-                                            <td>{{ $stock->product->name }}</td>
-                                            <td>{{ $stock->batchNumber }}</td>
-                                            <td>{{ $stock->date }}</td>
-                                            <td>{{ $stock->credit }}</td>
-                                            <td>{{ $stock->debt }}</td>
                                             <td>{{ $stock->description }}</td>
+                                            <td>{{ $stock->date }}</td>
+                                            <td>{{ packInfo($stock->product->unit->value, $stock->credit) }}</td>
+                                            <td>{{ packInfo($stock->product->unit->value, $stock->debt) }}</td>
+                                            <td>{{ packInfo($stock->product->unit->value, $balance) }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

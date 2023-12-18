@@ -150,7 +150,7 @@
                         </label>
 
                         <label for="paymentNote" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Payment Note *:
-                            <input type="text" name="description" class="form-control">
+                            <input type="text" name="paymentNotes" class="form-control">
                         </label>
                     </div>
                 </div>

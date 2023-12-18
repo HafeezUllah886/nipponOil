@@ -180,10 +180,9 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-
                                             <div class="col-12 mt-2">
                                                 <label>Payment Note: </label>
-                                                <textarea type="text" name="description" rows="5" class="form-control"></textarea>
+                                                <textarea type="text" name="paymentNotes" rows="5" class="form-control"></textarea>
                                             </div>
                                         </div>
 

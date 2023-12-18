@@ -26,15 +26,15 @@ class SalePaymentController extends Controller
             'saleID' => $request['saleID'],
             'amount' => $request['amount'],
             'accountID' => $request['accountID'],
-            'description' => $request['description'],
+            'description' => $request['paymentNotes'],
             'refID' => $sale->refID,
             'date' => $request['date'],
             'createdBy' => auth()->user()->email,
         ]);
 
         $sale = Sale::find($request->saleID);
-        addTransaction($sale->customerID, $request->date, "Sale Payment", 0, $request->amount, $sale->refID, "Payment of Sale #".$request->saleID);
-        addTransaction($request->accountID, $request->date, "Sale Payment", $request->amount, 0, $sale->refID, "Payment of Sale #".$request->saleID);
+        addTransaction($sale->customerID, $request->date, "Sale Payment", 0, $request->amount, $sale->refID, "Payment of Sale #".$request->saleID . "<br> $request->paymentNotes");
+        addTransaction($request->accountID, $request->date, "Sale Payment", $request->amount, 0, $sale->refID, "Payment of Sale #".$request->saleID . "<br> $request->paymentNotes");
         $request->session()->flash('message', 'Sale Payment Created Successfully!');
         return redirect()->route('sale.index');
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Product;
+use App\Models\PurchaseOrder;
 use App\Models\Stock;
 use App\Models\stockTransfer;
 use App\Models\stockTransferDetails;
@@ -23,6 +24,13 @@ class StockController extends Controller
             ->get();
         $productsWithCreditDebtSum->each(function ($stock) {
             $stock->difference = $stock->credit_sum - $stock->debt_sum;
+
+            $purchaseQty = PurchaseOrder::where("productID", $stock->product->productID)->sum('quantity');
+            $purchaseAmount = PurchaseOrder::where("productID", $stock->product->productID)->sum('subTotal');
+
+            $purchaseRate = $purchaseAmount / $purchaseQty;
+            $stock->value = $purchaseRate * $stock->difference;
+
         });
         return view('stock.index', compact('productsWithCreditDebtSum'));
     }

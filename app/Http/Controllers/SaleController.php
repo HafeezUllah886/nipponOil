@@ -185,8 +185,8 @@ class SaleController extends Controller
                 'createdBy' => auth()->user()->email,
             ]);
 
-            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $sale->refID, "Payment of Sale #". $sale->saleID);
-            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $sale->refID, "Payment of Sale #". $sale->saleID);
+            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $sale->refID, "Payment of Sale #". $sale->saleID. "<br> $request->paymentNotes");
+            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $sale->refID, "Payment of Sale #". $sale->saleID . "<br> $request->paymentNotes");
         }
         $request->session()->flash('message', 'Sale Created Successfully!');
         if($request->has("reminder"))
