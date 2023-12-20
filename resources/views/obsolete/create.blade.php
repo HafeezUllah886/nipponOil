@@ -41,6 +41,14 @@
                         </select>
                     </label>
                     @endcannot
+                    <label for="warehouse" class="form-label col-form-label col-sm-12 col-md-4"> Account:
+                        <select name="account" id="account" class="form-select">
+                            @foreach ($accounts as $account)
+                                <option value="{{ $account->accountID }}">{{ $account->name }}</option>
+                            @endforeach
+
+                        </select>
+                    </label>
                 </div>
                 <div class="form-group row" id="product-container">
                    {{--  <label for="product" class="form-label col-form-label col-sm-12"> Products: </label>
@@ -57,10 +65,10 @@
                                     <thead>
                                     <tr>
                                         <th style="text-align: left;">Name</th>
-                                        <th>Batch No</th>
                                         <th>Available Quantity</th>
                                         <th>Quantity</th>
                                         <th>Unit</th>
+                                        <th>Recovery Amount</th>
                                         <th>Reason</th>
                                         <th><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></th>
                                     </tr>
@@ -195,7 +203,6 @@
                                 let id = result.productID;
                                 strHTML += '<tr id="rowID_' + id + '">';
                                 strHTML += '<td style="text-align:left;">' + result.name + '</td>';
-                                strHTML += '<td> <span id="batchNumber_' + id + '">' + result.batchNumber + '</span><br>'+result.expiryDate+'</td>';
                                 strHTML += '<td><span id="totalQuantity_' + id + '">' + result.balance + '</span></td>';
                                 strHTML += '<td class="row align-items-center"><input type="number" class="form-control" style="text-align:center;" id="qty_'+id+'" name="quantity[]" min="1" max="' + result.balance + '" value="1" oninput="checkQty(' + id + ')" style="border: none" required></td>';
 
@@ -211,7 +218,8 @@
                                 var new_price = unit_value * result.salePrice;
 
                                 strHTML += '</select></td>';
-                                strHTML += '<td class="row align-items-center"><input type="text" class="form-control" name="reason[]" required></td>';
+                                strHTML += '<td class="align-items-center"><input type="number" class="form-control" style="text-align:center;" id="amount_'+id+'" name="amount[]" value="0" style="border: none" required></td>';
+                                strHTML += '<td class="align-items-center"><input type="text" class="form-control" name="reason[]" required></td>';
                                 strHTML += '<td><input type="hidden" name="productID[]" value="' + id + '"><button type="button" class="btn btn-sm" onclick="deleteRow('+ id + ')" id="delete_' + id + '"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></td>';
                                 strHTML += '<input type="hidden" name="code[]" value="' + result.code + '">';
                                 strHTML += '<input type="hidden" name="batchNumber[]" value="' + result.batchNumber + '">';

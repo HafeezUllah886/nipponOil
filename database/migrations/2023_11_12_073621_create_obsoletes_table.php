@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date("date");
             $table->date("expiry")->nullable();
             $table->unsignedFloat("quantity");
+            $table->integer("amount")->nullable();
             $table->text("reason")->nullable();
             $table->integer("refID");
             $table->string("createdBy");

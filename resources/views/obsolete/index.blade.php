@@ -8,9 +8,9 @@
                 <i class="fas fa-user-graduate"></i> Obsolete Inventory
             </h3>
             <div class="card-actions">
-                <a href="{{ url('/recondition') }}" class="btn btn-success d-none d-sm-inline-block">
+               {{--  <a href="{{ url('/recondition') }}" class="btn btn-success d-none d-sm-inline-block">
                     <i class="fas fa-plus"></i> Reconditioned Products
-                </a>
+                </a> --}}
                 <a href="{{ url('/obsolete/create') }}" class="btn btn-primary d-none d-sm-inline-block">
                     <i class="fas fa-plus"></i> Create New
                 </a>
@@ -23,9 +23,8 @@
                     <th>#</th>
                     <th>Date</th>
                     <th>Product</th>
-                   {{--  <th>Batch</th>
-                    <th>Expiry</th> --}}
                     <th>Quantity</th>
+                    <th>Amount</th>
                     <th>Reason</th>
                     <th>Actions</th>
                 </tr>
@@ -38,6 +37,7 @@
                                 data-name="{{$obsolet->product->name}}"
                                 data-qty="{{$obsolet->quantity}}"
                                 data-availQty="{{$obsolet->availQty}}"
+                                data-amount="{{$obsolet->amount}}"
                                 data-reason="{{$obsolet->reason}}">
                             </td>
                             <td>{{$obsolet->date}}</td>
@@ -45,6 +45,7 @@
                            {{--  <td>{{$obsolet->batchNumber}}</td>
                             <td>{{$obsolet->expiry}}</td> --}}
                             <td>{{$obsolet->quantity}}</td>
+                            <td>{{$obsolet->amount}}</td>
                             <td>{{$obsolet->reason}}</td>
                             <td>
                                 <div class="dropdown">
@@ -54,9 +55,6 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_{{$obsolet->id }}">
                                         <a class="dropdown-item" onclick="edit({{$obsolet->refID}})" href="#">
                                             Edit
-                                        </a>
-                                        <a class="dropdown-item" href="{{ url('/recondition/create/') }}/{{ $obsolet->id }}">
-                                            Recondition
                                         </a>
                                         <a class="dropdown-item text-danger" href="{{ url('/obsolete/delete/') }}/{{ $obsolet->refID }}">
                                             Delete
@@ -96,6 +94,10 @@
                 <input type="number" id="edit_qty" min="1" required name="qty" class="form-control">
             </div>
             <div class="form-group">
+                <label for="edit_qty">Recovery Amount</label>
+                <input type="number" id="edit_amount" name="amount" class="form-control">
+            </div>
+            <div class="form-group">
                 <label for="edit_reason">Reason</label>
                 <input type="text" id="edit_reason" required name="reason" class="form-control">
             </div>
@@ -118,12 +120,14 @@
             var name = $("#data_"+ref).attr("data-name");
             var qty = $("#data_"+ref).attr("data-qty");
             var availQty = $("#data_"+ref).attr("data-availQty");
+            var amount = $("#data_"+ref).attr("data-amount");
             var reason = $("#data_"+ref).attr("data-reason");
 
             $("#edit_ref").val(ref);
             $("#edit_date").val(date);
             $("#edit_name").val(name);
             $("#edit_qty").val(qty);
+            $("#edit_amount").val(amount);
             $("#edit_qty").attr("max", availQty);
             $("#edit_reason").val(reason);
             $("#editModal").modal("show");

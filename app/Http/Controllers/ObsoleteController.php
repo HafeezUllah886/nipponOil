@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Expense;
 use App\Models\obsolete;
 use App\Models\Product;
 use App\Models\reconditioned;
 use App\Models\Stock;
+use App\Models\Transaction;
 use App\Models\Unit;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
@@ -29,7 +31,8 @@ class ObsoleteController extends Controller
     public function create(){
         $warehouses = Warehouse::all();
         $units = Unit::all();
-        return view('obsolete.create', compact('warehouses', 'units'));
+        $accounts = Account::where('type', 'Business')->get();
+        return view('obsolete.create', compact('warehouses', 'units', 'accounts'));
     }
 
     public function getProducts(request $req)
@@ -74,6 +77,7 @@ class ObsoleteController extends Controller
                     'date' => $req->date,
                     'quantity' => $qty,
                     'expiry' => $expiry,
+                    'amount' => $req->amount[$key],
                     'reason' => $req->reason[$key],
                     'refID' => $ref,
                     'createdBy' => auth()->user()->email
@@ -93,6 +97,11 @@ class ObsoleteController extends Controller
                     'createdBy' => auth()->user()->email,
                 ]
             );
+
+            if($req->amount[$key] > 0)
+            {
+                addTransaction($req->account, $req->date, "Obsolete Recovery", $req->amount[$key], 0, $ref, "Recovery of Obsolete Recovery");
+            }
         }
 
         return redirect("/obsolete")->with("message", "Successfully Created");
@@ -100,16 +109,10 @@ class ObsoleteController extends Controller
 
     public function delete($ref)
     {
-        $obsolet = obsolete::where('refID', $ref)->first();
-        $recond = reconditioned::where('obsoleteID', $obsolet->id)->get();
-        foreach($recond as $rec)
-        {
-            Expense::where("refID", $rec->refID)->delete();
-            stock::where('refID', $rec->refID)->delete();
-            $rec->delete();
-        }
+
         obsolete::where('refID', $ref)->delete();
         stock::where('refID', $ref)->delete();
+        Transaction::where('refID', $ref)->delete();
 
         return back()->with('error', "Deleted");
     }
@@ -120,6 +123,7 @@ class ObsoleteController extends Controller
         $obsolet->date = $req->date;
         $obsolet->quantity = $req->qty;
         $obsolet->reason = $req->reason;
+        $obsolet->amount = $req->amount;
         $obsolet->save();
 
         $stock = Stock::where("refID", $req->ref)->first();
@@ -127,6 +131,10 @@ class ObsoleteController extends Controller
         $stock->debt = $req->qty;
         $stock->description = "Moved to obsolete inventory with the reason: $req->reason";
         $stock->save();
+
+        $transaction = Transaction::where('refID', $req->ref)->first();
+        $transaction->credit = $req->amount;
+        $transaction->save();
         return back()->with("message", "Successfully Updated");
     }
 
