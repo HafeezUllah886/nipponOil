@@ -35,14 +35,30 @@ class StockController extends Controller
         return view('stock.index', compact('productsWithCreditDebtSum'));
     }
 
-    public function show($stockDetails)
+    public function show($stockDetails, $warehouse)
     {
+        $warehouses = Warehouse::all();
         list($productID, $batchNumber) = explode('_', $stockDetails);
-        $stocks = Stock::with('product')
+        $product = Product::find($productID);
+        if(!$product)
+        {
+            return redirect('/stocks');
+        }
+        if($warehouse == "all"){
+            $stocks = Stock::with('product')
             ->where('productID', $productID)
             ->where('batchNumber', $batchNumber)
             ->get();
-        return view('stock.show', ['stocks' => $stocks]);
+        }
+        else{
+            $stocks = Stock::with('product')
+            ->where('productID', $productID)
+            ->where('batchNumber', $batchNumber)
+            ->where('warehouseID', $warehouse)
+            ->get();
+        }
+
+        return view('stock.show', compact('stocks', 'product', 'warehouse', 'warehouses', 'stockDetails'));
     }
 
 

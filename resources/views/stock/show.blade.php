@@ -1,13 +1,21 @@
 @extends('layouts.admin')
 @section('title', 'Purchase Show')
 @section('content')
+<div class="row">
+    <div class="col-md-3 pt-3 pb-2">
+        <select id="warehouse" onchange="warehouseChanged('{{ $stockDetails }}')" value="{{ $warehouse }}" class="form-control">
+            <option {{ $warehouse == 'all' ? 'selected' : '' }} value="all">All Warehouses</option>
+            @foreach ($warehouses as $warehouse1)
+                <option {{ $warehouse1->warehouseID == $warehouse ? 'selected' : '' }} value="{{ $warehouse1->warehouseID }}">{{ $warehouse1->name }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
     <div class="card">
-        <div class="card-body">
-            <dt>
                 <div class="card-body">
                     <dl class="row">
                         <h3 class="text-center">Stock Details</h3>
-                        <h5 class="text-center">{{ $stocks[0]->product->name }}</h5>
+                        <h5 class="text-center">{{ $product->name }}</h5>
                         <div class="col-md-12">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -46,9 +54,17 @@
                             </div>
                         </div>
                     </dl>
-                </div>
-            </dt>
         </div>
     </div>
 
+@endsection
+@section('more-script')
+    <script>
+        function warehouseChanged(details)
+        {
+            console.log("working");
+            var warehouse = $("#warehouse").find(":selected").val();
+            window.open("{{ url('/stocks/') }}/"+details+"/"+warehouse, "_self");
+        }
+    </script>
 @endsection
