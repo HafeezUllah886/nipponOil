@@ -86,7 +86,7 @@ class SaleController extends Controller
             'salesManID' => $request->salesManID,
             'date' => $request['date'],
             'points' => $request['point'],
-            'warehouseID' => auth()->user()->warehouseID,
+            'warehouseID' => $request->warehouseID,
             'refID' => $ref,
             'createdBy' => auth()->user()->email,
         ]);

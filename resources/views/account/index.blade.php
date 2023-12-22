@@ -29,7 +29,13 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $total = 0;
+                    @endphp
                 @foreach($accounts  as $account)
+                @php
+                    $total += getAccountBalance($account->accountID);
+                @endphp
                     <tr>
                         <td>{{ $account->accountID }}</td>
                         <td>{{ $account->warehouse->name }}</td>
@@ -64,7 +70,10 @@
                     </tr>
                 @endforeach
                 </tbody>
-
+                <tfoot>
+                    <th colspan="5" class="text-end">Total</th>
+                    <th>{{ $total }}</th>
+                </tfoot>
             </table>
         </div>
     </div>

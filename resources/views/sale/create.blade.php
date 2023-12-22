@@ -39,7 +39,10 @@
 
                     <label for="warehouseID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Warehouse:
                         <select name="warehouseID" id="warehouseID" required autofocus class="form-select">
-                                <option value="{{ auth()->user()->warehouse->warehouseID }}" >{{ auth()->user()->warehouse->name }}</option>
+                            @foreach ($warehouses as $warehouse)
+                            <option value="{{ $warehouse->warehouseID }}">{{ $warehouse->name }}</option>
+                            @endforeach
+
                         </select>
                     </label>
 
