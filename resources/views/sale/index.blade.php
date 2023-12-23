@@ -346,16 +346,12 @@
                         </div>
                     </div>
                     @endforeach
-
-
                 </tbody>
                 <tfoot>
-                    <tr>
-                        <td colspan="7"></td>
-                        <td class="text-end">{{ $total }}</td>
-                        <td class="text-end">{{ $paid }}</td>
-                        <td class="text-end">{{ $due }}</td>
-                    </tr>
+                        <th colspan="7"></th>
+                        <th class="text-end">{{ $total }}</th>
+                        <th class="text-end">{{ $paid }}</th>
+                        <th class="text-end">{{ $due }}</th>
                 </tfoot>
             </table>
         </div>

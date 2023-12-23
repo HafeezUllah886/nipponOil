@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('targets', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
             $table->date('startDate');
             $table->date('endDate');
             $table->string('type');
             $table->string('status');
+            $table->text("notes");
             $table->timestamps();
         });
     }

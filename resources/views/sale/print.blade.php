@@ -250,12 +250,12 @@
 <script src="{{ asset('src/plugins/src/jquery-ui/jquery-ui.min.js') }}"></script>
 <script>
 
-   /*  setTimeout(function() {
+   setTimeout(function() {
         window.print();
     }, 2000);
 
         setTimeout(function() {
             window.open('{{ url("/sale/1/1/0") }}', "_self");
-    }, 5000); */
+    }, 5000);
 
 </script>

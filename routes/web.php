@@ -29,6 +29,7 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\rolesController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SaleReturnController;
+use App\Http\Controllers\TargetController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\usersController;
@@ -292,5 +293,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/repair/update', [RepairController::class, 'update']);
     Route::get('/repair/payment/delete/{ref}', [RepairController::class, 'deletePayment']);
     Route::get('/repair/print/{id}', [RepairController::class, 'print']);
+
+    Route::get('/target', [TargetController::class, 'target']);
+    Route::post('/target/store', [TargetController::class, 'store']);
+    Route::post('/target/update', [TargetController::class, 'update']);
+    Route::get('/target/view/{id}', [TargetController::class, 'view']);
+    Route::get('/target/delete/{id}', [TargetController::class, 'delete']);
 
 });

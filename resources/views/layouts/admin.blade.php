@@ -557,7 +557,8 @@ $("#addTask").on("click", function(){
             menuHTML += '@can("View Categories")<a href="{{ route("category.index") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/category.svg") }}"> Categories</a>@endcan';
             menuHTML += '@can("View Units")<a href="{{ route("unit.index") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/unit.svg") }}"> Units</a>@endcan';
             menuHTML += '<a href="{{ url("/visits") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/visits.svg") }}"> Visits</a>';
-            menuHTML += '<a href="{{ url("/repair") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/repair.svg") }}"> Repair</a>';
+/*             menuHTML += '<a href="{{ url("/repair") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/repair.svg") }}"> Repair</a>'; */
+            menuHTML += '<a href="{{ url("/target") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/target.svg") }}"> Target</a>';
         }
         if(name == "accounts"){
             menuHTML = '@can("View Accounts")<a href="{{ url("/account/index/business") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/accounts.svg") }}"> Business</a>@endcan';
