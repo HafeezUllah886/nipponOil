@@ -118,7 +118,7 @@
                                             <td>Items</td>
                                             <td width="20%" class="text-center text-dark"><span id="rowQty">0</span>(<span id="numQty">0</span>)</td>
                                             <td>Discount</td>
-                                            <td width="20%"><input type="number" readonly class="pos-input" step="any" oninput="updateAmounts()" value="0.00" name="discount" id="discount"></td>
+                                            <td width="20%"><input type="number" class="pos-input" step="any" oninput="updateAmounts()" value="0.00" name="discount" id="discount"></td>
                                             <td>Total</td>
                                             <td width="20%"><input type="number" class="pos-input" readonly step="any" value="0.00" name="total" id="total"></td>
                                         </tr>
@@ -129,6 +129,7 @@
                                             <td width="20%"><input type="number" readonly oninput="updateAmounts()" class="pos-input" step="any" value="0.00" name="shipping" id="shipping"></td>
                                             <td>G-Total</td>
                                             <td width="20%"><input type="number" class="pos-input g-total" readonly step="any" value="0.00" name="gTotal" id="gTotal"></td>
+
                                         </tr>
                                         <tr>
                                             <td colspan="6">
@@ -644,7 +645,7 @@
                 data: combinedData,
                 success: function (response) {
                     $("#paymentModal").modal('hide');
-                   window.open("{{url('/sale/printBill/')}}/"+response, "_self");
+                   window.open("{{url('/sale/printBill/')}}/"+response+"/1", "_self");
                 },
             });
         });

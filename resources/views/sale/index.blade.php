@@ -110,6 +110,9 @@
                                     <a class="dropdown-item" href="{{ url("/sale/printBill/") }}/{{ $sale->saleID }}">
                                         <i class="fas fa-print"></i> Print
                                     </a>
+                                    <a class="dropdown-item" href="{{ url("/sale/printBill/") }}/{{ $sale->saleID }}/1">
+                                        <i class="fas fa-print"></i> Termal Print
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('sale.show', $sale->saleID) }}">
                                         <i class="fas fa-eye"></i> View
                                     </a>

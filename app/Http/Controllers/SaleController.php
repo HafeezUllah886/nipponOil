@@ -381,9 +381,12 @@ class SaleController extends Controller
         }
     }
 
-    public function printBill($id){
+    public function printBill($id, $pos = 0){
         $sale = Sale::find($id);
-
+        if($pos == 1)
+        {
+            return view('pos.print', compact('sale'));
+        }
         return view('sale.print', compact('sale'));
     }
 

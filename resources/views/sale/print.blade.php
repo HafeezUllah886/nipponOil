@@ -132,6 +132,7 @@
                 <thead class="bg-dark">
                     <th class="text-left">Code</th>
                     <th class="text-left">Description</th>
+                    <th>Ltrs</th>
                     <th>Qty</th>
                     <th>Price</th>
                     <th>Amount</th>
@@ -151,32 +152,33 @@
                         <tr class="bottom-border">
                             <td>{{ $detail->product->code }}</td>
                             <td class="uppercase">{{ $detail->product->name }}</td>
+                            <td class="text-center">{{ $detail->product->ltr }}</td>
                             <td class="text-center">{{ $detail->quantity }}</td>
                             <td class="text-center">{{ round((($detail->netUnitCost * $detail->quantity) + ($detail->tax - $detail->discountValue)) / $detail->quantity, 2) }}</td>
                             <td class="text-right">{{ round($detail->subTotal,2)}}</td>
                         </tr>
                    @endforeach
                    <tr>
-                    <td colspan="3">
+                    <td colspan="4">
                         Item(s) = {{ $items }} |
                         Total Quantity = {{ $qty }}
                     </td>
-                    <td colspan="3" class="text-right" style="font-size: 18px"><strong>{{ number_format($total,2) }}</strong></td>
+                    <td colspan="4" class="text-right" style="font-size: 18px"><strong>{{ number_format($total,2) }}</strong></td>
                    </tr>
                    <tr>
-                    <td colspan="3" class="text-right">Tax:</td>
-                    <td colspan="3" class="text-right">{{ number_format($sale->orderTax,2) }}</td>
+                    <td colspan="4" class="text-right">Tax:</td>
+                    <td colspan="4" class="text-right">{{ number_format($sale->orderTax,2) }}</td>
                    </tr>
                    <tr>
-                    <td colspan="3" class="text-right">Discount:</td>
-                    <td colspan="3" class="text-right">{{ number_format($sale->discountValue,2) }}</td>
+                    <td colspan="4" class="text-right">Discount:</td>
+                    <td colspan="4" class="text-right">{{ number_format($sale->discountValue,2) }}</td>
                    </tr>
                    <tr>
-                    <td colspan="3" class="text-right">Net Amount:</td>
+                    <td colspan="4" class="text-right">Net Amount:</td>
                     @php
                         $net = ($total + $sale->orderTax) - $sale->discountValue;
                     @endphp
-                    <td colspan="3" class="text-right" style="font-size: 20px"><strong>{{ number_format($net, 2) }}</strong></td>
+                    <td colspan="4" class="text-right" style="font-size: 20px"><strong>{{ number_format($net, 2) }}</strong></td>
                    </tr>
                 </tbody>
             </table>

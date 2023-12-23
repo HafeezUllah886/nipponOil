@@ -137,7 +137,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/saleReturn', \App\Http\Controllers\SaleReturnController::class);
     Route::post('/purchase/return/create', [PurchaseReturnController::class, 'search']);
     Route::post('/sale/return/create', [SaleReturnController::class, 'search']);
-    Route::get('/sale/printBill/{id}',[SaleController::class, 'printBill']);
+    Route::get('/sale/printBill/{id}/{pos?}',[SaleController::class, 'printBill']);
     Route::get('/sale/{start?}/{end?}/{warehouse?}',[SaleController::class, 'index']);
     Route::get('/sale/product/history/{id}/{customer}',[SaleController::class, 'proHistory']);
 
