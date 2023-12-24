@@ -191,7 +191,7 @@ class HomeController extends Controller
 ))->render();
 
 $endDate = Carbon::now();
-$startDate = $endDate->copy()->subDays(30);
+$startDate = $endDate->copy()->subDays(10);
 /* $endDate = Carbon::parse($end);
 $startDate = Carbon::parse($start); */
 
@@ -204,6 +204,15 @@ $saleData = DB::table('sales')
              DB::raw('COALESCE(sales.orderTax, 0) as orderTax'))
     ->whereBetween('sales.date', [$startDate, $endDate])
     ->groupBy('sales.saleID', 'orderDate', 'sales.discountValue', 'sales.orderTax')
+    ->get();
+
+    $expenseData = DB::table('expenses')
+    ->select(
+        DB::raw('DATE(expenses.date) as expenseDate'),
+        DB::raw('COALESCE(SUM(expenses.amount), 0) as totalAmount')
+    )
+    ->whereBetween('expenses.date', [$startDate, $endDate])
+    ->groupBy('expenseDate')
     ->get();
 
     if($warehouse != 0)
@@ -220,6 +229,17 @@ $saleData = DB::table('sales')
     ->whereBetween('sales.date', [$startDate, $endDate])
     ->groupBy('sales.saleID', 'orderDate', 'sales.discountValue', 'sales.orderTax')
     ->get();
+
+    $expenseData = DB::table('expenses')
+    ->select(
+        DB::raw('DATE(expenses.date) as expenseDate'),
+        DB::raw('COALESCE(SUM(expenses.amount), 0) as totalAmount')
+    )
+    ->whereBetween('expenses.date', [$startDate, $endDate])
+    ->where('warehouseID', $warehouse)
+    ->groupBy('expenseDate')
+    ->get();
+
     }
 
 
@@ -232,10 +252,12 @@ $sums = [];
 // Create an array to store the last 10 days (including today)
 $last10Days = [];
 
-for ($i = 0; $i < 30; $i++) {
+// Initialize an array to store expense sums based on the expense date
+$expenseSums = [];
+
+for ($i = 0; $i < 10; $i++) {
     $last10Days[] = date('Y-m-d', strtotime("-$i days"));
 }
-
 // Iterate through the original array
 foreach ($saleData as $item) {
     $orderDate = $item->orderDate;
@@ -255,6 +277,20 @@ foreach ($saleData as $item) {
     $sums[$orderDate]["orderTax"] += $item->orderTax;
 }
 
+foreach ($expenseData as $expense) {
+    $expenseDate = $expense->expenseDate;
+
+    // If the expenseDate is not in $expenseSums, initialize it
+    if (!isset($expenseSums[$expenseDate])) {
+        $expenseSums[$expenseDate] = $expense->totalAmount;
+    } else {
+        // Sum the amount for each expenseDate
+        $expenseSums[$expenseDate] += $expense->totalAmount;
+    }
+}
+
+$expenseResult = [];
+
 // Iterate through the last 10 days and populate the result array
 foreach ($last10Days as $day) {
     $result[] = [
@@ -263,17 +299,25 @@ foreach ($last10Days as $day) {
         "discountValue" => isset($sums[$day]) ? $sums[$day]["discountValue"] : 0,
         "orderTax" => isset($sums[$day]) ? $sums[$day]["orderTax"] : 0
     ];
+
+    $expenseResult[] = [
+        "expenseDate" => $day,
+        "totalExpense" => isset($expenseSums[$day]) ? $expenseSums[$day] : 0,
+    ];
 }
 
+$expenseResult = array_reverse($expenseResult);
 // Reverse the result array to have the entries in chronological order (oldest first)
 $result = array_reverse($result);
 
 $orderDatesArray = [];
 $calculatedValuesArray = [];
+$expenseArray = [];
+
 
 foreach ($result as $entry) {
     // Extract order date
-    $orderDate = date('d-m', strtotime($entry["orderDate"]));
+    $orderDate = date('d-m-Y', strtotime($entry["orderDate"]));
 
     // Calculate the value totalSubTotal + orderTax - discountValue
     $calculatedValue = $entry["totalSubTotal"] + $entry["orderTax"] - $entry["discountValue"];
@@ -285,8 +329,14 @@ foreach ($result as $entry) {
     $calculatedValuesArray[] = $calculatedValue;
 }
 
+foreach($expenseResult as $expense)
+{
+    $expenseArray[] = $expense['totalExpense'];
+}
+
+
 // Output the result array
 
-return response()->json(['html' => $html, 'saleDates' => $orderDatesArray, 'saleAmounts' => $calculatedValuesArray ]);
+return response()->json(['html' => $html, 'saleDates' => $orderDatesArray, 'saleAmounts' => $calculatedValuesArray, 'expenses' => $expenseArray]);
     }
 }

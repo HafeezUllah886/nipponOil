@@ -70,8 +70,21 @@
             </div>
         </div>
     </div>
+    <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                            <div class="widget widget-chart-three">
+                                <div class="widget-heading">
+                                    <div class="">
+                                        <h5 class="">Sales vs Expenses (Last 10 days)</h5>
+                                    </div>
+                                </div>
 
-    <div id="chartLine" class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                                <div class="widget-content">
+                                    <div id="uniqueVisits"></div>
+                                </div>
+                            </div>
+                        </div>
+
+    {{-- <div id="chartLine" class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
             <div class="statbox widget box box-shadow">
                 <div class="widget-header">
                     <div class="row">
@@ -84,27 +97,15 @@
                     <div id="s-line" class=""></div>
                 </div>
             </div>
-    </div>
-    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+    </div> --}}
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
         <div class="widget widget-table-three">
             <div class="widget-heading">
                 <h5 class="">Top Selling Products</h5>
-               {{--  <div class="task-action">
-                    <div class="dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" id="activitylog" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                        </a>
-
-                        <div class="dropdown-menu left" aria-labelledby="activitylog" style="will-change: transform;">
-                            <a class="dropdown-item" href="javascript:void(0);">View All</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Mark as Read</a>
-                        </div>
-                    </div>
-                </div> --}}
             </div>
 
             <div class="widget-content" >
-                <div class="table-responsive" style="max-height: 415px; min-height:415px;">
+                <div class="table-responsive" style="max-height: 345px; min-height:345px;">
                     <table class="table table-scroll">
                         <thead>
                             <tr>
@@ -131,7 +132,7 @@
         </div>
     </div>
 
-    <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+    <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
         <div class="widget widget-activity-five">
 
             <div class="widget-heading">
@@ -280,7 +281,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
         <div class="widget widget-table-one">
             <div class="widget-heading">
                 <h5 class="">Recent Transactions</h5>

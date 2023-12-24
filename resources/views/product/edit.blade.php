@@ -14,6 +14,7 @@
             <form class="form-horizontal" action="{{ route('product.update',$product->productID) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+                
                 <div class="form-group row mb-1">
                     <label for="autoComplete1" class="form-label required col-sm-4 col-md-6 col-lg-2  col-form-label">Product Name: </label>
                     <div class="col-sm-8 col-md-6 col-lg-4">

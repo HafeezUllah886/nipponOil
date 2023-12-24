@@ -104,11 +104,11 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $check = Product::where('name', $request->name)->where('productID', '!=', $product->productID)->count();
+       /*  $check = Product::where('name', $request->name)->where('productID', '!=', $product->productID)->count();
         if($check > 0)
         {
             return back()->with('error', "Product already existing");
-        }
+        } */
         $input = $request->all();
         if ($request->hasFile('image')) {
             @unlink(public_path($category->image));

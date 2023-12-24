@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
         Product::factory(700)->create();
         ExpenseCategory::create(
             [
-                'name' => "Products Reconditioning",
+                'name' => "Misc",
                 'createdBy' => "System",
             ]
         );

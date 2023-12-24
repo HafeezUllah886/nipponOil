@@ -110,7 +110,7 @@
         <script src="{{ asset('src/assets/js/scrollspyNav.js') }}"></script>
         <script src="{{ asset('src/plugins/src/apex/apexcharts.min.js') }}"></script>
         {{-- <script src="{{ asset('src/plugins/src/apex/custom-apexcharts.js') }}"></script> --}}
-        <script src=" {{ asset('../src/assets/js/dashboard/dash_1.js') }} "></script>
+       
         <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     <script type="text/javascript">
 
@@ -164,51 +164,156 @@
             }, */
             success: function(response) {
                 $("#showData").html(response.html);
-
+/* 
                 var sline = {
-        chart: {
-            fontFamily: 'Nunito, Arial, sans-serif',
-            height: 350,
-            type: 'line',
-            zoom: {
-            enabled: false
+            chart: {
+                fontFamily: 'Nunito, Arial, sans-serif',
+                height: 350,
+                type: 'line',
+                zoom: {
+                enabled: false
+                },
+                toolbar: {
+                show: false,
+                }
             },
-            toolbar: {
-            show: false,
+            dataLabels: {
+                enabled: true
+            },
+            stroke: {
+                curve: 'straight'
+            },
+            series: [{
+                name: "Sale Amount",
+                data: response.saleAmounts
+            }],
+            title: {
+                text: 'Last 30 days',
+                align: 'left'
+            },
+            grid: {
+                row: {
+                colors: ['#e0e6ed', 'transparent'], // takes an array which will be repeated on columns
+                opacity: 0.2
+                },
+            },
+            xaxis: {
+                categories: response.saleDates,
             }
-        },
-        dataLabels: {
-            enabled: true
-        },
-        stroke: {
-            curve: 'straight'
-        },
-        series: [{
-            name: "Sale Amount",
-            data: response.saleAmounts
-        }],
-        title: {
-            text: 'Last 30 days',
-            align: 'left'
-        },
-        grid: {
-            row: {
-            colors: ['#e0e6ed', 'transparent'], // takes an array which will be repeated on columns
-            opacity: 0.2
-            },
-        },
-        xaxis: {
-            categories: response.saleDates,
-        }
-        }
-                var simpleLine = new ApexCharts(
-                document.querySelector("#s-line"),
-                sline
-                );
-                simpleLine.render();
+            }
+                    var simpleLine = new ApexCharts(
+                    document.querySelector("#s-line"),
+                    sline
+                    );
+                    simpleLine.render(); */
 
-            },
-            });
+                ////////////////////
+var Theme = 'dark';
+      
+      Apex.tooltip = {
+          theme: Theme
+      }
+                var d_1options1 = {
+      chart: {
+          height: 350,
+          type: 'bar',
+          toolbar: {
+            show: false,
+          }
+      },
+      colors: ['#622bd7', '#ffbb44'],
+      plotOptions: {
+          bar: {
+              horizontal: false,
+              columnWidth: '55%',
+              endingShape: 'rounded',
+              borderRadius: 10,
+      
+          },
+      },
+      dataLabels: {
+          enabled: false
+      },
+      legend: {
+          position: 'bottom',
+          horizontalAlign: 'center',
+          fontSize: '14px',
+          markers: {
+              width: 10,
+              height: 10,
+              offsetX: -5,
+              offsetY: 0
+          },
+          itemMargin: {
+              horizontal: 10,
+              vertical: 8
+          }
+      },
+      grid: {
+        /* borderColor: '#AEADAD', */
+      },
+      stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+      },
+      series: [{
+          name: 'Sales',
+          data: response.saleAmounts
+      }, {
+          name: 'Expenses',
+          data: response.expenses
+      }],
+      xaxis: {
+          categories: response.saleDates,
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: Theme,
+          type: 'vertical',
+          shadeIntensity: 0.3,
+          inverseColors: false,
+          opacityFrom: 1,
+          opacityTo: 0.8,
+          stops: [0, 100]
+        }
+      },
+      tooltip: {
+          marker : {
+              show: false,
+          },
+          theme: Theme,
+          y: {
+              formatter: function (val) {
+                  return val
+              }
+          }
+      },
+      responsive: [
+          { 
+              breakpoint: 767,
+              options: {
+                  plotOptions: {
+                      bar: {
+                          borderRadius: 0,
+                          columnWidth: "50%"
+                      }
+                  }
+              }
+          },
+      ]
+      }
+
+        var d_1C_3 = new ApexCharts(
+          document.querySelector("#uniqueVisits"),
+          d_1options1
+      );
+      d_1C_3.render();
+      ///////
+
+                },
+                });
         }
 
         </script>

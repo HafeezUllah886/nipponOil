@@ -59,7 +59,7 @@ function getInitials($string) {
  function packInfo($size, $qty)
  {
     $packs = intdiv($qty, $size);
-    $remains = $qty % $size;
+    $remains = $qty - ($packs*$size);
     if($packs == 0 && $remains == 0)
     {
         return "0 Pcs";

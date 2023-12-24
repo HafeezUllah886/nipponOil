@@ -204,7 +204,7 @@
                                 strHTML += '<tr id="rowID_' + id + '">';
                                 strHTML += '<td style="text-align:left;">' + result.name + '</td>';
                                 strHTML += '<td><span id="totalQuantity_' + id + '">' + result.balance + '</span></td>';
-                                strHTML += '<td class="row align-items-center"><input type="number" class="form-control" style="text-align:center;" id="qty_'+id+'" name="quantity[]" min="1" max="' + result.balance + '" value="1" oninput="checkQty(' + id + ')" style="border: none" required></td>';
+                                strHTML += '<td class="row align-items-center"><input type="number" class="form-control" style="text-align:center;" id="qty_'+id+'" name="quantity[]" step="any" max="' + result.balance + '" value="1" oninput="checkQty(' + id + ')" style="border: none" required></td>';
 
                                 strHTML += '<td><select class="form-select" id="unit_'+id+'" name="unit[]" required onchange="checkQty('+ id +')">';
                                     var unit_value = 0;

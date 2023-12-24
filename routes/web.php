@@ -5,6 +5,7 @@ use App\Http\Controllers\AccountTransferController;
 use App\Http\Controllers\AdvancesController;
 use App\Http\Controllers\Auth\ConfirmPasswordController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\customerController;
 use App\Http\Controllers\DisplayMessagesController;
 use App\Http\Controllers\empStatementController;
@@ -300,4 +301,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/target/view/{id}', [TargetController::class, 'view']);
     Route::get('/target/delete/{id}', [TargetController::class, 'delete']);
 
+    Route::get('/backup', [BackupController::class, 'createBackup'])->name('backup.create');
+   
 });
