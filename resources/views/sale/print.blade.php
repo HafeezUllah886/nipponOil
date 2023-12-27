@@ -242,6 +242,20 @@
                     <td width=""> Balance </td>
                     <td class="text-right"> {{ number_format($net - $paid, 2) }}</td>
                 </tr>
+                <tr>
+                    <td width=""></td>
+                    <td width=""></td>
+                    <td width=""></td>
+                    <td width=""></td>
+                    <td class="text-right"></td>
+                </tr>
+                <tr>
+                    <td width="">Customer</td>
+                    <td width="">______________</td>
+                    <td width=""></td>
+                    <td width="">MD</td>
+                    <td class="text-right">_____________</td>
+                </tr>
             </table>
         </div>
     </div>

@@ -389,11 +389,14 @@ class reportsController extends Controller
 
     public function customerBalanceData($area)
     {
-        $accounts = Account::where('type', 'customer')->where('area', $area)->get();
-        if($accounts->count() < 1)
+        if($area == 'all')
         {
             $accounts = Account::where('type', 'customer')->whereNot('name', 'Walk-in Customer')->get();
         }
+        else{
+            $accounts = Account::where('type', 'customer')->where('area', $area)->get();
+        }
+
 
         foreach($accounts as $account)
         {
@@ -405,6 +408,25 @@ class reportsController extends Controller
                 'accounts' => $accounts
             ]
         );
+    }
+
+    public function customerBalancePrint($area)
+    {
+        if($area == 'all')
+        {
+            $accounts = Account::where('type', 'customer')->whereNot('name', 'Walk-in Customer')->get();
+        }
+        else{
+            $accounts = Account::where('type', 'customer')->where('area', $area)->get();
+        }
+
+
+        foreach($accounts as $account)
+        {
+            $account->balance = getAccountBalance($account->accountID);
+        }
+
+       return view('reports.customerBalance.print', compact('accounts', 'area'));
     }
 }
 

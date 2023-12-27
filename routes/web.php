@@ -203,6 +203,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/reports/customerBalance',[reportsController::class, 'customerBalance']);
     Route::get('/reports/customerBalance/data/{area}',[reportsController::class, 'customerBalanceData']);
+    Route::get('/reports/customerBalance/print/{area}',[reportsController::class, 'customerBalancePrint']);
 
     Route::get('/hrm/employees', [hrmController::class, 'employees']);
     Route::get('/hrm/employees/add', [hrmController::class, 'employeesAdd']);
@@ -302,5 +303,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/target/delete/{id}', [TargetController::class, 'delete']);
 
     Route::get('/backup', [BackupController::class, 'createBackup'])->name('backup.create');
-   
+
 });

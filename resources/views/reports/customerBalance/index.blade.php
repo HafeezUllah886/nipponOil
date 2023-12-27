@@ -23,12 +23,15 @@
                 <div class="row">
                     <div class="col-md-4">
                         <label for="area" class="form-label col-md-12"> Area:
-                            <select name="area" id="area" class="form-select" required>
+                            <select name="area" id="area" onchange="fetchData()" class="form-select" required>
                                 @foreach ($areas as $key => $area)
                                     <option value="{{ $area ?? "all" }}">{{ $area ?? "All"}}</option>
                                 @endforeach
                             </select>
                         </label>
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <button class="btn btn-info mt-2" id="print">Print</button>
                     </div>
                 </div>
             </div>
@@ -69,14 +72,12 @@
     fetchData();
  });
 
-    $("#area").on('change', function (){
-        fetchData();
-    });
+
 
 function fetchData(){
     var html = '';
     var area = $("#area").find(":selected").val();
-
+    console.log("changed");
         $.ajax({
             url: "{{url('/reports/customerBalance/data/')}}/"+area,
             type: 'GET',
@@ -95,6 +96,11 @@ function fetchData(){
             },
         });
 }
+
+$("#print").click(function(){
+    var area = $("#area").find(":selected").val();
+    window.open("{{ url('/reports/customerBalance/print/') }}/"+area, "_self");
+});
 
         </script>
 @endsection
