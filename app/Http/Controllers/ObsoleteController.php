@@ -17,14 +17,6 @@ class ObsoleteController extends Controller
 {
     public function index(){
         $obsolets = obsolete::where("warehouseID", auth()->user()->warehouseID)->orderBy('id', 'desc')->get();
-        /* foreach($obsolets as $obsolet)
-        {
-            $cr = Stock::where("productID", $obsolet->productID)->where('batchNumber', $obsolet->batchNumber)->sum('credit');
-            $db = Stock::where("productID", $obsolet->productID)->where('batchNumber', $obsolet->batchNumber)->sum('debt');
-            $stock = $cr - $db;
-            $avail = $stock + $obsolet->quantity;
-            $obsolet->availQty = $avail;
-        } */
         return view('obsolete.index', compact('obsolets'));
     }
 
@@ -61,8 +53,8 @@ class ObsoleteController extends Controller
         $ids = $req->productID;
         foreach($ids as $key => $id)
         {
-            $unitValue = Unit::where('unitID', $req->unit[$key])->first('value');
-            $qty = $req->quantity[$key] * $unitValue->value;
+
+            $qty = $req->quantity[$key];
             $ref = getRef();
             $expiry = null;
             if($req->expiryDate[$key] != 'null')
@@ -77,7 +69,9 @@ class ObsoleteController extends Controller
                     'date' => $req->date,
                     'quantity' => $qty,
                     'expiry' => $expiry,
-                    'amount' => $req->amount[$key],
+                    'loss_amount' => $req->loss_amount[$key],
+                    'recovery_amount' => $req->recovery_amount[$key],
+                    'net_loss' => $req->loss_amount[$key] - $req->recovery_amount[$key],
                     'reason' => $req->reason[$key],
                     'refID' => $ref,
                     'createdBy' => auth()->user()->email
@@ -98,9 +92,9 @@ class ObsoleteController extends Controller
                 ]
             );
 
-            if($req->amount[$key] > 0)
+            if($req->recovery_amount[$key] > 0)
             {
-                addTransaction($req->account, $req->date, "Obsolete Recovery", $req->amount[$key], 0, $ref, "Recovery of Obsolete Recovery");
+                addTransaction($req->account, $req->date, "Obsolete Recovery", $req->recovery_amount[$key], 0, $ref, "Recovery of Obsolete Recovery");
             }
         }
 
@@ -123,7 +117,9 @@ class ObsoleteController extends Controller
         $obsolet->date = $req->date;
         $obsolet->quantity = $req->qty;
         $obsolet->reason = $req->reason;
-        $obsolet->amount = $req->amount;
+        $obsolet->loss_amount = $req->loss_amount;
+        $obsolet->recovery_amount = $req->recovery_amount;
+        $obsolet->net_loss = $req->loss_amount - $req->recovery_amount;
         $obsolet->save();
 
         $stock = Stock::where("refID", $req->ref)->first();

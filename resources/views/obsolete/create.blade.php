@@ -67,7 +67,7 @@
                                         <th style="text-align: left;">Name</th>
                                         <th>Available Quantity</th>
                                         <th>Quantity</th>
-                                        <th>Unit</th>
+                                        <th>Loss Amount</th>
                                         <th>Recovery Amount</th>
                                         <th>Reason</th>
                                         <th><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></th>
@@ -185,16 +185,6 @@
                             var row = $("#tbody #" +'rowID_'+ rowId);
                             var quantityInput = $("#qty_" + rowId);
 
-                            let saleUnit = $("#unit_"+rowId).find(":selected").val()
-                            if (saleUnit === '') {
-                                alert('Please select Unit First');
-                                return;
-                            }
-                            units.forEach(function(unit) {
-                                if(unit.unitID == saleUnit){
-                                    unitValue = unit.value;
-                                }
-                            });
                             var quantity = parseInt(quantityInput.val());
                             quantity++;
                             quantityInput.val(quantity);
@@ -205,20 +195,8 @@
                                 strHTML += '<td style="text-align:left;">' + result.name + '</td>';
                                 strHTML += '<td><span id="totalQuantity_' + id + '">' + result.balance + '</span></td>';
                                 strHTML += '<td class="row align-items-center"><input type="number" class="form-control" style="text-align:center;" id="qty_'+id+'" name="quantity[]" step="any" max="' + result.balance + '" value="1" oninput="checkQty(' + id + ')" style="border: none" required></td>';
-
-                                strHTML += '<td><select class="form-select" id="unit_'+id+'" name="unit[]" required onchange="checkQty('+ id +')">';
-                                    var unit_value = 0;
-                                    units.forEach(function (unit) {
-                                    var isSelected = (unit.unitID == result.lastSaleUnit);
-                                    strHTML += '<option value="' + unit.unitID + '" ' + (isSelected ? 'selected' : '') + ' data-value="'+unit.value+'">' + unit.name + '</option>';
-                                    if (isSelected){
-                                    unit_value = unit.value;
-                                }
-                                });
-                                var new_price = unit_value * result.salePrice;
-
-                                strHTML += '</select></td>';
-                                strHTML += '<td class="align-items-center"><input type="number" class="form-control" style="text-align:center;" id="amount_'+id+'" name="amount[]" value="0" style="border: none" required></td>';
+                                strHTML += '<td class="align-items-center"><input type="number" class="form-control" style="text-align:center;" id="loss_amount_'+id+'" name="loss_amount[]" value="0" style="border: none" required></td>';
+                                strHTML += '<td class="align-items-center"><input type="number" class="form-control" style="text-align:center;" id="recovery_amount_'+id+'" name="recovery_amount[]" value="0" style="border: none" required></td>';
                                 strHTML += '<td class="align-items-center"><input type="text" class="form-control" name="reason[]" required></td>';
                                 strHTML += '<td><input type="hidden" name="productID[]" value="' + id + '"><button type="button" class="btn btn-sm" onclick="deleteRow('+ id + ')" id="delete_' + id + '"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></td>';
                                 strHTML += '<input type="hidden" name="code[]" value="' + result.code + '">';
@@ -243,12 +221,10 @@
         {
             let quantity = $("#qty_"+id).val();
             let availQty = $("#totalQuantity_"+id).text();
-            let unitValue = $("#unit_"+id).find(":selected").attr("data-value");
 
-            if((quantity * unitValue) > availQty){
+            if(quantity > availQty){
                 $("#qty_"+id).val(availQty);
-                $("#unit_"+id).val(1);
-                alert('Sale Quantity "'+ quantity * unitValue +'"can not be exceeded from Available Quantity"'+ availQty+'"');
+                alert('Sale Quantity "'+ quantity +'"can not be exceeded from Available Quantity"'+ availQty+'"');
             }
 
         }

@@ -71,6 +71,10 @@
                                     <th colspan="6" class="text-end">Salaries (-)</th>
                                     <th id="salary" class="text-end"></th>
                                 </tr>
+                                <tr>
+                                    <th colspan="6" class="text-end">Obsolete Loss (-)</th>
+                                    <th id="obsolete" class="text-end"></th>
+                                </tr>
                                 <tr id="netProfit">
                                     <th colspan="6" class="text-end">Net Profit</th>
                                     <th id="net" class="text-end"></th>
@@ -182,7 +186,8 @@ function fetchData(start, end){
                $("#data").html(html);
                $("#grossProfit").html(grossProfit);
                $("#salary").html(response.salary);
-               var net = grossProfit - response.salary;
+               $("#obsolete").html(response.obsolete_loss);
+               var net = grossProfit - response.salary - response.obsolete_loss;
                $("#net").html(net);
                $("#loader").addClass("d-none");
                if(net > 0)

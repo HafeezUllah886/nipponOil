@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\employees;
 use App\Models\Expense;
 use App\Models\fixed_expenses;
+use App\Models\obsolete;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseOrder;
@@ -370,10 +371,15 @@ class reportsController extends Controller
             $perDaySalary = $salaries / $totalDays;
             $currentSalary = $days * $perDaySalary;
 
+            $obsolete_loss = obsolete::where('warehouseID', auth()->user()->warehouseID)
+            ->whereBetween('date', [$start, $end])
+            ->sum('net_loss');
+
             return response()->json(
                 [
                     'items' => $sales,
                     'salary' => round($currentSalary),
+                    'obsolete_loss' => $obsolete_loss,
                 ]
             );
     }

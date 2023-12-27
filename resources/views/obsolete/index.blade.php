@@ -24,20 +24,29 @@
                     <th>Date</th>
                     <th>Product</th>
                     <th>Quantity</th>
-                    <th>Amount</th>
+                    <th>Loss</th>
+                    <th>Recovery</th>
+                    <th>Net Loss</th>
                     <th>Reason</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $total = 0;
+                    @endphp
                     @foreach ($obsolets as $obsolet)
+                    @php
+                        $total += $obsolet->net_loss;
+                    @endphp
                         <tr>
                             <td>{{$obsolet->id}} <input type="hidden" id="data_{{$obsolet->refID}}"
                                 data-date="{{$obsolet->date}}"
                                 data-name="{{$obsolet->product->name}}"
                                 data-qty="{{$obsolet->quantity}}"
                                 data-availQty="{{$obsolet->availQty}}"
-                                data-amount="{{$obsolet->amount}}"
+                                data-loss="{{$obsolet->loss_amount}}"
+                                data-recovery="{{$obsolet->recovery_amount}}"
                                 data-reason="{{$obsolet->reason}}">
                             </td>
                             <td>{{$obsolet->date}}</td>
@@ -45,7 +54,9 @@
                            {{--  <td>{{$obsolet->batchNumber}}</td>
                             <td>{{$obsolet->expiry}}</td> --}}
                             <td>{{$obsolet->quantity}}</td>
-                            <td>{{$obsolet->amount}}</td>
+                            <td>{{$obsolet->loss_amount}}</td>
+                            <td>{{$obsolet->recovery_amount}}</td>
+                            <td>{{$obsolet->net_loss}}</td>
                             <td>{{$obsolet->reason}}</td>
                             <td>
                                 <div class="dropdown">
@@ -66,6 +77,10 @@
                     @endforeach
 
                 </tbody>
+                <tfoot>
+                    <th colspan="6" class="text-end">Total Loss</th>
+                    <th >{{ $total }}</th>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -94,8 +109,12 @@
                 <input type="number" id="edit_qty" min="1" required name="qty" class="form-control">
             </div>
             <div class="form-group">
-                <label for="edit_qty">Recovery Amount</label>
-                <input type="number" id="edit_amount" name="amount" class="form-control">
+                <label for="edit_loss">Loss Amount</label>
+                <input type="number" id="edit_loss" name="loss_amount" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="edit_recovery">Recovery Amount</label>
+                <input type="number" id="edit_recovery" name="recovery_amount" class="form-control">
             </div>
             <div class="form-group">
                 <label for="edit_reason">Reason</label>
@@ -120,14 +139,16 @@
             var name = $("#data_"+ref).attr("data-name");
             var qty = $("#data_"+ref).attr("data-qty");
             var availQty = $("#data_"+ref).attr("data-availQty");
-            var amount = $("#data_"+ref).attr("data-amount");
+            var loss = $("#data_"+ref).attr("data-loss");
+            var recovery = $("#data_"+ref).attr("data-recovery");
             var reason = $("#data_"+ref).attr("data-reason");
 
             $("#edit_ref").val(ref);
             $("#edit_date").val(date);
             $("#edit_name").val(name);
             $("#edit_qty").val(qty);
-            $("#edit_amount").val(amount);
+            $("#edit_loss").val(loss);
+            $("#edit_recovery").val(recovery);
             $("#edit_qty").attr("max", availQty);
             $("#edit_reason").val(reason);
             $("#editModal").modal("show");
