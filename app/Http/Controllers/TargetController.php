@@ -92,7 +92,7 @@ class TargetController extends Controller
             ->where('accounts.type', 'customer')
             ->whereBetween('transactions.date', [$target->startDate, $target->endDate])
             ->select('accounts.accountID', 'accounts.name', DB::raw('SUM(transactions.debt) AS total_debit'))
-            ->groupBy('accounts.accountID')
+            ->groupBy('accounts.accountID', 'accounts.name')
             ->get();
 
             foreach($debitTotals as $total)
