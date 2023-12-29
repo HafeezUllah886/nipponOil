@@ -33,17 +33,25 @@
                         <td>{{ $unit->value }}</td>
 
                         <td>
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle form-select" type="button" id="dropdownMenuButton_{{ $unit->unitID }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_{{ $unit->unitID }}">
 
-                            <a class="ps-1 pe-1" href="{{ route('unit.edit', $unit->unitID) }}">
-                                <i class="text-yellow fa fa-edit"></i>
-                            </a>
-                            <form action="{{ route('unit.destroy', $unit->unitID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                <a class="ps-1 pe-1" href="javascript:void(0);" onclick="$(this).closest('form').submit();">
-                                    <i class="text-red fa fa-trash"></i>
-                                </a>
-                            </form>
+                                    <a class="dropdown-item" href="{{ route('unit.edit', $unit->unitID) }}">
+                                        <i class="fas fa-print"></i> Edit
+                                    </a>
+
+                                    <form class="dropdown-item" action="{{ route('unit.destroy', $unit->unitID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <a class="ps-1 pe-1" href="javascript:void(0);" onclick="$(this).closest('form').submit();">
+                                           Delete
+                                        </a>
+                                    </form>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

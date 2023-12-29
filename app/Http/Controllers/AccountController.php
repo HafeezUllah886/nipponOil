@@ -93,7 +93,7 @@ class AccountController extends Controller
     {
         $account->update($request->all());
         $request->session()->flash('message', 'Account Updated Successfully!');
-        return to_route('account.index');
+        return redirect('account/index/'.$request->type);
     }
 
     /**

@@ -149,7 +149,7 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-12 col-lg-12 mt-2">
                             <label for="notes" class="form-label">Notes</label>
-                                <textarea name="notes" id="notesEdit" class="form-control" rows="5"></textarea>
+                                <textarea name="notes" id="notesEdit" required class="form-control" rows="5"></textarea>
                             </div>
                         </div>
 

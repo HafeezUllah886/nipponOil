@@ -37,8 +37,8 @@
 
                         <td>
                             @can('Delete Deposit/Withdrawals')
-                            <a class="ps-1 pe-1" href="{{ url('/account/depositWithdrawals/delete/') }}/{{$item->refID}}">
-                                <i class="text-danger fa fa-trash"></i>
+                            <a class="ps-1 pe-1 text-danger" href="{{ url('/account/depositWithdrawals/delete/') }}/{{$item->refID}}">
+                                Delete
                             </a>
                             @endcan
 
