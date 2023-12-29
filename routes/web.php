@@ -142,6 +142,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/sale/printBill/{id}/{pos?}',[SaleController::class, 'printBill']);
     Route::get('/sale/{start?}/{end?}/{warehouse?}',[SaleController::class, 'index']);
     Route::get('/sale/product/history/{id}/{customer}',[SaleController::class, 'proHistory']);
+    Route::post('/sale/updateDiscount',[SaleController::class, 'updateDiscount']);
 
     Route::resource('/saleReturnPayment',\App\Http\Controllers\SaleReturnPaymentController::class);
 

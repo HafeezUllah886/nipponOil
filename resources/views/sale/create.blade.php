@@ -277,6 +277,7 @@
                 receivedFields.classList.add('d-none'); */
                 $("#paymentStatus option:eq(0)").prop('disabled', false);
                 $("#payingAmount").prop('readonly', false);
+                $("#paymentStatus").val("pending");
             }
         }
 

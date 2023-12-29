@@ -131,7 +131,9 @@
                                     <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewPaymentModal_{{ $sale->saleID }}">
                                         <i class="text-yellow fa fa-plus"></i> View Payments
                                     </a>
-
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#discountModal_{{ $sale->saleID }}">
+                                        <i class="text-yellow fa fa-plus"></i> Add Discount
+                                    </a>
                                     <form action="{{ route('sale.destroy', $sale->saleID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
                                         @method('DELETE')
                                         @csrf
@@ -198,6 +200,37 @@
                                         <div class="text-center mb-3 ">
                                             <span class="fw-bold" style="font-size: 1.2rem;">All payments have already been submitted.</span>
                                         </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="discountModal_{{ $sale->saleID }}" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg"> <!-- Add "modal-dialog-white" class -->
+                            <div class="modal-content" style="background-color: white; color: #000000"> <!-- Add "modal-content-white" class -->
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addPaymentModalLabel" style="color: black; font-weight: bold">Add Discount {{ $sale->saleID }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    @if(!$sale->discountValue)
+                                    <form class="form-horizontal" action="{{ url("/sale/updateDiscount") }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="saleID" value="{{ $sale->saleID }}">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <label>Discount Value</label>
+                                                <input type="number" name="discount" class="form-control" value="{{ $sale->discountValue }}" step="any" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <input class="btn btn-primary" type="submit" value="Save">
+                                        </div>
+                                    </form>
+                                    @else
+                                        <span>Discount Already Issued</span>
                                     @endif
                                 </div>
                             </div>

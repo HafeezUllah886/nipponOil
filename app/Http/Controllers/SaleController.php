@@ -446,4 +446,15 @@ class SaleController extends Controller
             'purchase' => $purchase
         ]);
     }
+
+    public function updateDiscount(request $req)
+    {
+        $sale = Sale::find($req->saleID);
+
+        addTransaction($sale->customerID, now(), "Sale Discount", 0, $req->discount, getref(), "Discount on Sale # $sale->saleID");
+        $sale->discountValue = $req->discount;
+        $sale->save();
+
+        return back()->with("message", "Discount Added");
+    }
 }
