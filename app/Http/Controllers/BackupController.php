@@ -14,7 +14,7 @@ class BackupController extends Controller
     public function createBackup()
     {
          // Generate the backup
-         Artisan::call('backup:run --only-db');
+         Artisan::call('backup:run --disable-notifications --only-db');
 
          // Get the path to the latest backup file
          $backupPath = Storage::disk('local')->path(last(Storage::disk('local')->files('/laravel/')));
@@ -23,5 +23,5 @@ class BackupController extends Controller
          return response()->download($backupPath)->deleteFileAfterSend(true);
     }
 
-   
+
 }
