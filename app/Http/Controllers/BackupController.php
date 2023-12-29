@@ -20,7 +20,7 @@ class BackupController extends Controller
          $backupPath = Storage::disk('local')->path(last(Storage::disk('local')->files('/laravel/')));
 
          // Stream the backup file to the browser as a download
-         return response()->download($backupPath)->deleteFileAfterSend(true);
+         return response()->download($backupPath);
     }
 
 
