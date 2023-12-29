@@ -17,7 +17,7 @@ class BackupController extends Controller
          Artisan::call('backup:run --disable-notifications --only-db');
 
          // Get the path to the latest backup file
-         $backupPath = Storage::disk('local')->path(last(Storage::disk('local')->files('/laravel/')));
+         $backupPath = Storage::disk('local')->path(last(Storage::disk('local')->files('/Laravel/')));
 
          // Stream the backup file to the browser as a download
          return response()->download($backupPath);
