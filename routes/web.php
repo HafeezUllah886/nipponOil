@@ -19,6 +19,7 @@ use App\Http\Controllers\payrollController;
 use App\Http\Controllers\permissionsController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\profileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseReceiveController;
 use App\Http\Controllers\PurchaseReturnController;
@@ -185,6 +186,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/roles/store', [rolesController::class, 'store']);
     Route::post('/role/updatePermissions', [rolesController::class, 'updatePermissions']);
     Route::get('/permissions', [permissionsController::class, 'index']);
+    Route::get('/profile/edit', [profileController::class, 'edit']);
+    Route::post('/profile/update', [profileController::class, 'update']);
 
 
     Route::get('/reports/summaryReport',[reportsController::class, 'summaryReport']);
