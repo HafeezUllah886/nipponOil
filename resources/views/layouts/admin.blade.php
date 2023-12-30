@@ -597,6 +597,7 @@ $("#addTask").on("click", function(){
             menuHTML += '<a href="{{ url("/reports/lowStock") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/lowStock.svg") }}">Low Stock</a>';
             menuHTML += '<a href="{{ url("/reports/profitLoss") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/profitLoss.svg") }}">Profit / Loss</a>';
             menuHTML += '<a href="{{ url("/reports/customerBalance") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/profitLoss.svg") }}">Customers Balance</a>';
+            menuHTML += '<a href="{{ url("/reports/taxReport") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/profitLoss.svg") }}">Tax</a>';
         }
         if(name == "hrm"){
             menuHTML = '<a href="{{ url("/hrm/employees") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/employees.svg") }}">Employees</a>';

@@ -12,8 +12,6 @@ class Purchase extends Model
     protected $table = 'purchases';
     protected $guarded = [];
 
-
-
     public function purchaseOrders()
     {
         return $this->hasMany(\App\Models\PurchaseOrder::class, 'purchaseID', 'purchaseID');
