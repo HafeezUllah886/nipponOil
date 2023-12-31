@@ -58,4 +58,11 @@ class SalePaymentController extends Controller
     {
         //
     }
+
+    public function payments($start, $end)
+    {
+        $salePayments = SalePayment::with('account', 'sale')->whereBetween('date', [$start, $end])->orderBy('salePaymentID', 'desc')->get();
+
+        return view('sale.payments.index', compact('salePayments', 'start', 'end'));
+    }
 }

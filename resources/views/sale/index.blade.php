@@ -6,7 +6,16 @@
             <h3 class="card-title">
                 <i class="fas fa-user-graduate"></i> Sales
             </h3>
+                @php
+                    $currentYear = date('Y');
+                    $currentMonth = date('m');
+                    $firstDayOfMonth = date('Y-m-01', strtotime("$currentYear-$currentMonth-01"));
+                    $lastDayOfMonth = date('Y-m-t', strtotime("$currentYear-$currentMonth-01"));
+                @endphp
             <div class="card-actions">
+                <a href="{{ url('/sales/payments/') }}/{{ $firstDayOfMonth }}/{{ $lastDayOfMonth }}" class="btn btn-info d-none d-sm-inline-block">
+                    <i class="fas fa-plus"></i> View Payments
+                </a>
                 <a href="{{route('sale.create')}}" class="btn btn-primary d-none d-sm-inline-block">
                     <i class="fas fa-plus"></i> Add Sale
                 </a>

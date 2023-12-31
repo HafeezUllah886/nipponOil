@@ -30,6 +30,7 @@ use App\Http\Controllers\reportsController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\rolesController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SalePaymentController;
 use App\Http\Controllers\SaleReturnController;
 use App\Http\Controllers\TargetController;
 use App\Http\Controllers\TodoController;
@@ -40,6 +41,7 @@ use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\WithdrawalDepositController;
 use App\Models\quotation;
 use App\Models\repair;
+use App\Models\SalePayment;
 use App\Models\Stock;
 use App\Models\Unit;
 use Faker\Core\File;
@@ -144,6 +146,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/sale/{start?}/{end?}/{warehouse?}',[SaleController::class, 'index']);
     Route::get('/sale/product/history/{id}/{customer}',[SaleController::class, 'proHistory']);
     Route::post('/sale/updateDiscount',[SaleController::class, 'updateDiscount']);
+    Route::get('/sales/payments/{start}/{end}',[SalePaymentController::class, 'payments']);
 
     Route::resource('/saleReturnPayment',\App\Http\Controllers\SaleReturnPaymentController::class);
 
