@@ -212,8 +212,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/customerBalance/data/{area}',[reportsController::class, 'customerBalanceData']);
     Route::get('/reports/customerBalance/print/{area}',[reportsController::class, 'customerBalancePrint']);
 
-    Route::get('/reports/taxReport', [reportsController::class, 'taxReport']);
-    Route::get('/reports/taxReport/data/{start}/{end}',[reportsController::class, 'taxReportData']);
+    Route::get('/reports/taxReport/{start}/{end}', [reportsController::class, 'taxReport']);
 
     Route::get('/hrm/employees', [hrmController::class, 'employees']);
     Route::get('/hrm/employees/add', [hrmController::class, 'employeesAdd']);

@@ -22,23 +22,22 @@
             <div class="col-12">
                 <div class="row " >
                     <div class="col-md-4" >
-                        Select Date Range
-                        <div id="reportrange" style="background: #fff; cursor: pointer; padding: 13px 10px; border: 1px solid #ccc; width: 100%; border-radius:5px;">
-                            <i class="fa fa-calendar"></i>&nbsp;
-                            <span></span> <i class="fa fa-caret-down"></i>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <input type="date" name="from" id="from" value="{{ $start }}" onchange="update()" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <input type="date" name="to" id="to" value="{{ $end }}" onchange="update()" class="form-control">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-2 d-none d-flex align-items-center" id="loader">
-                            <div class="spinner-border align-self-center loader-sm d-flex align-items-center justify-content-center"></div> &nbsp;Loading
-                    </div>
+
                 </div>
                 <!-- Hidden form for date range submission -->
-                <form id="date-range-form" method="POST" action="/your-route-for-processing-dates">
-                    @csrf <!-- Include this if you're using Laravel CSRF protection -->
-                    <input type="hidden" id="start-date" name="start_date">
-                    <input type="hidden" id="end-date" name="end_date">
-                    <button type="submit" style="display: none;"></button>
-                </form>
             </div>
         </div>
 
@@ -57,8 +56,26 @@
                                 <th>Date</th>
                                 <th>Tax Amount</th>
                             </thead>
-                            <tbody id="data">
+                            <tbody>
+                                @php
+                                    $total = 0;
+                                @endphp
+                                @foreach ($purchases as $purchase)
+                                @php
+                                    $total += $purchase->orderTax;
+                                @endphp
+                                    <tr>
+                                        <td>{{ $purchase->purchaseID }}</td>
+                                        <td>{{ $purchase->account->name }}</td>
+                                        <td>{{ $purchase->date }}</td>
+                                        <td>{{ $purchase->orderTax }}</td>
+                                    </tr>
+                                @endforeach
                             </tbody>
+                            <tfoot>
+                                <th colspan="3" class="text-end">Total</th>
+                                <th>{{ $total }}</th>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -84,84 +101,13 @@
 @endsection
 
 @section('more-script')
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
-    <script src="{{ asset('src/assets/js/scrollspyNav.js') }}"></script>
-    <script src="{{ asset('src/plugins/src/apex/apexcharts.min.js') }}"></script>
-    {{-- <script src="{{ asset('src/plugins/src/apex/custom-apexcharts.js') }}"></script> --}}
-    <script src=" {{ asset('../src/assets/js/dashboard/dash_1.js') }} "></script>
-    <script type="text/javascript">
-       $(function() {
-        var currentDate = moment();
-        var start = currentDate.clone().startOf('month');
-        var end = currentDate.clone().endOf('month');
+    <script>
+        function update()
+        {
+            var from = $("#from").val();
+            var to = $("#to").val();
 
-
-        $('#reportrange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        maxDate: currentDate,
-        ranges: {
-           'Today': [moment(), moment()],
-           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
-           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            window.open("{{ url('reports/taxReport/') }}/"+from+"/"+to, "_self");
         }
-    }, cb);
-
-    $("#warehouse").on('change', function (){
-            fetchData(start, end);
-        });
-
-    cb(start, end);
-    function cb(start, end) {
-        fetchData(start, end);
-    }
-
-
-    // Listen for date changes using the apply.daterangepicker event
-    $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
-        fetchData(picker.startDate, picker.endDate);
-    });
-});
-
-function fetchData(start, end){
-    var html = '';
-
-        /* var start = currentDate.clone().startOf('month');
-    var end = currentDate.clone().endOf('month'); */
-
-        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-        $("#loader").removeClass("d-none");
-        // Send an AJAX request whenever the date range changes
-        $.ajax({
-            url: "{{url('/reports/taxReport/data/')}}/"+startDate+"/"+endDate,
-            type: 'GET',
-           /*  data: {
-                startDate: startDate,
-                endDate: endDate
-            }, */
-            success: function(response) {
-                console.log(response);
-                var grossProfit = 0;
-                response.items.forEach(function(pa){
-                html += '<tr>';
-                html += '<td>'+pa.purchaseID+'</td>';
-                html += '<td>'+pa.account.name+'</td>';
-                html += '<td class="text-end">'+pa.date+'</td>';
-                html += '<td class="text-end">'+pa.orderTax+'</td>';
-
-                html += '</tr>';
-                grossProfit += pa.netProfit;
-               });
-               html += '</table>';
-            },
-        });
-}
-
-        </script>
+    </script>
 @endsection

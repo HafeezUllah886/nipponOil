@@ -435,21 +435,12 @@ class reportsController extends Controller
        return view('reports.customerBalance.print', compact('accounts', 'area'));
     }
 
-    public function taxReport()
+    public function taxReport($start, $end)
     {
-        return view('reports.taxReport.index');
-    }
-
-    public function taxReportData($start, $end)
-    {
-
         $purchases = Purchase::with('account')->whereBetween('date', [$start, $end])->get();
-        dd($purchases);
-        return response()->json(
-            [
-                'purchases' => $purchases,
-            ]
-        );
+        return view('reports.taxReport.index', compact('purchases', 'start', 'end'));
     }
+
+
 }
 
