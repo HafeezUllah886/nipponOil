@@ -52,17 +52,14 @@
                                 <table class="table table-bordered table-hover table-striped">
                                     <thead class="thead-dark">
                                     <tr class="bg-primary">
-                                        <th scope="col">Product Name</th>
-                                        <th scope="col">Warehouse</th>
-                                        <th scope="col">Code</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">Batch Number</th>
-                                        <th scope="col">Expiry Date</th>
-                                        <th scope="col">Net Unit Cost</th>
-                                        <th scope="col">Discount</th>
-                                        <th scope="col">Tax</th>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">Purchase Unit</th>
+                                        <th scope="col" class="text-white">Product Name</th>
+                                        <th scope="col"  class="text-white">Warehouse</th>
+                                        <th scope="col" class="text-white">Code</th>
+                                        <th scope="col" class="text-white">Quantity</th>
+                                        <th scope="col" class="text-white">Net Unit Cost</th>
+                                        <th scope="col" class="text-white">Discount</th>
+                                        <th scope="col" class="text-white">Tax</th>
+                                        <th scope="col" class="text-white">Total</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -72,14 +69,11 @@
                                             <td>{{ $order->product->name }}</td>
                                             <td>{{ $order->warehouse->name }}</td>
                                             <td>{{ $order->code }}</td>
-                                            <td>{{ $order->quantity / $order->unit->value  }}</td>
-                                            <td>{{ $order->batchNumber ?? '' }}</td>
-                                            <td>{{ $order->expiryDate ?? '' }}</td>
+                                            <td>{{ packInfo($order->unit->value, $order->quantity) }}</td>
                                             <td>{{ $order->netUnitCost }}</td>
                                             <td>{{ $order->discount }}</td>
                                             <td>{{ $order->tax }}</td>
                                             <td>{{ $order->subTotal }}</td>
-                                            <td>{{ $order->unit->name }}</td>
                                             @php $totalAmount +=  $order->subTotal @endphp
                                         </tr>
                                     @endforeach
@@ -94,24 +88,24 @@
                                 <table class="table table-bordered">
                                     <thead class="thead-dark">
                                     <tr class="bg-primary">
-                                        <th>Product Name</th>
-                                        <th>Received Quantity</th>
-                                        <th>Date</th>
-                                        <th>Action</th>
+                                        <th class="text-white">Product Name</th>
+                                        <th class="text-white">Received Quantity</th>
+                                        <th class="text-white">Date</th>
+                                        {{-- <th class="text-white">Action</th> --}}
 
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($purchaseReceives as $index => $receive)
                                         <?php
-                                        $unit = \App\Models\Unit::where('unitID', $receive->purchaseUnit)->first();
+                                        $purchase = \App\Models\PurchaseOrder::where('purchaseID', $receive->purchaseID)->where('productID', $receive->productID)->first();
                                         ?>
 
                                         <tr>
                                             <td>{{ $receive->product->name }}</td>
-                                            <td>{{ $receive->receivedQty / $unit['value']  }}</td>
+                                            <td>{{ packInfo($purchase->unit->value, $receive->receivedQty) }}</td>
                                             <td>{{ \Carbon\Carbon::parse($receive->date)->format('Y-m-d')  }}</td>
-                                            <td>
+                                            {{-- <td>
                                                 @if ($loop->last)
                                                 <form action="{{ route('purchaseReceive.destroy', $receive->purchaseReceiveID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
                                                     @csrf
@@ -120,11 +114,11 @@
                                                     <input type="hidden" name="purchaseID" value="{{ $purchase->purchaseID }}">
 
                                                     <a class="ps-1 pe-1" href="javascript:void(0);" onclick="$(this).closest('form').submit();">
-                                                        <i class="text-red fa fa-trash"></i>
+                                                        Delete
                                                     </a>
                                                 </form>
                                                 @endif
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -140,10 +134,10 @@
                                 <table class="table table-bordered">
                                     <thead class="thead-dark">
                                     <tr class="bg-primary">
-                                        <th>Amount</th>
-                                        <th>Paid From</th>
-                                        <th>Description</th>
-                                        <th>Date</th>
+                                        <th class="text-white">Amount</th>
+                                        <th class="text-white">Paid From</th>
+                                        <th class="text-white">Description</th>
+                                        <th class="text-white">Date</th>
                                     </tr>
                                     </thead>
                                     <tbody>
