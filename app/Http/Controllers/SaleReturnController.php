@@ -13,6 +13,7 @@ use App\Models\SaleReturn;
 use App\Models\SaleReturnDetail;
 use App\Models\SaleReturnPayment;
 use App\Models\Stock;
+use App\Models\Transaction;
 use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -209,7 +210,12 @@ class SaleReturnController extends Controller
 
     public function destroy(SaleReturn $saleReturn)
     {
-        //
+       Transaction::where('refID', $saleReturn->refID)->delete();
+       stock::where('refID', $saleReturn->refID)->delete();
+       SaleReturnDetail::where('refID', $saleReturn->refID)->delete();
+       SaleReturn::where('refID', $saleReturn->refID)->delete();
+
+       return back()->with('error', "Sale Return Deleted");
     }
     public function search(request $request){
         $sale = Sale::find($request->saleID);

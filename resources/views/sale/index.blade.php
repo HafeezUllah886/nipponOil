@@ -64,7 +64,7 @@
             <table class="table table-bordered table-hover datatable display">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>Inv No.</th>
                     <th>Date</th>
                     <th>Reference</th>
                     <th>Biller</th>
@@ -222,7 +222,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    @if(!$sale->discountValue)
+                                    @if($sale->discountValue == 0 || $sale->discountValue == '')
                                     <form class="form-horizontal" action="{{ url("/sale/updateDiscount") }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="saleID" value="{{ $sale->saleID }}">

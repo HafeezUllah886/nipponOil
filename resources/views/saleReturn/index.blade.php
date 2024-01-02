@@ -145,7 +145,7 @@
 
                             <div class="row">
                                 <div class="col-sm-12 col-md-12 col-lg-12 mt-1">
-                                    <label>Enter Sale-ID</label>
+                                    <label>Enter Inv No.</label>
                                     <input type="number" name="saleID" class="form-control">
                                 </div>
                             </div>

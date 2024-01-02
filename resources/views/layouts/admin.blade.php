@@ -583,7 +583,7 @@ $("#addTask").on("click", function(){
             menuHTML += '@can("View Deposit/Withdrawals")<a href="{{ url("/account/depositWithdrawals") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/depositWithdraw.svg") }}"> Deposit/Withdrawals</a>@endcan';
             menuHTML += '@can("View Transfer")<a href="{{ url("/account/transfer") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/transfer.svg") }}"> Transfer</a>@endcan';
             menuHTML += '@can("View Expenses")<a href="{{ url("/account/expense") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/expense.svg") }}"> Expenses</a>@endcan';
-           /*  menuHTML += '<a href="{{ url("/account/fixedExpenses") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/expense2.svg") }}"> Fixed Expenses</a>'; */
+           menuHTML += '<a href="{{ url("/account/fixedExpenses") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/expense2.svg") }}"> Fixed Expenses</a>';
         }
         if(name == "purchases"){
             menuHTML = '<a href="{{ route("purchase.create") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/purchase.svg") }}">Create Purchase</a>';

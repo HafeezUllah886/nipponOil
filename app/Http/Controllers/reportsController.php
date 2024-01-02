@@ -364,7 +364,11 @@ class reportsController extends Controller
             }
 
 
+            $fixed = fixed_expenses::where("warehouseID", auth()->user()->warehouseID)->sum('amount');
+            $fixed = $fixed * $totalMonths;
+            $perDayFixed = $fixed / $totalDays;
             $days = $dateDifference->days + 1;
+            $currentFixed = $perDayFixed * $days;
 
             $salaries = employees::where("warehouseID", auth()->user()->warehouseID)->sum('salary');
             $salaries = $salaries * $totalMonths;
@@ -375,11 +379,15 @@ class reportsController extends Controller
             ->whereBetween('date', [$start, $end])
             ->sum('net_loss');
 
+            $expenses = Expense::where('warehouseID', auth()->user()->warehouseID)->whereBetween('date', [$start, $end])->sum('amount');
+
             return response()->json(
                 [
                     'items' => $sales,
                     'salary' => round($currentSalary),
                     'obsolete_loss' => $obsolete_loss,
+                    'expenses' => $expenses,
+                    'fixed' => round($currentFixed),
                 ]
             );
     }

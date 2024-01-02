@@ -25,7 +25,7 @@
             <table class="table table-bordered table-hover datatable display">
                 <thead>
                 <tr>
-                    <th>SaleID</th>
+                    <th>Inv No.</th>
                     <th>Customer</th>
                     <th>Date</th>
                     <th>Account</th>
