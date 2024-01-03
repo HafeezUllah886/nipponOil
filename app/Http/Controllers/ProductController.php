@@ -39,7 +39,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $check = Product::where('name', $request->name)->orWhere('code', $request->code)->count();
+        $check = Product::where('name', $request->name)->where('code', $request->code)->count();
         if($check > 0)
         {
             return back()->with('error', "Product already existing");

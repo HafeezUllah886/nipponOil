@@ -32,7 +32,7 @@
                 @foreach($saleReturns as $key => $return)
 {{--                    @dd($return->saleReturnDetails[0]->subTotal)--}}
                     @php
-                        $subTotal = $return->saleReturnDetails[0]->subTotal;
+                        $subTotal = $return->saleReturnDetails->sum('subTotal');
                         $paidAmount = $return->saleReturnPayments->sum('amount');
                         $dueAmount = $return->amount - $paidAmount;
                       /*$allPayments = $purchase->purchasePayments;*/

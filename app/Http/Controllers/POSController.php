@@ -124,7 +124,7 @@ class POSController extends Controller
             'saleID' => $sale->saleID,
             'amount' => $req->gTotal,
             'accountID' => $req->account,
-            'description' => $req->notes,
+            'description' => $req->pNotes,
             'refID' => $ref,
             'date' => $req->date,
             'createdBy' => auth()->user()->email,

@@ -30,6 +30,7 @@
                     <th>Customer</th>
                     <th>Date</th>
                     <th>Account</th>
+                    <th>Notes</th>
                     <th>Amount</th>
                 </tr>
                 </thead>
@@ -41,6 +42,7 @@
                             <td>{{ $payment->sale->account->name }}</td>
                             <td>{{ date('d-m-Y', strtotime($payment->date))}}</td>
                             <td>{{ $payment->account->name }}</td>
+                            <td>{{ $payment->description }}</td>
                             <td>{{ $payment->amount }}</td>
                         </tr>
                     @endforeach

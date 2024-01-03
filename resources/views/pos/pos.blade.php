@@ -240,10 +240,16 @@
                 </div>
                 <div class="row mt-2">
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="point">Invoice Notes:</label>
                             <input type="text" name="point" id="point" value="" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="pNotes">Payment Notes:</label>
+                            <input type="text" name="pNotes" id="pNotes" value="" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -326,7 +332,7 @@
   </div>
   <div class="modal fade" id="productHistory" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg"> <!-- Add "modal-dialog-white" class -->
-        <div class="modal-content" style="background-color: white; color: #000000"> <!-- Add "modal-content-white" class -->
+        <div class="modal-content" > <!-- Add "modal-content-white" class -->
             <div class="modal-header">
                 <h5 class="modal-title" id="addPaymentModalLabel" style="color: black; font-weight: bold">Product Sale History - <span id="purchasePrice"></span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

@@ -179,7 +179,7 @@ class SaleController extends Controller
                 'saleID' => $sale->saleID,
                 'amount' => $request['paying-amount'],
                 'accountID' => $request['accountID'],
-                'description' => $request['description'],
+                'description' => $request['paymentNotes'],
                 'refID' => $sale->refID,
                 'date' => $request['date'],
                 'createdBy' => auth()->user()->email,
