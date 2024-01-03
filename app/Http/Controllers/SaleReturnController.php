@@ -213,7 +213,7 @@ class SaleReturnController extends Controller
        Transaction::where('refID', $saleReturn->refID)->delete();
        stock::where('refID', $saleReturn->refID)->delete();
        SaleReturnDetail::where('refID', $saleReturn->refID)->delete();
-       SaleReturn::where('refID', $saleReturn->refID)->delete();
+       $saleReturn->delete();
 
        return back()->with('error', "Sale Return Deleted");
     }

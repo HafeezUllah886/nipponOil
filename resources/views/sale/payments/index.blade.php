@@ -26,6 +26,7 @@
                 <thead>
                 <tr>
                     <th>Inv No.</th>
+                    <th>Ref #</th>
                     <th>Customer</th>
                     <th>Date</th>
                     <th>Account</th>
@@ -36,6 +37,7 @@
                     @foreach ($salePayments as $payment)
                         <tr>
                             <td>{{ $payment->saleID }}</td>
+                            <td>{{ $payment->refID }}</td>
                             <td>{{ $payment->sale->account->name }}</td>
                             <td>{{ date('d-m-Y', strtotime($payment->date))}}</td>
                             <td>{{ $payment->account->name }}</td>
