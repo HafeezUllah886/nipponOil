@@ -27,8 +27,14 @@ class StockController extends Controller
 
             $purchaseQty = PurchaseOrder::where("productID", $stock->product->productID)->sum('quantity');
             $purchaseAmount = PurchaseOrder::where("productID", $stock->product->productID)->sum('subTotal');
-
-            $purchaseRate = $purchaseAmount / $purchaseQty;
+            if($purchaseQty && $purchaseAmount)
+            {
+                $purchaseRate = $purchaseAmount / $purchaseQty;
+            }
+            else
+            {
+                $purchaseRate = 0;
+            }
             $stock->value = $purchaseRate * $stock->difference;
 
         });
