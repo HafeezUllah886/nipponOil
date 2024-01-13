@@ -597,13 +597,23 @@ $("#addTask").on("click", function(){
             menuHTML += '<a href="{{ url("/quotation") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/quotation.svg") }}">Quotation</a>';
         }
         if(name == "reports"){
-            menuHTML = '<a href="{{ url("/reports/summaryReport") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/summaryReport.svg") }}">Summary Report</a>';
+            /* menuHTML = '<a href="{{ url("/reports/summaryReport") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/summaryReport.svg") }}">Summary Report</a>';
             menuHTML += '<a href="{{ url("/reports/productsSummary") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/productSummary.svg") }}">Products Summary</a>';
             menuHTML += '<a href="{{ url("/reports/productExpiry") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/expiryReport.svg") }}">Expiry Report</a>';
             menuHTML += '<a href="{{ url("/reports/lowStock") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/lowStock.svg") }}">Low Stock</a>';
             menuHTML += '<a href="{{ url("/reports/profitLoss") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/profitLoss.svg") }}">Profit / Loss</a>';
             menuHTML += '<a href="{{ url("/reports/customerBalance") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/profitLoss.svg") }}">Customers Balance</a>';
             menuHTML += '<a href="{{ url("/reports/taxReport") }}/{{ $firstDayOfMonth }}/{{ $lastDayOfMonth }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/profitLoss.svg") }}">Tax</a>';
+            menuHTML += '<a href="{{ url("/reports/customers") }}/{{ $firstDayOfMonth }}/{{ $lastDayOfMonth }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/profitLoss.svg") }}">Customers</a>'; */
+
+            menuHTML = '<a href="{{ url("/reports/summaryReport") }}" class="btn btn-dark m-2">Summary Report</a>';
+            menuHTML += '<a href="{{ url("/reports/productsSummary") }}" class="btn btn-dark m-2">Products Summary</a>';
+            menuHTML += '<a href="{{ url("/reports/productExpiry") }}" class="btn btn-dark m-2">Expiry Report</a>';
+            menuHTML += '<a href="{{ url("/reports/lowStock") }}" class="btn btn-dark m-2">Low Stock</a>';
+            menuHTML += '<a href="{{ url("/reports/profitLoss") }}" class="btn btn-dark m-2">Profit / Loss</a>';
+            menuHTML += '<a href="{{ url("/reports/customerBalance") }}" class="btn btn-dark m-2">Customers Balance</a>';
+            menuHTML += '<a href="{{ url("/reports/taxReport") }}/{{ $firstDayOfMonth }}/{{ $lastDayOfMonth }}" class="btn btn-dark m-2">Tax</a>';
+            menuHTML += '<a href="{{ url("/reports/customers") }}/{{ $firstDayOfMonth }}/{{ $lastDayOfMonth }}" class="btn btn-dark m-2">Customers</a>';
         }
         if(name == "hrm"){
             menuHTML = '<a href="{{ url("/hrm/employees") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/employees.svg") }}">Employees</a>';
