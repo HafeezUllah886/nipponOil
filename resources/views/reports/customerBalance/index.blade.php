@@ -23,9 +23,9 @@
                 <div class="row">
                     <div class="col-md-4">
                         <label for="area" class="form-label col-md-12"> Area:
-                            <select name="area" id="area" onchange="fetchData()" class="form-select" required>
+                            <select name="area" id="area" multiple onchange="fetchData()" required>
                                 @foreach ($areas as $key => $area)
-                                    <option value="{{ $area ?? "all" }}">{{ $area ?? "All"}}</option>
+                                    <option value="{{$area}}">{{ $area}}</option>
                                 @endforeach
                             </select>
                         </label>
@@ -64,23 +64,28 @@
 
     </div>
 @endsection
-
+@section('more-css')
+    <link rel="stylesheet" href="{{ asset('src/plugins/src/selectize/selectize.min.css') }}">
+@endsection
 @section('more-script')
-
+<script src="{{ asset('src/plugins/src/selectize/selectize.min.js') }}"></script>
 <script>
  $(document).ready(function(){
+    $(document).ready(function() {
+  $('#area').selectize({
+    maxItems: 5
+  });
+});
     fetchData();
  });
 
-
-
 function fetchData(){
     var html = '';
-    var area = $("#area").find(":selected").val();
-    console.log("changed");
+    var area = $("#area").val();
         $.ajax({
-            url: "{{url('/reports/customerBalance/data/')}}/"+area,
+            url: "{{url('/reports/customerBalance/data/')}}",
             type: 'GET',
+            data: {area : area},
             success: function(response) {
                 response.accounts.forEach(function(acct){
                 html += '<tr>';
@@ -98,8 +103,10 @@ function fetchData(){
 }
 
 $("#print").click(function(){
-    var area = $("#area").find(":selected").val();
-    window.open("{{ url('/reports/customerBalance/print/') }}/"+area, "_self");
+    var area = $("#area").val();
+    var url = "{{ url('/reports/customerBalance/print?areas=') }}" + area.join(',');
+
+    window.open(url, "_self");
 });
 
         </script>

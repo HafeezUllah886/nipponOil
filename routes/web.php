@@ -209,8 +209,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/profitLoss/data/{start}/{end}',[reportsController::class, 'profitLossData']);
 
     Route::get('/reports/customerBalance',[reportsController::class, 'customerBalance']);
-    Route::get('/reports/customerBalance/data/{area}',[reportsController::class, 'customerBalanceData']);
-    Route::get('/reports/customerBalance/print/{area}',[reportsController::class, 'customerBalancePrint']);
+    Route::get('/reports/customerBalance/data',[reportsController::class, 'customerBalanceData']);
+    Route::get('/reports/customerBalance/print',[reportsController::class, 'customerBalancePrint']);
 
     Route::get('/reports/taxReport/{start}/{end}', [reportsController::class, 'taxReport']);
 

@@ -401,15 +401,10 @@ class reportsController extends Controller
         return view('reports.customerBalance.index', compact('accounts', 'areas'));
     }
 
-    public function customerBalanceData($area)
+    public function customerBalanceData(request $req)
     {
-        if($area == 'all')
-        {
-            $accounts = Account::where('type', 'customer')->whereNot('name', 'Walk-in Customer')->get();
-        }
-        else{
-            $accounts = Account::where('type', 'customer')->where('area', $area)->get();
-        }
+
+            $accounts = Account::where('type', 'customer')->whereIn('area', $req->area)->get();
 
 
         foreach($accounts as $account)
@@ -424,23 +419,17 @@ class reportsController extends Controller
         );
     }
 
-    public function customerBalancePrint($area)
+    public function customerBalancePrint(Request $req)
     {
-        if($area == 'all')
-        {
-            $accounts = Account::where('type', 'customer')->whereNot('name', 'Walk-in Customer')->get();
-        }
-        else{
-            $accounts = Account::where('type', 'customer')->where('area', $area)->get();
-        }
-
+        $areas = explode(',', $req->input('areas'));
+            $accounts = Account::where('type', 'customer')->whereIn('area', $areas)->get();
 
         foreach($accounts as $account)
         {
             $account->balance = getAccountBalance($account->accountID);
         }
 
-       return view('reports.customerBalance.print', compact('accounts', 'area'));
+       return view('reports.customerBalance.print', compact('accounts', 'areas'));
     }
 
     public function taxReport($start, $end)
