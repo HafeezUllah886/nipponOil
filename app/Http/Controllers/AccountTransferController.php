@@ -23,7 +23,7 @@ class AccountTransferController extends Controller
      */
     public function create()
     {
-        $accounts = Account::all();
+        $accounts = Account::where('status', 'Active')->get();
 
         return view('account.transfer.create', compact('accounts'));
     }

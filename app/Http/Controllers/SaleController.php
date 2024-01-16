@@ -42,7 +42,9 @@ class SaleController extends Controller
                 $warehouse = auth()->user()->warehouseID;
             }
         }
-        $accounts = Account::where('type', 'business')->get();
+        $accounts = Account::where('type', 'business')
+        ->where('status', 'Active')
+        ->get();
         $warehouses = Warehouse::all();
         if($warehouse == 0)
         {
@@ -55,14 +57,16 @@ class SaleController extends Controller
         return view('sale.index')->with(compact('warehouses', 'sales', 'accounts', 'start', 'end', 'ware'));
     }
 
-
-
     public function create()
     {
         $units = Unit::all();
         $warehouses = Warehouse::all();
-        $paymentAccounts = Account::where('type', 'business')->get();
-        $accounts = Account::where('type', 'customer')->get();
+        $paymentAccounts = Account::where('type', 'business')
+        ->where('status', 'Active')
+        ->get();
+        $accounts = Account::where('type', 'customer')
+        ->where('status', 'Active')
+        ->get();
         $purchaseStatuses = PurchaseStatus::all();
         $products = Product::all();
         $emps = employees::orderBy('id', 'desc')->get();
@@ -247,10 +251,14 @@ class SaleController extends Controller
 
         $units = Unit::all();
         $warehouses = Warehouse::all();
-        $accounts = Account::where('type', 'customer')->get();
+        $accounts = Account::where('type', 'customer')
+        ->where('status', 'Active')
+        ->get();
         $purchaseStatuses = PurchaseStatus::all();
         $saleOrders = $sale->saleOrders;
-        $paymentAccounts = Account::where('type', 'business')->get();
+        $paymentAccounts = Account::where('type', 'business')
+        ->where('status', 'Active')
+        ->get();
         $selectedWarehouseID = $sale->saleOrders->pluck('warehouseID')->first();
         return view('sale.edit', compact('warehouses', 'accounts', 'purchaseStatuses', 'units', 'sale', 'saleOrders', 'selectedWarehouseID','paymentAccounts'));
     }

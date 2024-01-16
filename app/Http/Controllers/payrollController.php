@@ -27,7 +27,7 @@ class payrollController extends Controller
                 $query->where('warehouseID', auth()->user()->warehouseID);
             })->orderBy('id','desc')->get();
         }
-        $accounts = Account::where('type', 'Business')->where('warehouseID', auth()->user()->warehouseID)->get();
+        $accounts = Account::where('type', 'Business')->where('warehouseID', auth()->user()->warehouseID)->where('status', 'Active')->get();
         return view('hrm.payroll.index', compact('payroll', 'accounts'));
     }
 
@@ -35,8 +35,8 @@ class payrollController extends Controller
        $emps = employees::where('status', 'Active')->where('warehouseID', auth()->user()->warehouseID)->get();
        $nos = 0;
        $month = $req->month. "-01";
-       
-       
+
+
        foreach($emps as $emp)
        {
         $totalDaysInMonth = cal_days_in_month(CAL_GREGORIAN, date('m', strtotime($req->month)), date('Y', strtotime($req->month)));
@@ -57,19 +57,19 @@ class payrollController extends Controller
 
                 // Convert the database date to a timestamp
                 $timestamp = strtotime($databaseDate);
-                
+
                 // Calculate the last day of the same month
                 $lastDayOfMonth = date('Y-m-t', $timestamp); // 't' gives the last day of the month
-                
+
                 // Calculate the difference in days
                 $totalDaysInMonth = (strtotime($lastDayOfMonth) - $timestamp) / (60 * 60 * 24);
 
                 $basicSalary = $salaryPerDay * $totalDaysInMonth;
-                
+
             }
 
         }
-        
+
         if($check > 0)
         {
             continue;
@@ -112,7 +112,7 @@ class payrollController extends Controller
             }
             $adv_deduction = $adv->deduction;
         }
-        
+
         $salaryPerDay = $emp->salary / $totalDaysInMonth;
         $adv_prv_balance = $advance_amount - $payments_amount;
 

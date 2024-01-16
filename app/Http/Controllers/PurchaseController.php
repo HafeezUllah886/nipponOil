@@ -27,7 +27,9 @@ class PurchaseController extends Controller
 
     public function index()
     {
-        $accounts = Account::where('type', 'business')->get();
+        $accounts = Account::where('type', 'business')
+        ->where('status', 'Active')
+        ->get();
         $purchases = Purchase::with('purchaseOrders', 'purchaseReceive')
             ->orderByDesc('purchaseID')
             ->get();
@@ -40,7 +42,9 @@ class PurchaseController extends Controller
 
         $units = Unit::all();
         $warehouses = Warehouse::all();
-        $accounts = Account::where('type', 'supplier')->get();
+        $accounts = Account::where('type', 'supplier')
+        ->where('status', 'Active')
+        ->get();
         $purchaseStatuses = PurchaseStatus::all();
         $products = Product::with('prices')->orderBy('productID', 'desc')->get();
         return view('purchase.create', compact('warehouses', 'accounts', 'purchaseStatuses', 'products', 'units'));
@@ -215,7 +219,8 @@ class PurchaseController extends Controller
 
         $units = Unit::all();
         $warehouses = Warehouse::all();
-        $accounts = Account::all();
+        $accounts = Account::where('status', 'Active')
+        ->get();
         $purchaseStatuses = PurchaseStatus::all();
         $products = Product::with('brand', 'category')->get();
         $purchaseOrders = $purchase->purchaseOrders;

@@ -27,8 +27,12 @@ class POSController extends Controller
         ->groupBy('batchNumber', 'productID', 'expiryDate')
         ->get();
 
-        $customers = Account::where('type', 'customer')->get();
-        $accounts = Account::where('type', 'business')->get();
+        $customers = Account::where('type', 'customer')
+        ->where('status', 'Active')
+        ->get();
+        $accounts = Account::where('type', 'business')
+        ->where('status', 'Active')
+        ->get();
         $brands = Brand::with('products')->get();
         $categories = Category::with('products')->get();
         $emps = employees::orderBy('id', 'desc')->get();

@@ -23,7 +23,9 @@ class ObsoleteController extends Controller
     public function create(){
         $warehouses = Warehouse::all();
         $units = Unit::all();
-        $accounts = Account::where('type', 'Business')->get();
+        $accounts = Account::where('type', 'Business')
+        ->where('status', 'Active')
+        ->get();
         return view('obsolete.create', compact('warehouses', 'units', 'accounts'));
     }
 
