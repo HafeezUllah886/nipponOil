@@ -40,14 +40,14 @@
                         <label for="Litters" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Liters : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
                             <div class="input-group">
-                                <input type="number" step="any" placeholder="Enter Liters" required class="form-control" name="ltr" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <input type="number" step="any" placeholder="Enter Liters" required class="form-control" required name="ltr" aria-label="Recipient's username" aria-describedby="button-addon2">
                                 <button class="btn btn-default">Ltrs</button>
                             </div>
                         </div>
                         <label for="weight" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Weight : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4" >
                             <div class="input-group">
-                                <input type="number" class="form-control" step="any" placeholder="Enter Weight" name="weight"  aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <input type="number" class="form-control" step="any" placeholder="Enter Weight" name="weight" required  aria-label="Recipient's username" aria-describedby="button-addon2">
                                 <button class="btn btn-default">KG</button>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
                     <div class="form-group row mb-1">
                         <label for="grade" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Grade / Viscosity : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4" >
-                            <input type="text" class="form-control" placeholder="Enter Grade / Viscosity" name="grade" id="">
+                            <input type="text" class="form-control" placeholder="Enter Grade / Viscosity" required name="grade" id="">
                         </div>
                         <label for="brandID" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Brand : </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
@@ -89,7 +89,7 @@
                     <div class="form-group row mb-1">
                         <label for="alertQuantity" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Alert Quantity: </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
-                            <input type="number" name="alertQuantity" class="form-control" value="{{ old('alertQuantity') }}" placeholder="Alert Quantity">
+                            <input type="number" name="alertQuantity" class="form-control" required value="{{ old('alertQuantity') }}" placeholder="Alert Quantity">
                         </div>
                         <label for="image" class=" form-label col-sm-6 col-md-6 col-lg-2 col-form-label">Picture: </label>
                         <div class=" col-sm-6 col-md-6 col-lg-4">

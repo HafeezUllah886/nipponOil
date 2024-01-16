@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('category')->nullable();
             $table->string('area')->nullable();
+            $table->string('status')->default('Active');
             $table->string('accountNumber')->nullable();
             $table->unsignedFloat('initialBalance')->nullable();
             $table->string('phone')->nullable();

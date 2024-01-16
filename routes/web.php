@@ -104,6 +104,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/statement/{id}', [AccountController::class, 'statement']);
     Route::get('/account/details/{id}/{from}/{to}', [AccountController::class, 'statementDetails']);
 
+    Route::get('/account/status/{id}', [AccountController::class, 'status']);
+
     Route::get('/product/generateCode', [ProductController::class, 'generateCode']);
     Route::get('/product/supplier/{id}', [ProductController::class, 'supplier']);
     Route::post('/product/addPrice', [ProductController::class, 'storePrice']);
@@ -213,6 +215,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/customerBalance/print',[reportsController::class, 'customerBalancePrint']);
 
     Route::get('/reports/taxReport/{start}/{end}', [reportsController::class, 'taxReport']);
+
+    Route::get('/reports/customers/{id?}/{start?}/{end?}', [reportsController::class, 'customers']);
 
     Route::get('/hrm/employees', [hrmController::class, 'employees']);
     Route::get('/hrm/employees/add', [hrmController::class, 'employeesAdd']);

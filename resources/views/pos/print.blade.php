@@ -160,7 +160,7 @@
         </div>
         <div class="footer">
             <hr>
-            <h5 class="text-center">Developed by Diamond Software - 03202565919 <br> </h5>
+            <h5 class="text-center">Developed by Diamond Software - 03202565919<br> </h5>
         </div>
     </div>
 </body>

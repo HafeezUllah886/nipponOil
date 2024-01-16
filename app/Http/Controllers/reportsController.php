@@ -438,6 +438,42 @@ class reportsController extends Controller
         return view('reports.taxReport.index', compact('purchases', 'start', 'end'));
     }
 
+    public function customers($id = 0, $start = 1, $end = 1)
+    {
+        if($id == 0)
+        {
+            $customer = Account::where('type', 'Customer')->orderBy('accountID', 'desc')->first();
+            $currentYear = date('Y');
+            $currentMonth = date('m');
+            $start = date('Y-m-01', strtotime("$currentYear-$currentMonth-01"));
+            $end = date('Y-m-t', strtotime("$currentYear-$currentMonth-01"));
+        }
+        else
+        {
+            $customer = Account::find($id);
+        }
+
+        $customers = Account::where('type', 'Customer')->get();
+
+        $topProducts = Sale::where('customerID', $customer->accountID)
+        ->whereBetween('sales.date', [$start, $end])
+        ->join('saleorders', 'sales.saleID', '=', 'saleorders.saleID')
+        ->groupBy('saleorders.productID')
+        ->orderByRaw('SUM(saleorders.quantity) DESC')
+        ->limit(3)
+        ->select('saleorders.productID')
+        ->get();
+
+       /*  dd($topProducts); */
+        // You can then retrieve the product details using the productID
+        foreach ($topProducts as $product) {
+            $productId = $product->productID;
+            // Retrieve the product details using the $productId
+            // For example: $productDetails = Product::find($productId);
+        }
+
+        return view('reports.customerSummary.index', compact('customer', 'start', 'end', 'customers'));
+    }
 
 }
 

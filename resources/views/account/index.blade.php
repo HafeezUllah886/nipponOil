@@ -25,6 +25,7 @@
                     <th>Account Type</th>
                     <th>Account Number</th>
                     <th>Balance</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -43,6 +44,7 @@
                         <td>{{ $account->type }}</td>
                         <td>{{ $account->accountNumber }}</td>
                         <td>{{getAccountBalance($account->accountID)}}</td>
+                        <td><a href="{{ url('/account/status/') }}/{{ $account->accountID }}">{{$account->status}}</a></td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn dropdown-toggle form-select" type="button" id="dropdownMenuButton_{{ $account->accountID }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

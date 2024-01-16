@@ -613,7 +613,7 @@ $("#addTask").on("click", function(){
             menuHTML += '<a href="{{ url("/reports/profitLoss") }}" class="btn btn-dark m-2">Profit / Loss</a>';
             menuHTML += '<a href="{{ url("/reports/customerBalance") }}" class="btn btn-dark m-2">Customers Balance</a>';
             menuHTML += '<a href="{{ url("/reports/taxReport") }}/{{ $firstDayOfMonth }}/{{ $lastDayOfMonth }}" class="btn btn-dark m-2">Tax</a>';
-            menuHTML += '<a href="{{ url("/reports/customers") }}/{{ $firstDayOfMonth }}/{{ $lastDayOfMonth }}" class="btn btn-dark m-2">Customers</a>';
+            menuHTML += '<a href="{{ url("/reports/customers") }}" class="btn btn-dark m-2">Customers</a>';
         }
         if(name == "hrm"){
             menuHTML = '<a href="{{ url("/hrm/employees") }}" class="btn btn-dark m-2"><img src="{{ asset("svgs/employees.svg") }}">Employees</a>';

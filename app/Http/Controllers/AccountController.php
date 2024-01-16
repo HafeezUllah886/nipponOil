@@ -133,4 +133,19 @@ class AccountController extends Controller
         }
         return view('account.statement.statment_details')->with(compact('items', 'p_balance', 'c_balance'));
     }
+
+    public function status($id)
+    {
+        $account = Account::find($id);
+        if($account->status == 'Active')
+        {
+            $account->status = 'Inactive';
+        }
+        else
+        {
+            $account->status = 'Active';
+        }
+        $account->save();
+        return back()->with('message', "Status Changed");
+    }
 }
