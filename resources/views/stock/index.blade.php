@@ -3,8 +3,19 @@
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title">
-                <i class="fas fa-users-cog"></i> Stocks
+            <h3 class="card-title w-100">
+                <div class="row">
+                    <div class="col-md-4">Stocks</div>
+                    <div class="col-md-4">
+                        <select id="warehouse" onchange="warehouseChanged()" value="{{ $warehouse }}" class="form-control">
+                            <option {{ $warehouse == 0 ? 'selected' : '' }} value="0">All Warehouses</option>
+                            @foreach ($warehouses as $warehouse1)
+                                <option {{ $warehouse1->warehouseID == $warehouse ? 'selected' : '' }} value="{{ $warehouse1->warehouseID }}">{{ $warehouse1->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
             </h3>
         </div>
 
@@ -42,9 +53,23 @@
                         </tr>
                     @endforeach
                     </tbody>
+                    <tfoot>
+                        <th colspan="4" class="text-end">Total</th>
+                        <th>{{ $productsWithCreditDebtSum->sum('value') }}</th>
+                    </tfoot>
                 </table>
             </div>
         </div>
     </div>
+@endsection
+
+@section('more-script')
+    <script>
+        function warehouseChanged()
+        {
+            var warehouse = $("#warehouse").find(":selected").val();
+            window.location.href = "{{ url('/stocks/') }}/"+warehouse
+        }
+    </script>
 @endsection
 

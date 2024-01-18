@@ -34,7 +34,7 @@
                                         @php
                                             $balance = 0;
                                         @endphp
-                                        
+
                                     @foreach($stocks as $stock)
                                         @php
                                             $balance += $stock->credit;

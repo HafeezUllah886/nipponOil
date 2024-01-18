@@ -19,9 +19,11 @@ use App\Models\SaleOrder;
 use App\Models\SaleReturn;
 use App\Models\SaleReturnDetail;
 use App\Models\Stock;
+use App\Models\Transaction;
 use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class reportsController extends Controller
 {
@@ -456,23 +458,33 @@ class reportsController extends Controller
         $customers = Account::where('type', 'Customer')->get();
 
         $topProducts = Sale::where('customerID', $customer->accountID)
-        ->whereBetween('sales.date', [$start, $end])
-        ->join('saleorders', 'sales.saleID', '=', 'saleorders.saleID')
-        ->groupBy('saleorders.productID')
-        ->orderByRaw('SUM(saleorders.quantity) DESC')
-        ->limit(3)
-        ->select('saleorders.productID')
-        ->get();
+    ->whereBetween('sales.date', [$start, $end])
+    ->join('saleorders', 'sales.saleID', '=', 'saleorders.saleID')
+    ->groupBy('saleorders.productID')
+    ->orderByRaw('SUM(saleorders.quantity) DESC')
+    ->limit(3)
+    ->select('saleorders.productID', DB::raw('SUM(saleorders.quantity) as totalQuantity'))
+    ->get();
 
-       /*  dd($topProducts); */
+
         // You can then retrieve the product details using the productID
+        $product_names = [];
+        $product_qtys = [];
         foreach ($topProducts as $product) {
             $productId = $product->productID;
-            // Retrieve the product details using the $productId
-            // For example: $productDetails = Product::find($productId);
+            $product1 = Product::find($productId);
+            $product->name = $product1->name;
+
+            $product_names[] = $product->name;
+            $product_qtys[] = $product->totalQuantity;
         }
 
-        return view('reports.customerSummary.index', compact('customer', 'start', 'end', 'customers'));
+        $transactions = Transaction::where('accountID', $customer->accountID)
+        ->where('debt', '>', 0)
+        ->whereBetween('date', [$start, $end])
+        ->get();
+
+        return view('reports.customerSummary.index', compact('customer', 'start', 'end', 'customers', 'product_names', 'product_qtys', 'transactions'));
     }
 
 }

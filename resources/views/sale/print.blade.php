@@ -185,7 +185,11 @@
                         $net = ($total + $sale->orderTax) - $sale->discountValue;
                     @endphp
                     <td colspan="4" class="text-right" style="font-size: 20px"><strong>{{ number_format($net, 2) }}</strong></td>
-                   </tr>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-right">Account Balance:</td>
+                        <td colspan="4" class="text-right" style="font-size: 20px"><strong>{{ number_format(getAccountBalance($sale->account->accountID), 2) }}</strong></td>
+                        </tr>
                 </tbody>
             </table>
         </div>

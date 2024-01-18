@@ -105,6 +105,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/details/{id}/{from}/{to}', [AccountController::class, 'statementDetails']);
 
     Route::get('/account/status/{id}', [AccountController::class, 'status']);
+    Route::get('/account/balance/{id}', [AccountController::class, 'accountBalance']);
 
     Route::get('/product/generateCode', [ProductController::class, 'generateCode']);
     Route::get('/product/supplier/{id}', [ProductController::class, 'supplier']);
@@ -156,7 +157,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/purchaseReturn',\App\Http\Controllers\PurchaseReturnController::class);
     Route::resource('/purchaseReturnPayment',\App\Http\Controllers\PurchaseReturnPaymentsController::class);
 
-    Route::get('/stocks','App\Http\Controllers\StockController@index')->name('stock.index');
+    Route::get('/stocks/{warehouse?}','App\Http\Controllers\StockController@index')->name('stock.index');
     Route::get('/stocks/{stockDetails}/{warehouse}','App\Http\Controllers\StockController@show')->name('stock.show');
     Route::get('/stock/transfer',[StockController::class, 'transfer']);
     Route::get('/stock/transfer/create',[StockController::class, 'transferCreate']);

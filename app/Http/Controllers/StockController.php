@@ -13,15 +13,30 @@ use App\Models\Unit;
 use App\Models\Warehouse;
 use Database\Seeders\warehousesSeeder;
 use Illuminate\Http\Request;
+use DB;
 
 class StockController extends Controller
 {
-    public function index()
+    public function index($warehouse = 0)
     {
-        $productsWithCreditDebtSum = Stock::with('product')
+
+        if($warehouse == 0)
+        {
+            $productsWithCreditDebtSum = Stock::with('product')
             ->select('productID', 'batchNumber', \DB::raw('SUM(credit) as credit_sum'), \DB::raw('SUM(debt) as debt_sum'))
             ->groupBy('productID', 'batchNumber')
             ->get();
+        }
+        else
+        {
+            $productsWithCreditDebtSum = Stock::with('product')
+            ->where('warehouseID', $warehouse)
+            ->select('productID', 'batchNumber', \DB::raw('SUM(credit) as credit_sum'), \DB::raw('SUM(debt) as debt_sum'))
+            ->groupBy('productID', 'batchNumber')
+            ->get();
+        }
+
+
         $productsWithCreditDebtSum->each(function ($stock) {
             $stock->difference = $stock->credit_sum - $stock->debt_sum;
 
@@ -38,7 +53,9 @@ class StockController extends Controller
             $stock->value = $purchaseRate * $stock->difference;
 
         });
-        return view('stock.index', compact('productsWithCreditDebtSum'));
+
+        $warehouses = Warehouse::all();
+        return view('stock.index', compact('productsWithCreditDebtSum', 'warehouses', 'warehouse'));
     }
 
     public function show($stockDetails, $warehouse)

@@ -24,18 +24,18 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="start">From</label>
-                            <input type="date" name="start" value="{{ $start }}" class="form-control" id="start">
+                            <input type="date" name="start" onchange="update()" value="{{ $start }}" class="form-control" id="start">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="end">To</label>
-                            <input type="date" name="end" value="{{ $end }}" class="form-control" id="end">
+                            <input type="date" name="end" onchange="update()" value="{{ $end }}" class="form-control" id="end">
                         </div>
                     </div>
                     <div class="col-md-3" >
                         <label for="customer">Customer</label>
-                            <select name="customer" id="customer" class="form-select" required>
+                            <select name="customer" id="customer" onchange="update()" class="form-select" required>
                                 @foreach ($customers as $customer1)
                                     <option value="{{ $customer1->accountID }}" {{ $customer1->accountID == $customer->accountID ? "selected" : "" }}>{{ $customer1->name }}</option>
                                 @endforeach
@@ -52,7 +52,7 @@
         </div>
 
         <div class="row">
-            <div id="chartBar" class="col-xl-12 layout-spacing">
+            <div id="chartBar" class="col-md-6 layout-spacing">
                 <div class="statbox widget box box-shadow">
                     <div class="widget-header">
                         <div class="row">
@@ -67,29 +67,34 @@
                 </div>
             </div>
 
-            <div class="col-12" >
-                <div class="card bg-white">
-                    {{-- <div class="card-header">
-                        <h5 class="card-title">Products Details</h5>
-                    </div> --}}
+            <div class="col-md-6" >
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Transactions</h5>
+                    </div>
                     <div class="card-body table-responsive">
                         <table class="w-100 table table-bordered datatable" id="datatable">
                             <thead>
-                                <th>Product</th>
-                                <th>Category</th>
-                                <th>Purchase Amount</th>
-                                <th>Purchase Qty</th>
-                                <th>Sale Amount</th>
-                                <th>Sale Qty</th>
-                                <th>Purchase Return Amount</th>
-                                <th>Purchase Return Qty</th>
-                                <th>Sale Return Amount</th>
-                                <th>Sale Return Qty</th>
-                                <th>Profit</th>
-                                <th>Stock</th>
-                                <th>Worth (Cost / Price)</th>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Desc</th>
+                                <th>Amount</th>
                             </thead>
                             <tbody id="data">
+                                @foreach ($transactions as $trans)
+                                    <tr>
+                                        <td>{{ $trans->refID }}</td>
+                                        <td>{{ $trans->date }}</td>
+                                        <td>{{ $trans->description }}</td>
+                                        <td>{{ $trans->debt }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td colspan="3" class="text-end">Total</td>
+                                    <td>{{ $trans->sum('debt') }}</td>
+                                </tr>
 
                             </tbody>
                         </table>
@@ -126,65 +131,21 @@
     {{-- <script src="{{ asset('src/plugins/src/apex/custom-apexcharts.js') }}"></script> --}}
     <script src=" {{ asset('../src/assets/js/dashboard/dash_1.js') }} "></script>
     <script type="text/javascript">
-       $(function() {
-
-        function cb(start, end) {
-            fetchData(start, end);
-        }
-
-
-
-    cb(start, end);
-
-    // Listen for date changes using the apply.daterangepicker event
-    $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
-        fetchData(picker.startDate, picker.endDate);
+    $(document).ready(function(){
+        var names = <?php echo json_encode($product_names); ?>;
+        var qtys = <?php echo json_encode($product_qtys); ?>;
+        updateChart(qtys,names);
     });
-});
 
-function fetchData(start, end){
-    var html = '';
+    function update()
+    {
+        var start = $("#start").val();
+        var end = $("#end").val();
+        var customer = $("#customer").find(":selected").val();
 
-    var startDate = start.format('YYYY-MM-DD');
-        var endDate = end.format('YYYY-MM-DD');
-        var warehouse = $("#warehouse").find(":selected").val();
-        var category = $("#category").find(":selected").val();
+        window.location.href = "{{ url('/reports/customers/') }}/"+customer+"/"+start+"/"+end;
+    }
 
-        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-        $("#loader").removeClass("d-none");
-        // Send an AJAX request whenever the date range changes
-        $.ajax({
-            url: "{{url('/reports/productsSummary/data/')}}/"+startDate+"/"+endDate+"/"+warehouse+"/"+category,
-            type: 'GET',
-           /*  data: {
-                startDate: startDate,
-                endDate: endDate
-            }, */
-            success: function(response) {
-
-               response.products.forEach(function(pa){
-                html += '<tr>';
-                html += '<td>'+pa.name+'</td>';
-                html += '<td>'+pa.category.name+'</td>';
-                html += '<td>'+pa.purchaseAmount+'</td>';
-                html += '<td>'+pa.purchaseQty+'</td>';
-                html += '<td>'+pa.saleAmount+'</td>';
-                html += '<td>'+pa.saleQty+'</td>';
-                html += '<td>'+pa.purchaseReturnAmount+'</td>';
-                html += '<td>'+pa.purchaseReturnQty+'</td>';
-                html += '<td>'+pa.saleReturnAmount+'</td>';
-                html += '<td>'+pa.saleReturnQty+'</td>';
-                html += '<td>'+pa.profit.toFixed(2)+'</td>';
-                html += '<td>'+pa.stock+'</td>';
-                html += '<td>Rs. '+pa.purchasePrice + ' / Rs. '+ pa.salePrice+'</td>';
-                html += '</tr>';
-               });
-               $("#data").html(html);
-               updateChart(response.sold, response.names)
-               $("#loader").addClass("d-none");
-            },
-        });
-}
 function updateChart(sold, names){
     // Update the data and categories in your configuration object
     sBar.series[0].data = sold;
@@ -224,6 +185,8 @@ var sBar = {
                     categories: ['product1', 'product2']
                 }
                 }
+
+
 
         </script>
 @endsection

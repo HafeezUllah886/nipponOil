@@ -29,15 +29,17 @@
                         <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo') }}" placeholder="Reference No">
                     </label>
 
-                    <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Customer:
-                        <select name="customerID" class="form-select" onchange="check_customer()" id="customerID" required>
-                            @foreach ($accounts as $account)
-                                <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
-                            @endforeach
-                        </select>
+                    <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Customer: <span class="text-success" id="balance">Balance</span>
+
+                            <select name="customerID" style="width:100%;" required onchange="check_customer()" id="customerID" required>
+                                @foreach ($accounts as $account)
+                                    <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
+                                @endforeach
+                            </select>
+
                     </label>
 
-                    <label for="warehouseID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Warehouse:
+                    <label for="warehouseID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Warehouse:
                         <select name="warehouseID" id="warehouseID" required autofocus class="form-select">
                             @foreach ($warehouses as $warehouse)
                             <option value="{{ $warehouse->warehouseID }}">{{ $warehouse->name }}</option>
@@ -46,7 +48,7 @@
                         </select>
                     </label>
 
-                  <label for="salesManID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Sales Man:
+                  <label for="salesManID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Sales Man:
                         <select name="salesManID" id="salesManID" required class="form-select">
                             <option value="">Select Sales Man</option>
                             @foreach ($emps as $emp)
@@ -57,11 +59,6 @@
                 </div>
 
                 <div class="form-group row" id="product-container">
-                   {{--  <label for="product" class="form-label col-form-label col-sm-12"> Products: </label>
-                        <select name="productID" id="productID" class="selectize form-select" onchange="productDetails(this.value)">
-                            <option value="">Select Product</option>
-                        </select>
- --}}
                 </div>
 
                 <div class="form-group">
@@ -247,6 +244,8 @@
 @section('more-script')
 
     <script>
+
+        $("#customerID").selectize();
         check_customer();
         function proHistory(id){
             var customer = $("#customerID").find(":selected").val();
@@ -279,6 +278,7 @@
                 $("#payingAmount").prop('readonly', false);
                 $("#paymentStatus").val("pending");
             }
+            accountBalance(customer)
         }
 
         $('#form-custom-switch-primary').on('change', function(){
@@ -799,6 +799,18 @@
         {
             var html = element.innerHTML;
             $("#point").val(html);
+        }
+
+        function accountBalance(id)
+        {
+           $.ajax({
+            url : "{{ url('/account/balance/') }}/"+id,
+            method : "get",
+            success: function (balance)
+            {
+               $("#balance").text(balance);
+            }
+           });
         }
     </script>
 @endsection

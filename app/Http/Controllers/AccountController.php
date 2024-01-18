@@ -148,4 +148,10 @@ class AccountController extends Controller
         $account->save();
         return back()->with('message', "Status Changed");
     }
+
+    public function accountBalance($id)
+    {
+
+        return getAccountBalance($id);
+    }
 }

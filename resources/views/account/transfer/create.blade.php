@@ -11,32 +11,44 @@
             <form class="form-horizontal" action="{{ url('/account/transfer/store') }}" method="POST">
                 @csrf
                 <div class="form-group row mt-2">
-                    <label for="type" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">From</label>
+                    <label for="type" class=" form-label col-sm-4 col-md-2 col-lg-2 col-form-label">From</label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        <select name="from" class="form-control from">
-                            @foreach ($accounts as $account)
-                                <option value="{{$account->accountID}}">{{$account->name}} ({{$account->type}})</option>
-                            @endforeach
-                        </select>
+                        <div class="input-group">
+                            <select name="from" class="from w-100" required onchange="accountChanged()">
+                                @foreach ($accounts as $account)
+                                    <option value="{{$account->accountID}}">{{$account->name}} ({{$account->type}})</option>
+                                @endforeach
+                            </select>
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="balance">Balance</span>
+                            </div>
+                        </div>
+
                         @error('from')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    
+
                 </div>
                 <div class="form-group row mt-2">
                     <label for="type" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">To</label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        <select name="to" class="form-control to">
-                            @foreach ($accounts as $account)
-                                <option value="{{$account->accountID}}">{{$account->name}} ({{$account->type}})</option>
-                            @endforeach
-                        </select>
+                        <div class="input-group">
+                            <select name="to" class="to w-100" required onchange="accountChanged1()">
+                                @foreach ($accounts as $account)
+                                    <option value="{{$account->accountID}}">{{$account->name}} ({{$account->type}})</option>
+                                @endforeach
+                            </select>
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="balance1">Balance</span>
+                            </div>
+                        </div>
+
                         @error('to')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                   
+
                 </div>
                 <div class="form-group row mt-2">
                     <label for="initialBalance" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Amount: </label>
@@ -46,7 +58,7 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    
+
                 </div>
                 <div class="form-group row mt-2">
                     <label for="date" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Date: </label>
@@ -56,7 +68,7 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    
+
                 </div>
 
                 <div class="form-group row mt-2">
@@ -77,6 +89,8 @@
 @endsection
 @section('more-script')
     <script>
+        $(".from").selectize();
+        $(".to").selectize();
         $(document).ready(function() {
             new TomSelect(".from",{
                 create: false,
@@ -95,5 +109,31 @@
                 }
                 });
         });
+        accountChanged()
+        accountChanged1()
+        function accountChanged()
+        {
+            var id = $(".from").find(":selected").val();
+           $.ajax({
+            url : "{{ url('/account/balance/') }}/"+id,
+            method : "get",
+            success: function (balance)
+            {
+               $("#balance").text(balance);
+            }
+           });
+        }
+        function accountChanged1()
+        {
+            var id = $(".to").find(":selected").val();
+           $.ajax({
+            url : "{{ url('/account/balance/') }}/"+id,
+            method : "get",
+            success: function (balance)
+            {
+               $("#balance1").text(balance);
+            }
+           });
+        }
     </script>
 @endsection
