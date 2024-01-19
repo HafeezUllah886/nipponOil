@@ -85,7 +85,7 @@
                                     <tr>
                                         <td>{{ $trans->refID }}</td>
                                         <td>{{ $trans->date }}</td>
-                                        <td>{{ $trans->description }}</td>
+                                        <td>{!! $trans->description !!}</td>
                                         <td>{{ $trans->debt }}</td>
                                     </tr>
                                 @endforeach
