@@ -383,6 +383,8 @@ class reportsController extends Controller
 
             $expenses = Expense::where('warehouseID', auth()->user()->warehouseID)->whereBetween('date', [$start, $end])->sum('amount');
 
+            $discounts = Sale::whereBetween('date', [$start, $end])->sum('discountValue');
+
             return response()->json(
                 [
                     'items' => $sales,
@@ -390,6 +392,7 @@ class reportsController extends Controller
                     'obsolete_loss' => $obsolete_loss,
                     'expenses' => $expenses,
                     'fixed' => round($currentFixed),
+                    'discounts' => $discounts
                 ]
             );
     }
@@ -405,8 +408,16 @@ class reportsController extends Controller
 
     public function customerBalanceData(request $req)
     {
-
+        if($req->has('area'))
+        {
             $accounts = Account::where('type', 'customer')->whereIn('area', $req->area)->get();
+        }
+        else
+        {
+            $accounts = Account::where('type', 'customer')->get();
+        }
+
+
 
 
         foreach($accounts as $account)

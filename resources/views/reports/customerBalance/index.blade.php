@@ -56,6 +56,12 @@
                             <tbody id="data">
 
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5" class="text-end">Total</td>
+                                    <td id="total"></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -75,6 +81,8 @@
   $('#area').selectize({
     maxItems: 5
   });
+
+
 });
     fetchData();
  });
@@ -87,7 +95,9 @@ function fetchData(){
             type: 'GET',
             data: {area : area},
             success: function(response) {
+                var total = 0;
                 response.accounts.forEach(function(acct){
+                    total += acct.balance;
                 html += '<tr>';
                 html += '<td>'+acct.accountNumber+'</td>';
                 html += '<td>'+acct.name+'</td>';
@@ -98,6 +108,8 @@ function fetchData(){
                 html += '</tr>';
                });
                $("#data").html(html);
+               $("#total").text(total);
+               $("#datatable").dataTable();
             },
         });
 }
