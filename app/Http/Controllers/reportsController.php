@@ -471,7 +471,7 @@ class reportsController extends Controller
         $topProducts = Sale::where('customerID', $customer->accountID)
     ->whereBetween('sales.date', [$start, $end])
     ->join('saleOrders', 'sales.saleID', '=', 'saleOrders.saleID')
-    ->groupBy('saleoOrders.productID')
+    ->groupBy('saleOrders.productID')
     ->orderByRaw('SUM(saleOrders.quantity) DESC')
     ->limit(3)
     ->select('saleOrders.productID', DB::raw('SUM(saleOrders.quantity) as totalQuantity'))
