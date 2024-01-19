@@ -39,7 +39,7 @@
                         <tr>
                             <td>{{ $payment->saleID }}</td>
                             <td>{{ $payment->refID }}</td>
-                            <td>{{ $payment->sale->account->name }}</td>
+                            <td>{{ @$payment->sale->account->name }}</td>
                             <td>{{ date('d-m-Y', strtotime($payment->date))}}</td>
                             <td>{{ $payment->account->name }}</td>
                             <td>{{ $payment->description }}</td>
