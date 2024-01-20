@@ -14,7 +14,7 @@ class SaleReturnDetail extends Model
     public $timestamps = false;
     public function saleReturn()
     {
-        return $this->belongsTo(saleReturn::class, 'saleReturnID', 'saleReturnID');
+        return $this->belongsTo(SaleReturn::class, 'saleReturnID', 'saleReturnID');
     }
 }
 
