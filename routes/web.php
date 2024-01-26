@@ -316,6 +316,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/target/view/{id}', [TargetController::class, 'view']);
     Route::get('/target/delete/{id}', [TargetController::class, 'delete']);
 
-    Route::get('/backup', [BackupController::class, 'createBackup'])->name('backup.create');
+    Route::get('/backup', [BackupController::class, 'index'])->name('backup');
+    Route::get('/backup/create', [BackupController::class, 'create'])->name('backup.create');
+    Route::get('/backup/delete/{id}', [BackupController::class, 'delete'])->name('backup.delete');
+    Route::get('/backup/download/{id}', [BackupController::class, 'downloadBackup'])->name('backup.download');
+
 
 });

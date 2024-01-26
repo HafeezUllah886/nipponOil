@@ -12,27 +12,35 @@ use Spatie\Backup\Tasks\Backup\BackupJobFactory;
 
 class BackupController extends Controller
 {
-    public function createBackup()
+
+    public function index()
+    {
+        $data = database_backup::all();
+
+        return view('backup.index', compact('data'));
+    }
+    public function create()
     {
          // Generate the backup
          Artisan::call('database:backup');
 
-         $data = database_backup::first();
+         return back()->with('message', 'Database Backup Created');
+    }
 
-         return response()->download($data->path);
+    public function delete($id)
+    {
+        $backup = database_backup::find($id);
+        @unlink($backup->path);
+        $backup->delete();
 
-        /*  // Get the path to the latest backup file
-         $backupPath = Storage::disk('local')->path(last(Storage::disk('local')->files('/Laravel/')));
+        return back()->with('error', 'Database Dackup Deleted');
+    }
 
-         $size = filesize($backupPath);
-         database_backup::create(
-            [
-                'size' => $size,
-                'path' => $backupPath
-            ]
-         );
-         // Stream the backup file to the browser as a download
-         return response()->json(['message' => 'Backup created successfully']); */
+    public function downloadBackup($id)
+    {
+        $backup = database_backup::find($id);
+
+        return response()->download($backup->path);
     }
 
 
