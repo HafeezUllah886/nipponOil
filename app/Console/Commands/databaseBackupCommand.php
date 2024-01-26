@@ -34,6 +34,6 @@ class databaseBackupCommand extends Command
         ->setPassword(env('DB_PASSWORD'))
         ->setHost(env('DB_HOST'))
         ->setPort(env('DB_PORT'))
-        ->dumpToFile(base_path('dump.sql'));
+        ->dumpToFile(storage_path('/db-backups/dump.sql'));
     }
 }
