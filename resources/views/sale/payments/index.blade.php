@@ -47,6 +47,12 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-end" colspan="6">Total</th>
+                        <th>{{ $salePayments->sum('amount') }}</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>

@@ -5681,17 +5681,17 @@
         },
         {
             "name": "spatie/db-dumper",
-            "version": "3.4.1",
-            "version_normalized": "3.4.1.0",
+            "version": "3.4.2",
+            "version_normalized": "3.4.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/db-dumper.git",
-                "reference": "06d88c596ffa877e5da0bc887b7498765a916cd2"
+                "reference": "59beef7ad612ca7463dfddb64de6e038eb59e0d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/db-dumper/zipball/06d88c596ffa877e5da0bc887b7498765a916cd2",
-                "reference": "06d88c596ffa877e5da0bc887b7498765a916cd2",
+                "url": "https://api.github.com/repos/spatie/db-dumper/zipball/59beef7ad612ca7463dfddb64de6e038eb59e0d7",
+                "reference": "59beef7ad612ca7463dfddb64de6e038eb59e0d7",
                 "shasum": ""
             },
             "require": {
@@ -5701,7 +5701,7 @@
             "require-dev": {
                 "pestphp/pest": "^1.22"
             },
-            "time": "2023-12-16T14:02:23+00:00",
+            "time": "2023-12-25T11:42:15+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -5731,7 +5731,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/db-dumper/tree/3.4.1"
+                "source": "https://github.com/spatie/db-dumper/tree/3.4.2"
             },
             "funding": [
                 {

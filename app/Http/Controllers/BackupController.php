@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\database_backup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -19,8 +20,15 @@ class BackupController extends Controller
          // Get the path to the latest backup file
          $backupPath = Storage::disk('local')->path(last(Storage::disk('local')->files('/Laravel/')));
 
+         $size = filesize($backupPath);
+         database_backup::create(
+            [
+                'size' => $size,
+                'path' => $backupPath
+            ]
+         );
          // Stream the backup file to the browser as a download
-         return response()->download($backupPath);
+         return response()->json(['message' => 'Backup created successfully']);
     }
 
 

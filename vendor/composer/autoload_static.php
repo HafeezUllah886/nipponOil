@@ -584,6 +584,7 @@ class ComposerStaticInit8bc8c65546d5ff8f7c982685fe439831
     public static $classMap = array (
         'App\\Console\\Commands\\CheckDueDates' => __DIR__ . '/../..' . '/app/Console/Commands/CheckDueDates.php',
         'App\\Console\\Commands\\TruncateTable' => __DIR__ . '/../..' . '/app/Console/Commands/TruncateTable.php',
+        'App\\Console\\Commands\\databaseBackupCommand' => __DIR__ . '/../..' . '/app/Console/Commands/databaseBackupCommand.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\AccountController' => __DIR__ . '/../..' . '/app/Http/Controllers/AccountController.php',
@@ -640,6 +641,7 @@ class ComposerStaticInit8bc8c65546d5ff8f7c982685fe439831
         'App\\Http\\Controllers\\hrmController' => __DIR__ . '/../..' . '/app/Http/Controllers/hrmController.php',
         'App\\Http\\Controllers\\payrollController' => __DIR__ . '/../..' . '/app/Http/Controllers/payrollController.php',
         'App\\Http\\Controllers\\permissionsController' => __DIR__ . '/../..' . '/app/Http/Controllers/permissionsController.php',
+        'App\\Http\\Controllers\\profileController' => __DIR__ . '/../..' . '/app/Http/Controllers/profileController.php',
         'App\\Http\\Controllers\\reportsController' => __DIR__ . '/../..' . '/app/Http/Controllers/reportsController.php',
         'App\\Http\\Controllers\\rolesController' => __DIR__ . '/../..' . '/app/Http/Controllers/rolesController.php',
         'App\\Http\\Controllers\\usersController' => __DIR__ . '/../..' . '/app/Http/Controllers/usersController.php',
@@ -686,6 +688,7 @@ class ComposerStaticInit8bc8c65546d5ff8f7c982685fe439831
         'App\\Models\\advancePayments' => __DIR__ . '/../..' . '/app/Models/advancePayments.php',
         'App\\Models\\advances' => __DIR__ . '/../..' . '/app/Models/advances.php',
         'App\\Models\\attendance' => __DIR__ . '/../..' . '/app/Models/attendance.php',
+        'App\\Models\\database_backup' => __DIR__ . '/../..' . '/app/Models/database_backup.php',
         'App\\Models\\displayMessages' => __DIR__ . '/../..' . '/app/Models/displayMessages.php',
         'App\\Models\\empTransactions' => __DIR__ . '/../..' . '/app/Models/empTransactions.php',
         'App\\Models\\employees' => __DIR__ . '/../..' . '/app/Models/employees.php',

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "08828c4e36e510f0cc6fe88bf85e4795",
+    "content-hash": "d57c6fdfdd91aeb7cd78e679384e017b",
     "packages": [
         {
             "name": "brick/math",
@@ -3180,16 +3180,16 @@
         },
         {
             "name": "spatie/db-dumper",
-            "version": "3.4.1",
+            "version": "3.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/db-dumper.git",
-                "reference": "06d88c596ffa877e5da0bc887b7498765a916cd2"
+                "reference": "59beef7ad612ca7463dfddb64de6e038eb59e0d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/db-dumper/zipball/06d88c596ffa877e5da0bc887b7498765a916cd2",
-                "reference": "06d88c596ffa877e5da0bc887b7498765a916cd2",
+                "url": "https://api.github.com/repos/spatie/db-dumper/zipball/59beef7ad612ca7463dfddb64de6e038eb59e0d7",
+                "reference": "59beef7ad612ca7463dfddb64de6e038eb59e0d7",
                 "shasum": ""
             },
             "require": {
@@ -3227,7 +3227,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/db-dumper/tree/3.4.1"
+                "source": "https://github.com/spatie/db-dumper/tree/3.4.2"
             },
             "funding": [
                 {
@@ -3239,7 +3239,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-12-16T14:02:23+00:00"
+            "time": "2023-12-25T11:42:15+00:00"
         },
         {
             "name": "spatie/laravel-backup",

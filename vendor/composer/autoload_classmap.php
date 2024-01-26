@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'App\\Console\\Commands\\CheckDueDates' => $baseDir . '/app/Console/Commands/CheckDueDates.php',
     'App\\Console\\Commands\\TruncateTable' => $baseDir . '/app/Console/Commands/TruncateTable.php',
+    'App\\Console\\Commands\\databaseBackupCommand' => $baseDir . '/app/Console/Commands/databaseBackupCommand.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\AccountController' => $baseDir . '/app/Http/Controllers/AccountController.php',
@@ -64,6 +65,7 @@ return array(
     'App\\Http\\Controllers\\hrmController' => $baseDir . '/app/Http/Controllers/hrmController.php',
     'App\\Http\\Controllers\\payrollController' => $baseDir . '/app/Http/Controllers/payrollController.php',
     'App\\Http\\Controllers\\permissionsController' => $baseDir . '/app/Http/Controllers/permissionsController.php',
+    'App\\Http\\Controllers\\profileController' => $baseDir . '/app/Http/Controllers/profileController.php',
     'App\\Http\\Controllers\\reportsController' => $baseDir . '/app/Http/Controllers/reportsController.php',
     'App\\Http\\Controllers\\rolesController' => $baseDir . '/app/Http/Controllers/rolesController.php',
     'App\\Http\\Controllers\\usersController' => $baseDir . '/app/Http/Controllers/usersController.php',
@@ -110,6 +112,7 @@ return array(
     'App\\Models\\advancePayments' => $baseDir . '/app/Models/advancePayments.php',
     'App\\Models\\advances' => $baseDir . '/app/Models/advances.php',
     'App\\Models\\attendance' => $baseDir . '/app/Models/attendance.php',
+    'App\\Models\\database_backup' => $baseDir . '/app/Models/database_backup.php',
     'App\\Models\\displayMessages' => $baseDir . '/app/Models/displayMessages.php',
     'App\\Models\\empTransactions' => $baseDir . '/app/Models/empTransactions.php',
     'App\\Models\\employees' => $baseDir . '/app/Models/employees.php',
