@@ -15,9 +15,9 @@ class BackupController extends Controller
     public function createBackup()
     {
          // Generate the backup
-         Artisan::call('backup:run --disable-notifications --only-db');
+         Artisan::call('database:backup');
 
-         // Get the path to the latest backup file
+        /*  // Get the path to the latest backup file
          $backupPath = Storage::disk('local')->path(last(Storage::disk('local')->files('/Laravel/')));
 
          $size = filesize($backupPath);
@@ -28,7 +28,7 @@ class BackupController extends Controller
             ]
          );
          // Stream the backup file to the browser as a download
-         return response()->json(['message' => 'Backup created successfully']);
+         return response()->json(['message' => 'Backup created successfully']); */
     }
 
 
