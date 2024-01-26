@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('database_backups', function (Blueprint $table) {
             $table->id();
-            $table->string('size');
             $table->text('path');
             $table->timestamps();
         });
