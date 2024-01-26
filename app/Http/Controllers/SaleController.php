@@ -373,7 +373,7 @@ class SaleController extends Controller
 
     public function destroy(Sale $sale, Request $request)
     {
-        $receive = $sale->saleReceive->count();
+        $receive = $sale->saleReceive->sum('receivedQty');
         $payment = $sale->salePayments->count();
         if ($receive > 0){
             return back()->with('error', 'You can not delete this sale as it has some products delivered');
