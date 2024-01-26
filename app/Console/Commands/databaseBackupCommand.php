@@ -37,6 +37,6 @@ class databaseBackupCommand extends Command
         ->setPort(env('DB_PORT'))
         ->dumpToFile(storage_path("/db-backups/$date.sql"));
 
-        return response()->download(storage_path("/db-backups/$date.sql"));
+       /*  return response()->download(storage_path("/db-backups/$date.sql")); */
     }
 }
