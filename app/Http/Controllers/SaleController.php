@@ -395,6 +395,7 @@ class SaleController extends Controller
         {
             return view('pos.print', compact('sale'));
         }
+
         return view('sale.print', compact('sale'));
     }
 

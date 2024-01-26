@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-md-3" >
                         <label for="category" class="form-label col-md-12"> Category:
-                            <select name="category" id="category" class="form-select" required>
+                            <select name="category" id="category" multiple  required>
                                 @foreach ($category as $cat)
                                     <option value="{{ $cat->categoryID }}" >{{ $cat->name }}</option>
                                 @endforeach
@@ -133,6 +133,7 @@
     <link href="{{ asset('src/assets/css/light/dashboard/dash_2.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('src/assets/css/dark/components/tabs.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('src/assets/css/light/components/tabs.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('src/plugins/src/selectize/selectize.min.css') }}">
 @endsection
 
 @section('more-script')
@@ -144,7 +145,13 @@
     <script src="{{ asset('src/plugins/src/apex/apexcharts.min.js') }}"></script>
     {{-- <script src="{{ asset('src/plugins/src/apex/custom-apexcharts.js') }}"></script> --}}
     <script src=" {{ asset('../src/assets/js/dashboard/dash_1.js') }} "></script>
+    <script src="{{ asset('src/plugins/src/selectize/selectize.min.js') }}"></script>
     <script type="text/javascript">
+    $(document).ready(function() {
+  $('#category').selectize({
+    maxItems: 5
+  });
+});
        $(function() {
         var currentDate = moment();
         /* var start = currentDate.clone().startOf('month');

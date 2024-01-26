@@ -186,10 +186,22 @@
                     @endphp
                     <td colspan="4" class="text-right" style="font-size: 20px"><strong>{{ number_format($net, 2) }}</strong></td>
                     </tr>
+                    @php
+                        $bill_balance = $net - $sale->salePayments->sum('amount');
+                        $account_balance = getAccountBalance($sale->account->accountID);
+                    @endphp
+                    <tr>
+                        <td colspan="4" class="text-right">Previous Balance:</td>
+                        <td colspan="4" class="text-right" style="font-size: 20px"><strong>{{ number_format($account_balance - $bill_balance, 2) }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-right">Bill Balance:</td>
+                        <td colspan="4" class="text-right" style="font-size: 20px"><strong>{{ number_format($bill_balance, 2) }}</strong></td>
+                    </tr>
                     <tr>
                         <td colspan="4" class="text-right">Account Balance:</td>
                         <td colspan="4" class="text-right" style="font-size: 20px"><strong>{{ number_format(getAccountBalance($sale->account->accountID), 2) }}</strong></td>
-                        </tr>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -211,7 +223,7 @@
                 <tr>
                     <td width="">Customer Name: </td>
                     <td width=""> {{ $sale->account->name }}</td>
-                    <td width="40%"></td>
+                    <td width="30%"></td>
                     <td width="">Invoice No. </td>
                     <td class="text-right">{{ $sale->saleID }} </td>
                 </tr>
