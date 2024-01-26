@@ -40,12 +40,7 @@
                     </tr>
                 @endforeach
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <th colspan="5" class="text-end">Total</th>
-                        <th>{{ $data->sum('amount') }}</th>
-                    </tr>
-                </tfoot>
+
 
             </table>
         </div>
