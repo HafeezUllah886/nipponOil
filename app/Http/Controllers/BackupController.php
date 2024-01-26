@@ -17,6 +17,10 @@ class BackupController extends Controller
          // Generate the backup
          Artisan::call('database:backup');
 
+         $data = database_backup::first();
+
+         return response()->download($data->path);
+
         /*  // Get the path to the latest backup file
          $backupPath = Storage::disk('local')->path(last(Storage::disk('local')->files('/Laravel/')));
 
