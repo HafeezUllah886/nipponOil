@@ -27,6 +27,7 @@ class databaseBackupCommand extends Command
      */
     public function handle()
     {
+        $date = now();
        File::put('dump.sql', '');
         Mysql::create()
         ->setDbName(env('DB_DATABASE'))
@@ -34,6 +35,6 @@ class databaseBackupCommand extends Command
         ->setPassword(env('DB_PASSWORD'))
         ->setHost(env('DB_HOST'))
         ->setPort(env('DB_PORT'))
-        ->dumpToFile(storage_path('/db-backups/dump.sql'));
+        ->dumpToFile(storage_path("/db-backups/$date.sql"));
     }
 }
