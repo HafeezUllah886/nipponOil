@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\database_backup;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Spatie\DbDumper\Databases\MySql;;
@@ -28,6 +29,7 @@ class databaseBackupCommand extends Command
     public function handle()
     {
         $date = now();
+        $path = storage_path("/db-backups/$date.sql");
        File::put('dump.sql', '');
         Mysql::create()
         ->setDbName(env('DB_DATABASE'))
@@ -35,8 +37,13 @@ class databaseBackupCommand extends Command
         ->setPassword(env('DB_PASSWORD'))
         ->setHost(env('DB_HOST'))
         ->setPort(env('DB_PORT'))
-        ->dumpToFile(storage_path("/db-backups/$date.sql"));
+        ->dumpToFile($path);
 
+        database_backup::create(
+            [
+                'path' => $path,
+            ]
+        );
        /*  return response()->download(storage_path("/db-backups/$date.sql")); */
     }
 }
