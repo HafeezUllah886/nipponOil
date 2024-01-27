@@ -17,34 +17,47 @@
             </div>
         </div>
         <!--  END BREADCRUMBS  -->
-
+        @php
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+        $firstDayOfMonth = date('Y-m-01', strtotime("$currentYear-$currentMonth-01"));
+        $lastDayOfMonth = date('Y-m-t', strtotime("$currentYear-$currentMonth-01"));
+    @endphp
         <div class="row layout-top-spacing">
             <div class="col-12">
                 <div class="row " >
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="start">From</label>
-                            <input type="date" name="start" onchange="update()" value="{{ $start }}" class="form-control" id="start">
+                            <input type="date" name="start" value="{{ $firstDayOfMonth }}" class="form-control" id="start">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="end">To</label>
-                            <input type="date" name="end" onchange="update()" value="{{ $end }}" class="form-control" id="end">
+                            <input type="date" name="end" value="{{ $lastDayOfMonth }}" class="form-control" id="end">
                         </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="area" class="form-label col-md-12 mt-2"> Area:
+                            <select name="area" id="area" multiple required>
+                                @foreach ($areas as $key => $area)
+                                    <option value="{{$area}}">{{ $area}}</option>
+                                @endforeach
+                            </select>
+                        </label>
                     </div>
                     <div class="col-md-3" >
                         <label for="customer">Customer</label>
-                            <select name="customer" id="customer" onchange="update()" class="form-select" required>
-                                @foreach ($customers as $customer1)
+                            <select name="customer" id="customer" multiple required>
+                               {{--  @foreach ($customers as $customer1)
                                     <option value="{{ $customer1->accountID }}" {{ $customer1->accountID == $customer->accountID ? "selected" : "" }}>{{ $customer1->name }}</option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
 
                     </div>
-
-                    <div class="col-md-2 d-none d-flex align-items-center" id="loader">
-                            <div class="spinner-border align-self-center loader-sm d-flex align-items-center justify-content-center"></div> &nbsp;Loading
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-info mb-3" onclick="getData()">Refresh</button>
                     </div>
                 </div>
 
@@ -52,52 +65,93 @@
         </div>
 
         <div class="row">
-            <div id="chartBar" class="col-md-6 layout-spacing">
-                <div class="statbox widget box box-shadow">
-                    <div class="widget-header">
-                        <div class="row">
-                            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4>Top Sellers (Products)</h4>
+            <div class="col-md-6">
+                <div class="row">
+                    <div id="chartBar" class="col-12 layout-spacing">
+                        <div class="statbox widget box box-shadow">
+                            <div class="widget-header">
+                                <div class="row">
+                                    <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                        <h4>Top Sellers (Products)</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-content widget-content-area" id="chart">
+                                <div id="s-bar" class=""></div>
                             </div>
                         </div>
                     </div>
-                    <div class="widget-content widget-content-area" id="chart">
-                        <div id="s-bar" class=""></div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Customers</h5>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="w-100 table table-bordered">
+                                    <thead>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Balance</th>
+                                    </thead>
+                                    <tbody id="customerData">
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2" class="text-end">Total</td>
+                                            <td id="customerTotal"></td>
+                                        </tr>
+
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-6" >
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Transactions</h5>
-                    </div>
-                    <div class="card-body table-responsive">
-                        <table class="w-100 table table-bordered datatable" id="datatable">
-                            <thead>
-                                <th>#</th>
-                                <th>Date</th>
-                                <th>Desc</th>
-                                <th>Amount</th>
-                            </thead>
-                            <tbody id="data">
-                                @foreach ($transactions as $trans)
-                                    <tr>
-                                        <td>{{ $trans->refID }}</td>
-                                        <td>{{ $trans->date }}</td>
-                                        <td>{!! $trans->description !!}</td>
-                                        <td>{{ $trans->debt }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                            <tbody>
-                                <tr>
-                                    <td colspan="3" class="text-end">Total</td>
-                                    <td>{{ $trans->sum('debt') }}</td>
-                                </tr>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Transactions</h5>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="w-100 table table-bordered">
+                                    <thead>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Desc</th>
+                                        <th>Amount</th>
+                                    </thead>
+                                    <tbody id="trData">
 
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="text-end">Total</td>
+                                            <td id="trTotal"></td>
+                                        </tr>
+
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="chartBar" class="col-12 layout-spacing">
+                        <div class="statbox widget box box-shadow">
+                            <div class="widget-header">
+                                <div class="row">
+                                    <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                        <h4>Top Sellers (Products)</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-content widget-content-area" id="chart">
+                                <div id="x-bar" class=""></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -119,10 +173,12 @@
     <link href="{{ asset('src/assets/css/light/dashboard/dash_2.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('src/assets/css/dark/components/tabs.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('src/assets/css/light/components/tabs.css') }}" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="{{ asset('src/plugins/src/selectize/selectize.min.css') }}">
 @endsection
 
 @section('more-script')
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
@@ -130,20 +186,85 @@
     <script src="{{ asset('src/plugins/src/apex/apexcharts.min.js') }}"></script>
     {{-- <script src="{{ asset('src/plugins/src/apex/custom-apexcharts.js') }}"></script> --}}
     <script src=" {{ asset('../src/assets/js/dashboard/dash_1.js') }} "></script>
+    <script src="{{ asset('src/plugins/src/selectize/selectize.min.js') }}"></script>
+
     <script type="text/javascript">
-    $(document).ready(function(){
-        var names = <?php echo json_encode($product_names); ?>;
-        var qtys = <?php echo json_encode($product_qtys); ?>;
-        updateChart(qtys,names);
+    $(document).ready(function () {
+    $('#area').selectize({
+        maxItems: 5
+    });
+    var $customerSelect = $('#customer').selectize({
+        maxItems: 5,
+        valueField: 'accountID', // Assuming your Customer model has an 'id' attribute
+        labelField: 'name', // Assuming your Customer model has a 'name' attribute
+        searchField: 'name',
+        create: false,
     });
 
-    function update()
-    {
-        var start = $("#start").val();
-        var end = $("#end").val();
-        var customer = $("#customer").find(":selected").val();
+    var customerSelectize = $customerSelect[0].selectize;
+    getCustomers();
+    function getCustomers() {
+        var area = $("#area").val();
+        $.ajax({
+            url: "{{ url('/reports/getCustomers') }}",
+            type: "GET",
+            data: { area: area },
+            success: function (data) {
+                // Update Selectize options with the received data
+                customerSelectize.clearOptions();
+                customerSelectize.addOption(data);
+            },
+            error: function (error) {
+                console.error('Error fetching customers:', error);
+            }
+        });
+    }
 
-        window.location.href = "{{ url('/reports/customers/') }}/"+customer+"/"+start+"/"+end;
+    // Assuming you want to call getCustomers when the #area select changes
+    $('#area').on("change", function () {
+        console.log("working");
+        getCustomers();
+    });
+});
+
+    getData();
+    function getData()
+    {
+        var area = $('#area').val();
+        var customer = $('#customer').val();
+        var start = $('#start').val();
+        var end = $('#end').val();
+        var trHTML = '';
+        var customerHTML = '';
+        $.ajax({
+            url: '{{ url("/reports/customers/data") }}',
+            type: 'GET',
+            data: {area: area, customer: customer, start: start, end: end},
+            success: function (response){
+                console.log(response);
+                response.transactions.forEach(function (tr){
+                    trHTML += '<tr>';
+                    trHTML += '<td>'+tr.refID+'</td>';
+                    trHTML += '<td>'+tr.date+'</td>';
+                    trHTML += '<td>'+tr.description+'</td>';
+                    trHTML += '<td>'+tr.debt+'</td>';
+                    trHTML += '</td>';
+                });
+
+                response.customers.forEach(function (cust){
+                    customerHTML += '<tr>';
+                    customerHTML += '<td>'+cust.accountID+'</td>';
+                    customerHTML += '<td>'+cust.name+'</td>';
+                    customerHTML += '<td>'+cust.balance+'</td>';
+                });
+                $('#trData').html(trHTML);
+                $('#customerData').html(customerHTML);
+                    $('#trTotal').html(response.trTotal);
+                    $('#customerTotal').html(response.customerTotal);
+                    updateChart(response.topProductQtys, response.topProductNames);
+                    updateChart1(response.topCustomerTotals, response.topCustomerNames);
+            }
+        });
     }
 
 function updateChart(sold, names){
@@ -185,7 +306,46 @@ var sBar = {
                     categories: ['product1', 'product2']
                 }
                 }
+                //////////////////////////////////////////////////////////
+                function updateChart1(amount, title){
+    // Update the data and categories in your configuration object
+    xBar.series[0].data = amount;
+    xBar.xaxis.categories = title;
 
+    // Create a new ApexCharts instance with the updated configuration
+    var updatedChart1 = new ApexCharts(
+        document.querySelector("#x-bar"),
+        xBar
+    );
+
+    // Call the render method to re-render the chart
+    updatedChart1.render();
+}
+
+var xBar = {
+                chart: {
+                    fontFamily: 'Nunito, Arial, sans-serif',
+                    height: 350,
+                    type: 'bar',
+                    toolbar: {
+                    show: false,
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                series: [{
+                    data: [5,10]
+                }],
+                xaxis: {
+                    categories: ['product1', 'product2']
+                }
+                }
 
 
         </script>

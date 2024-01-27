@@ -469,9 +469,10 @@ class reportsController extends Controller
         return view('reports.taxReport.index', compact('purchases', 'start', 'end'));
     }
 
-    public function customers($id = 0, $start = 1, $end = 1)
+    public function customers()
     {
-        if($id == 0)
+        $areas = Account::where('type', 'customer')->distinct()->pluck('area');
+        /* if($id == 0)
         {
             $customer = Account::where('type', 'Customer')->orderBy('accountID', 'desc')->first();
             $currentYear = date('Y');
@@ -486,17 +487,64 @@ class reportsController extends Controller
 
         $customers = Account::where('type', 'Customer')->get();
 
-        $topProducts = Sale::where('customerID', $customer->accountID)
-    ->whereBetween('sales.date', [$start, $end])
-    ->join('saleOrders', 'sales.saleID', '=', 'saleOrders.saleID')
-    ->groupBy('saleOrders.productID')
-    ->orderByRaw('SUM(saleOrders.quantity) DESC')
-    ->limit(3)
-    ->select('saleOrders.productID', DB::raw('SUM(saleOrders.quantity) as totalQuantity'))
-    ->get();
-
-
         // You can then retrieve the product details using the productID
+
+
+        $transactions = Transaction::where('accountID', $customer->accountID)
+        ->where('debt', '>', 0)
+        ->whereBetween('date', [$start, $end])
+        ->get(); */
+
+        return view('reports.customerSummary.index', compact('areas'));
+    }
+
+    public function getCustomers(request $req)
+    {
+        if(!$req->area)
+        {
+            $customers = Account::where('type', 'customer')->get();
+        }
+        else
+        {
+            $customers = Account::whereIn('area', $req->area)->where('type', 'customer')->get();
+        }
+
+
+        return response()->json($customers);
+    }
+
+    public function customersData(request $req)
+    {
+        if(!$req->area && !$req->customer)
+        {
+            $customers = Account::where('type', 'customer')->where('status', 'Active')->get();
+        }
+        else
+        {
+            if(!$req->customer && $req->area)
+            {
+                $customers = Account::where('type', 'customer')->whereIn('area', $req->area)->where('status', 'Active')->get();
+            }
+            else
+            {
+                $customers = Account::where('type', 'customer')->whereIn('accountID', $req->customer)->where('status', 'Active')->get();
+            }
+        }
+
+        foreach($customers as $customer)
+        {
+            $customer->balance = getAccountBalance($customer->accountID);
+        }
+
+        $topProducts = Sale::whereIn('customerID', $customers->pluck('accountID'))
+        ->whereBetween('sales.date', [$req->start, $req->end])
+        ->join('saleOrders', 'sales.saleID', '=', 'saleOrders.saleID')
+        ->groupBy('saleOrders.productID')
+        ->orderByRaw('SUM(saleOrders.quantity) DESC')
+        ->limit(15)
+        ->select('saleOrders.productID', DB::raw('SUM(saleOrders.quantity) as totalQuantity'))
+        ->get();
+
         $product_names = [];
         $product_qtys = [];
         foreach ($topProducts as $product) {
@@ -508,13 +556,49 @@ class reportsController extends Controller
             $product_qtys[] = $product->totalQuantity;
         }
 
-        $transactions = Transaction::where('accountID', $customer->accountID)
+        $transactions = Transaction::whereIn('accountID', $customers->pluck('accountID'))
         ->where('debt', '>', 0)
-        ->whereBetween('date', [$start, $end])
+        ->whereBetween('date', [$req->start, $req->end])
         ->get();
 
-        return view('reports.customerSummary.index', compact('customer', 'start', 'end', 'customers', 'product_names', 'product_qtys', 'transactions'));
-    }
+        // Get top customers based on total transactions
+            $topCustomers = $transactions->groupBy('accountID')
+            ->map(function ($transactions, $accountId) {
+                return [
+                    'accountID' => $accountId,
+                    'totalDebt' => $transactions->sum('debt'),
+                ];
+            })
+            ->sortByDesc('totalDebt')
+            ->take(10); // Adjust the limit as needed
 
+            // Fetch customer names for the top customers
+            $topCustomersData = $topCustomers->map(function ($customer) {
+            $customerData = Account::find($customer['accountID']);
+            return [
+                'name' => $customerData->name,
+                'totalDebt' => $customer['totalDebt'],
+            ];
+            });
+            $customer_names = [];
+            $customer_totals = [];
+            foreach ($topCustomersData as $topCustomer) {
+                $customer_names[] = $topCustomer['name'];
+                $customer_totals[] = $topCustomer['totalDebt'];
+            }
+
+            return response()->json(
+                [
+                    'topProductNames' =>  $product_names,
+                    'topProductQtys' => $product_qtys,
+                    'customers' => $customers,
+                    'transactions' => $transactions,
+                    'trTotal' => $transactions->sum('debt'),
+                    'topCustomerNames' => $customer_names,
+                    'topCustomerTotals' => $customer_totals,
+                    'customerTotal' => $customers->sum('balance'),
+                ]
+            );
+    }
 }
 

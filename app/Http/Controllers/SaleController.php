@@ -383,9 +383,9 @@ class SaleController extends Controller
             $sale->saleOrders()->delete();
             $sale->saleReceive()->delete();
             $sale->salePayments()->delete();
+            Transaction::where('refID', $sale->refID)->delete();
             $sale->delete();
             return back()->with('message', 'Sale Deleted Successfully!');
-
         }
     }
 

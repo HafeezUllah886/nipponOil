@@ -217,7 +217,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/reports/taxReport/{start}/{end}', [reportsController::class, 'taxReport']);
 
-    Route::get('/reports/customers/{id?}/{start?}/{end?}', [reportsController::class, 'customers']);
+    Route::get('/reports/customers', [reportsController::class, 'customers']);
+    Route::get('/reports/customers/data', [reportsController::class, 'customersData']);
+    Route::get('/reports/getCustomers', [reportsController::class, 'getCustomers']);
 
     Route::get('/hrm/employees', [hrmController::class, 'employees']);
     Route::get('/hrm/employees/add', [hrmController::class, 'employeesAdd']);
