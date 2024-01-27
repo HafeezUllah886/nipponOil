@@ -81,8 +81,6 @@
   $('#area').selectize({
     maxItems: 5
   });
-
-
 });
     fetchData();
  });
@@ -98,14 +96,14 @@ function fetchData(){
                 var total = 0;
                 response.accounts.forEach(function(acct){
                     total += acct.balance;
-                html += '<tr>';
-                html += '<td>'+acct.accountNumber+'</td>';
-                html += '<td>'+acct.name+'</td>';
-                html += '<td>'+acct.phone+'</td>';
-                html += '<td>'+acct.address+'</td>';
-                html += '<td>'+acct.area+'</td>';
-                html += '<td>'+acct.balance+'</td>';
-                html += '</tr>';
+                    html += '<tr>';
+                    html += '<td>'+acct.accountNumber+'</td>';
+                    html += '<td>'+acct.name+'</td>';
+                    html += '<td>'+acct.phone+'</td>';
+                    html += '<td>'+acct.address+'</td>';
+                    html += '<td>'+acct.area+'</td>';
+                    html += '<td>'+acct.balance+'</td>';
+                    html += '</tr>';
                });
                $("#data").html(html);
                $("#total").text(total);
@@ -117,7 +115,6 @@ function fetchData(){
 $("#print").click(function(){
     var area = $("#area").val();
     var url = "{{ url('/reports/customerBalance/print?areas=') }}" + area.join(',');
-
     window.open(url, "_self");
 });
 

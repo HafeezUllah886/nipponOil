@@ -56,6 +56,9 @@
                         </label>
                         @endcannot
                     </div>
+                    <div class="col-md-2 d-flex align-items-center">
+                        <button class="btn btn-info" id="refresh">Refresh</button>
+                    </div>
                     <div class="col-md-2 d-none d-flex align-items-center" id="loader">
                             <div class="spinner-border align-self-center loader-sm d-flex align-items-center justify-content-center"></div> &nbsp;Loading
                     </div>
@@ -161,7 +164,7 @@
         $("#warehouse").on('change', function (){
             fetchData(start, end);
         });
-        $("#category").on('change', function (){
+        $("#refresh").on('click', function (){
             fetchData(start, end);
         });
         function cb(start, end) {
@@ -196,18 +199,20 @@ function fetchData(start, end){
     var startDate = start.format('YYYY-MM-DD');
         var endDate = end.format('YYYY-MM-DD');
         var warehouse = $("#warehouse").find(":selected").val();
-        var category = $("#category").find(":selected").val();
+        var category = $("#category").val();
 
         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         $("#loader").removeClass("d-none");
         // Send an AJAX request whenever the date range changes
         $.ajax({
-            url: "{{url('/reports/productsSummary/data/')}}/"+startDate+"/"+endDate+"/"+warehouse+"/"+category,
+            url: "{{url('/reports/productsSummary/data')}}",
             type: 'GET',
-           /*  data: {
+            data: {
                 startDate: startDate,
-                endDate: endDate
-            }, */
+                endDate: endDate,
+                warehouse:warehouse,
+                category: category
+            },
             success: function(response) {
 
                response.products.forEach(function(pa){

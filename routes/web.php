@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\ConfirmPasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\customerController;
+use App\Http\Controllers\DiscountsController;
 use App\Http\Controllers\DisplayMessagesController;
 use App\Http\Controllers\empStatementController;
 use App\Http\Controllers\ExpenseCategoryController;
@@ -70,7 +71,6 @@ Auth::routes();
 Route::middleware('auth')->group(function () {
 
     Route::get('/account/index/{type}', [AccountController::class, "index"]);
-
 
     Route::get('/account/depositWithdrawals', [WithdrawalDepositController::class, 'index']);
     Route::get('/account/depositWithdrawals/create', [WithdrawalDepositController::class, 'create']);
@@ -200,7 +200,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/summaryReport/data/{start}/{end}/{warehouse}',[reportsController::class, 'summaryReportData']);
 
     Route::get('/reports/productsSummary',[reportsController::class, 'productsSummary']);
-    Route::get('/reports/productsSummary/data/{start}/{end}/{warehouse}/{category}',[reportsController::class, 'productsSummaryData']);
+    Route::get('/reports/productsSummary/data',[reportsController::class, 'productsSummaryData']);
 
     Route::get('/reports/productExpiry', [reportsController::class, 'productExpiry']);
     Route::get('/reports/productExpiry/data/{warehouse}',[reportsController::class, 'productExpiryData']);
@@ -320,6 +320,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/backup/create', [BackupController::class, 'create'])->name('backup.create');
     Route::get('/backup/delete/{id}', [BackupController::class, 'delete'])->name('backup.delete');
     Route::get('/backup/download/{id}', [BackupController::class, 'downloadBackup'])->name('backup.download');
+
+    Route::get('/discount', [DiscountsController::class, 'index']);
+    Route::get('/discount/create', [DiscountsController::class, 'create']);
+    Route::post('/discount/store', [DiscountsController::class, 'store']);
+    Route::get('/discount/delete/{ref}', [DiscountsController::class, 'delete']);
 
 
 });

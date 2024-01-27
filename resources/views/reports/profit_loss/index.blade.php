@@ -84,7 +84,7 @@
                                     <th id="obsolete" class="text-end"></th>
                                 </tr>
                                 <tr>
-                                    <th colspan="6" class="text-end">Bill Discounts (-)</th>
+                                    <th colspan="6" class="text-end">Discounts (-)</th>
                                     <th id="discounts" class="text-end"></th>
                                 </tr>
                                 <tr id="netProfit">

@@ -122,8 +122,12 @@
                     <td style="font-weight:900;text-align:right;">- {{$expenses->sum('amount')}}</td>
                 </tr>
                 <tr>
+                    <td style="font-weight:900;">Discounts</td>
+                    <td style="font-weight:900;text-align:right;">- {{$discounts->sum('amount')}}</td>
+                </tr>
+                <tr>
                     <td style="font-weight:900;">Profit/Loss</td>
-                    <td style="font-weight:900;text-align:right;">{{ ($sale_amount + $purchaseReturns_amount) - ($purchases_amount + $saleReturns_amount + $expenses->sum('amount'))}}</td>
+                    <td style="font-weight:900;text-align:right;">{{ ($sale_amount + $purchaseReturns_amount) - ($purchases_amount + $saleReturns_amount + $expenses->sum('amount') - $discounts->sum('amount'))}}</td>
                 </tr>
             </table>
         </div>

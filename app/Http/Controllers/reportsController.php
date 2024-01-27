@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Category;
+use App\Models\discounts;
 use App\Models\employees;
 use App\Models\Expense;
 use App\Models\fixed_expenses;
@@ -99,6 +100,7 @@ class reportsController extends Controller
 
         ////////////////////////////Profit / Loss ////////////////////////////////
         $expenses = Expense::whereBetween('date', [$start, $end])->get();
+        $discounts = discounts::whereBetween('date', [$start, $end])->get();
         if($warehouse != 0)
         {
 
@@ -114,7 +116,7 @@ class reportsController extends Controller
         'purchases', 'purchasePaid', 'purchases_amount',
         'saleReturns', 'saleReturns_amount', 'saleReturnPaid',
         'purchaseReturns', 'purchaseReturns_amount', 'purchaseReturnPaid',
-        'expenses',
+        'expenses', 'discounts'
 ));
     }
 
@@ -126,8 +128,19 @@ class reportsController extends Controller
     }
 
 
-    public function productsSummaryData($start, $end, $warehouse, $category){
-        $products = Product::with('brand', 'category')->where('categoryID', $category)->get();
+    public function productsSummaryData(request $req){
+        $warehouse = $req->warehouse;
+        $start = $req->start;
+        $end = $req->end;
+        $category = $req->category;
+        if($category == null)
+        {
+            $products = Product::with('brand', 'category')->where('categoryID', 1)->get();
+        }
+        else
+        {
+            $products = Product::with('brand', 'category')->whereIn('categoryID', $category)->get();
+        }
 
        foreach($products as $product){
         if($warehouse == 0)
@@ -154,15 +167,23 @@ class reportsController extends Controller
             $saleReturn = SaleReturnDetail::whereHas('saleReturn', function($query) use ($warehouse){
                 $query->where('warehouseID', $warehouse);
             })->where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
-
         }
-        $product->purchasePrice = $purchases->avg('netUnitCost');
-        $product->salePrice = $sales->avg('netUnitCost');
-        if($product->purchasePrice == 0){
+        if($purchases->sum('subTotal') > 0 && $purchases->sum('quantity') > 0)
+        {
+            $product->purchasePrice = $purchases->sum('subTotal') / $purchases->sum('quantity');
+        }
+        else
+        {
             $purchase = PurchaseOrder::where('productID', $product->productID)->orderBy('purchaseOrderID', 'desc')->first();
             $product->purchasePrice = $purchase->netUnitCost ?? 0;
         }
-        if($product->salePrice == 0){
+
+        if($sales->sum('subTotal') > 0 && $sales->sum('quantity') > 0)
+        {
+            $product->salePrice = $sales->sum('subTotal') / $sales->sum('quantity');
+        }
+        else
+        {
             $sale = saleOrder::where('productID', $product->productID)->orderBy('saleOrderID', 'desc')->first();
             $product->salePrice = $sale->netUnitCost ?? 0;
         }
@@ -384,7 +405,7 @@ class reportsController extends Controller
             $expenses = Expense::where('warehouseID', auth()->user()->warehouseID)->whereBetween('date', [$start, $end])->sum('amount');
 
             $discounts = Sale::whereBetween('date', [$start, $end])->sum('discountValue');
-
+            $extraDiscounts = discounts::whereBetween('date', [$start, $end])->sum('amount');
             return response()->json(
                 [
                     'items' => $sales,
@@ -392,7 +413,7 @@ class reportsController extends Controller
                     'obsolete_loss' => $obsolete_loss,
                     'expenses' => $expenses,
                     'fixed' => round($currentFixed),
-                    'discounts' => $discounts
+                    'discounts' => $discounts + $extraDiscounts,
                 ]
             );
     }
@@ -416,9 +437,6 @@ class reportsController extends Controller
         {
             $accounts = Account::where('type', 'customer')->get();
         }
-
-
-
 
         foreach($accounts as $account)
         {
