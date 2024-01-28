@@ -65,9 +65,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                <div class="row">
-                    <div id="chartBar" class="col-12 layout-spacing">
+            <div id="chartBar" class="col-6 layout-spacing">
                         <div class="statbox widget box box-shadow">
                             <div class="widget-header">
                                 <div class="row">
@@ -80,44 +78,30 @@
                                 <div id="s-bar" class=""></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">Customers</h5>
-                            </div>
-                            <div class="card-body table-responsive">
-                                <table class="w-100 table table-bordered">
-                                    <thead>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Balance</th>
-                                    </thead>
-                                    <tbody id="customerData">
-
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="2" class="text-end">Total</td>
-                                            <td id="customerTotal"></td>
-                                        </tr>
-
-                                    </tfoot>
-                                </table>
+            </div>
+            <div id="chartBar" class="col-6 layout-spacing">
+                <div class="statbox widget box box-shadow">
+                    <div class="widget-header">
+                        <div class="row">
+                            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                <h4>Top Customers (By Payments)</h4>
                             </div>
                         </div>
                     </div>
+                    <div class="widget-content widget-content-area" id="chart">
+                        <div id="x-bar" class=""></div>
+                    </div>
                 </div>
-            </div>
+        </div>
+        </div>
+        <div class="row">
 
-            <div class="col-md-6" >
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
+            <div class="col-12">
+                        <div class="card" >
                             <div class="card-header">
                                 <h5 class="card-title">Transactions</h5>
                             </div>
-                            <div class="card-body table-responsive">
+                            <div class="card-body">
                                 <table class="w-100 table table-bordered">
                                     <thead>
                                         <th>#</th>
@@ -131,7 +115,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="3" class="text-end">Total</td>
+                                            <td colspan="4" class="text-end">Total</td>
                                             <td id="trTotal"></td>
                                         </tr>
 
@@ -139,23 +123,33 @@
                                 </table>
                             </div>
                         </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Customers</h5>
                     </div>
-                    <div id="chartBar" class="col-12 layout-spacing">
-                        <div class="statbox widget box box-shadow">
-                            <div class="widget-header">
-                                <div class="row">
-                                    <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                        <h4>Top Customers (By Payments)</h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="widget-content widget-content-area" id="chart">
-                                <div id="x-bar" class=""></div>
-                            </div>
-                        </div>
+                    <div class="card-body">
+                        <table class="w-100 table table-bordered">
+                            <thead>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Balance</th>
+                            </thead>
+                            <tbody id="customerData">
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2" class="text-end">Total</td>
+                                    <td id="customerTotal"></td>
+                                </tr>
+
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
-            </div>
+    </div>
         </div>
 
     </div>
