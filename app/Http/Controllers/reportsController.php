@@ -195,7 +195,6 @@ class reportsController extends Controller
         $product->purchaseReturnAmount = $purchaseReturn->sum('subTotal');
         $product->saleReturnAmount = $saleReturn->sum('subTotal');
 
-
         $product->purchaseQty = $purchases->sum('quantity');
         $product->saleQty = $sales->sum('quantity');
         $product->purchaseReturnQty = $purchaseReturn->sum('returnQuantity');

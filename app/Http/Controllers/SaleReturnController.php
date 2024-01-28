@@ -181,11 +181,11 @@ class SaleReturnController extends Controller
                 'createdBy' => auth()->user()->email,
             ]);
 
-            addTransaction($request->account, $request->date, 'Sale', $remaining, $remaining, $ref, "Adjusted sale payment in sale return");
-            addTransaction($sale->customerID, $request->date, 'Sale', 0, $request->netTotal, $ref, "Adjusted sale payment in sale return");
+            addTransaction($request->account, $request->date, 'Sale Return', $remaining, $remaining, $ref, "Adjusted sale payment in sale return");
+            addTransaction($sale->customerID, $request->date, 'Sale Return', 0, $request->netTotal, $ref, "Adjusted sale payment in sale return");
         }
         else{
-            addTransaction($request->account, $request->date, 'Sale', 0, $request->netTotal, $ref, "Pending of sale return");
+            addTransaction($request->account, $request->date, 'Sale Return', 0, $request->netTotal, $ref, "Pending of sale return");
         }
 
         return redirect('/saleReturn')->with('message', 'Sale returned');
