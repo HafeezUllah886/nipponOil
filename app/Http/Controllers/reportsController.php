@@ -130,10 +130,11 @@ class reportsController extends Controller
 
     public function productsSummaryData(request $req){
         $warehouse = $req->warehouse;
-        $start = $req->start;
-        $end = $req->end;
+        $start = $req->startDate;
+        $end = $req->endDate;
+
         $category = $req->category;
-        if($category == null)
+        if(!$category)
         {
             $products = Product::with('brand', 'category')->where('categoryID', 1)->get();
         }
@@ -141,7 +142,6 @@ class reportsController extends Controller
         {
             $products = Product::with('brand', 'category')->whereIn('categoryID', $category)->get();
         }
-
        foreach($products as $product){
         if($warehouse == 0)
         {
@@ -149,9 +149,11 @@ class reportsController extends Controller
             $query->whereBetween('date', [$start, $end]);
         })->where('productID', $product->productID)->get();
         $sales = SaleOrder::where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
+
         $purchaseReturn = PurchaseReturnDetail::where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
         $saleReturn = SaleReturnDetail::where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
         }
+
         if($warehouse != 0)
         {
             $purchases = PurchaseOrder::whereHas('purchase', function($query) use ($start, $end, $warehouse){
@@ -170,7 +172,7 @@ class reportsController extends Controller
         }
         if($purchases->sum('subTotal') > 0 && $purchases->sum('quantity') > 0)
         {
-            $product->purchasePrice = $purchases->sum('subTotal') / $purchases->sum('quantity');
+            $product->purchasePrice = round($purchases->sum('subTotal') / $purchases->sum('quantity'),2);
         }
         else
         {
@@ -180,7 +182,7 @@ class reportsController extends Controller
 
         if($sales->sum('subTotal') > 0 && $sales->sum('quantity') > 0)
         {
-            $product->salePrice = $sales->sum('subTotal') / $sales->sum('quantity');
+            $product->salePrice = round($sales->sum('subTotal') / $sales->sum('quantity'),2);
         }
         else
         {
