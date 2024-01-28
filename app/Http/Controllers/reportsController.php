@@ -558,8 +558,12 @@ class reportsController extends Controller
             $product_qtys[] = $product->totalQuantity;
         }
 
-        $transactions = Transaction::whereIn('accountID', $customers->pluck('accountID'))
+        $types = ['Sale', 'Sale Payment', 'Transfer'];
+
+        $transactions = Transaction::with('account')
+        ->whereIn('accountID', $customers->pluck('accountID'))
         ->where('debt', '>', 0)
+        ->whereIn('type', $types)
         ->whereBetween('date', [$req->start, $req->end])
         ->get();
 

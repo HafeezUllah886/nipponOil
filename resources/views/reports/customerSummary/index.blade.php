@@ -121,6 +121,7 @@
                                 <table class="w-100 table table-bordered">
                                     <thead>
                                         <th>#</th>
+                                        <th>Customer</th>
                                         <th>Date</th>
                                         <th>Desc</th>
                                         <th>Amount</th>
@@ -144,7 +145,7 @@
                             <div class="widget-header">
                                 <div class="row">
                                     <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                        <h4>Top Sellers (Products)</h4>
+                                        <h4>Top Customers (By Payments)</h4>
                                     </div>
                                 </div>
                             </div>
@@ -245,6 +246,7 @@
                 response.transactions.forEach(function (tr){
                     trHTML += '<tr>';
                     trHTML += '<td>'+tr.refID+'</td>';
+                    trHTML += '<td>'+tr.account.name+'</td>';
                     trHTML += '<td>'+tr.date+'</td>';
                     trHTML += '<td>'+tr.description+'</td>';
                     trHTML += '<td>'+tr.debt+'</td>';
