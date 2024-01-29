@@ -79,7 +79,7 @@
                             </div>
                         </div>
             </div>
-            <div id="chartBar" class="col-6 layout-spacing">
+            <div id="chartBar1" class="col-6 layout-spacing">
                 <div class="statbox widget box box-shadow">
                     <div class="widget-header">
                         <div class="row">
@@ -259,11 +259,12 @@
                     $('#customerTotal').html(response.customerTotal);
                     updateChart(response.topProductQtys, response.topProductNames);
                     updateChart1(response.topCustomerTotals, response.topCustomerNames);
+                    console.log(response.topProductQtys, response.topProductNames);
             }
         });
     }
 
-function updateChart(sold, names){
+function updateChart(sold, names) {
     // Update the data and categories in your configuration object
     sBar.series[0].data = sold;
     sBar.xaxis.categories = names;
@@ -303,7 +304,9 @@ var sBar = {
                 }
                 }
                 //////////////////////////////////////////////////////////
-                function updateChart1(amount, title){
+
+
+function updateChart1(amount, title) {
     // Update the data and categories in your configuration object
     xBar.series[0].data = amount;
     xBar.xaxis.categories = title;
