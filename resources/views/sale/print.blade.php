@@ -155,14 +155,15 @@
                        $total += $detail->subTotal;
                        $items += 1;
                        $qty += $detail->quantity;
+                       $discount = $detail->discountValue / $detail->quantity;
                    @endphp
                         <tr class="bottom-border">
                             <td>{{ $detail->product->code }}</td>
                             <td class="uppercase">{{ $detail->product->name }}</td>
                             <td class="text-center">{{ $detail->product->ltr }}</td>
                             <td class="text-center">{{ $detail->quantity }}</td>
-                            <td class="text-center">{{ round((($detail->netUnitCost * $detail->quantity) + ($detail->tax - $detail->discountValue)) / $detail->quantity, 2) }}</td>
-                            <td class="text-center">{{ $detail->discountValue }}</td>
+                            <td class="text-center">{{ $detail->netUnitCost}}</td>
+                            <td class="text-center">{{ $discount }}</td>
                             <td class="text-right">{{ round($detail->subTotal,2)}}</td>
                         </tr>
                    @endforeach
