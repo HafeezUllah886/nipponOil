@@ -330,7 +330,7 @@
                         $('#productID').empty();
                         $('#productID').append('<option value="">Select Product</option>');
                         var data = $.each(response.productsWithCreditDebtSum, function(index, product) {
-                            $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">'  + product.product.code +' | '+ product.product.name + product.product.grade +' | '+ product.product.ltr + ' Ltrs | '+ product.difference +'</option>');
+                            $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">'  + product.product.code +' | '+ product.product.name +' | '+ product.product.grade +' | '+ product.product.ltr + ' Ltrs | '+ product.difference +'</option>');
                         });
                         $('.selectize').removeClass("form-select");
                         selectized = $('.selectize').selectize({
