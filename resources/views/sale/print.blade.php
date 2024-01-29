@@ -42,12 +42,10 @@
             width: 100%;
             border-collapse: collapse;
         }
-
         .bg-dark{
             background: black;
             color:#ffff;
         }
-
         .text-left{
             text-align: left !important;
         }
