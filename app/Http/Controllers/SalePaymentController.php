@@ -21,6 +21,7 @@ class SalePaymentController extends Controller
 
     public function store(Request $request)
     {
+        $ref = getRef();
 
         $sale = Sale::find($request->saleID);
         $salePayment =  SalePayment::create([
@@ -28,14 +29,14 @@ class SalePaymentController extends Controller
             'amount' => $request['amount'],
             'accountID' => $request['accountID'],
             'description' => $request['paymentNotes'],
-            'refID' => $sale->refID,
+            'refID' => $ref,
             'date' => $request['date'],
             'createdBy' => auth()->user()->email,
         ]);
 
         $sale = Sale::find($request->saleID);
-        addTransaction($sale->customerID, $request->date, "Sale Payment", 0, $request->amount, $sale->refID, "Payment of Sale #".$request->saleID . "<br> $request->paymentNotes");
-        addTransaction($request->accountID, $request->date, "Sale Payment", $request->amount, 0, $sale->refID, "Payment of Sale #".$request->saleID . "<br> $request->paymentNotes");
+        addTransaction($sale->customerID, $request->date, "Sale Payment", 0, $request->amount, $ref, "Payment of Sale #".$request->saleID . "<br> $request->paymentNotes");
+        addTransaction($request->accountID, $request->date, "Sale Payment", $request->amount, 0, $ref, "Payment of Sale #".$request->saleID . "<br> $request->paymentNotes");
         $request->session()->flash('message', 'Sale Payment Created Successfully!');
         return redirect()->route('sale.index');
     }

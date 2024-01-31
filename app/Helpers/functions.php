@@ -7,7 +7,7 @@ use App\Models\Unit;
 function getRef(){
     $ref = Reference::first();
     if($ref){
-        $ref->ref = $ref->ref + 1;
+        $ref->ref += 1;
     }
     else{
         $ref = new Reference();

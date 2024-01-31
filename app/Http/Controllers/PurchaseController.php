@@ -63,13 +63,13 @@ class PurchaseController extends Controller
                 'amount' => $request['amount'],
                 'accountID' => $request['accountID'],
                 'description' => $request['description'],
-                'refID' => $purchase->refID,
+                'refID' => $ref,
                 'date' => $request['date'],
                 'createdBy' => auth()->user()->email,
                 'warehouseID' => $warehouseID,
             ]);
-            addTransaction($request['accountID'], $request['date'], 'Purchase', 0, $request['amount'], $purchase->refID, $request['description']);
-            addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'Purchase',0, $request['amount'], $purchase->refID, $request['description']);
+            addTransaction($request['accountID'], $request['date'], 'Purchase', 0, $request['amount'], $ref, $request['description']);
+            addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'Purchase',0, $request['amount'], $ref, $request['description']);
             $request->session()->flash('message', 'Purchase Payment Created Successfully!');
             return redirect()->route('purchase.index');
         }
@@ -141,7 +141,7 @@ class PurchaseController extends Controller
                         'orderedQty' => $productQuantity * $unit->value,
 
                         'createdBy' => auth()->user()->email,
-                        'refID' => $purchase->refID,
+                        'refID' => $ref,
                     ]);
                     if($request['purchaseStatus'] === 'received'){
                         PurchaseReceive::create([
@@ -152,7 +152,7 @@ class PurchaseController extends Controller
                             'receivedQty' => $productQuantity * $unit->value ?? 'NULL',
 
                             'createdBy' => auth()->user()->email,
-                            'refID' => $purchase->refID,
+                            'refID' => $ref,
                         ]);
 
                         Stock::create([
@@ -162,7 +162,7 @@ class PurchaseController extends Controller
                             'batchNumber' => $productBatchNumber,
                             'expiryDate' => $productExpiryDate,
                             'credit' => $productQuantity * $unit->value,
-                            'refID' => $purchase->refID,
+                            'refID' => $ref,
                             'createdBy' => auth()->user()->email,
 
                         ]);
@@ -173,7 +173,7 @@ class PurchaseController extends Controller
             $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'] + $request['taxAmount'];
 
             $desc = "<b>Purchase</b><br> Pending Amount of Purchase #" . $purchase->purchaseID;
-            addTransaction($request['supplierID'], $request['date'], 'Purchase', $netAmount1, 0, $purchase->refID, $desc);
+            addTransaction($request['supplierID'], $request['date'], 'Purchase', $netAmount1, 0, $ref, $desc);
             $request->session()->flash('message', 'Purchase Created Successfully!');
             return redirect()->route('purchase.index');
 
@@ -287,7 +287,7 @@ class PurchaseController extends Controller
                         'expiryDate' => $productExpiryDate,
                         'receivedQty' => $productQuantity * $unit->value,
                         'createdBy' => auth()->user()->email,
-                        'refID' => $purchase->refID,
+                        'refID' => $ref,
                     ]);
 
                     Stock::create([
@@ -306,7 +306,7 @@ class PurchaseController extends Controller
         $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
 
         $desc = "<b>Purchase</b><br> Pending Amount of Purchase #" . $purchase->purchaseID;
-        addTransaction($request['supplierID'], $request['date'], 'Purchase', $netAmount1, 0, $purchase->refID, $desc);
+        addTransaction($request['supplierID'], $request['date'], 'Purchase', $netAmount1, 0, $ref, $desc);
         $request->session()->flash('message', 'Purchase Updated Successfully!');
         return to_route('purchase.index');
 

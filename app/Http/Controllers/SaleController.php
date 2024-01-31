@@ -170,27 +170,27 @@ class SaleController extends Controller
                         'batchNumber' => $productBatchNumber,
                         'expiryDate' => $productExpiryDate,
                         'debt' => $productQuantity * $unit->value,
-                        'refID' => $sale->refID,
+                        'refID' => $ref,
                         'createdBy' => auth()->user()->email,
                     ]);
                 }
             }
         }
         $total_bill = $pro_total + $request['taxAmount'] + $request['shippingCost'] - $request['discount'];
-        addTransaction($request->customerID, $request->date, "Sale", $total_bill, 0, $sale->refID, "Pending of Sale #". $sale->saleID);
+        addTransaction($request->customerID, $request->date, "Sale", $total_bill, 0, $ref, "Pending of Sale #". $sale->saleID);
         if ($request['paymentStatus'] == 'received'){
             SalePayment::create([
                 'saleID' => $sale->saleID,
                 'amount' => $request['paying-amount'],
                 'accountID' => $request['accountID'],
                 'description' => $request['paymentNotes'],
-                'refID' => $sale->refID,
+                'refID' => $ref,
                 'date' => $request['date'],
                 'createdBy' => auth()->user()->email,
             ]);
 
-            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $sale->refID, "Payment of Sale #". $sale->saleID. "<br> $request->paymentNotes");
-            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $sale->refID, "Payment of Sale #". $sale->saleID . "<br> $request->paymentNotes");
+            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $ref, "Payment of Sale #". $sale->saleID. "<br> $request->paymentNotes");
+            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $ref, "Payment of Sale #". $sale->saleID . "<br> $request->paymentNotes");
         }
         $request->session()->flash('message', 'Sale Created Successfully!');
         if($request->has("reminder"))
