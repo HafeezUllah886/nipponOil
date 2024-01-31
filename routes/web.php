@@ -150,6 +150,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/sale/product/history/{id}/{customer}',[SaleController::class, 'proHistory']);
     Route::post('/sale/updateDiscount',[SaleController::class, 'updateDiscount']);
     Route::get('/sales/payments/{start}/{end}',[SalePaymentController::class, 'payments']);
+    Route::get('/sales/payment/delete/{ref}',[SalePaymentController::class, 'destroy']);
 
     Route::resource('/saleReturnPayment',\App\Http\Controllers\SaleReturnPaymentController::class);
 

@@ -34,10 +34,10 @@
                                 <table class="table table-bordered table-hover table-striped">
                                     <thead class="thead-dark">
                                     <tr>
+                                        <th scope="col">ProductID</th>
                                         <th scope="col">Product Name</th>
-                                        <th scope="col">Batch Number</th>
+                                        <th scope="col">Litters</th>
                                         <th scope="col">Return Quantity</th>
-                                        <th scope="col">Expiry Date</th>
                                         <th scope="col">Total Amount</th>
                                     </tr>
                                     </thead>
@@ -49,10 +49,10 @@
                                     @foreach($saleReturn->saleReturnDetails as $return)
                                         @php $totalAmount +=  $return->subTotal; @endphp
                                         <tr>
-                                            <td>{{ $return->productID }}</td>
-                                            <td>{{ $return->batchNumber }}</td>
+                                            <td>{{ $return->product->productID }}</td>
+                                            <td>{{ $return->product->name }}</td>
+                                            <td>{{ $return->product->ltr }}</td>
                                             <td>{{ $return->returnQuantity }}</td>
-                                            <td>{{ $return->expiryDate   }}</td>
                                             <td>{{ $return->subTotal ?? '' }}</td>
                                         </tr>
                                     @endforeach

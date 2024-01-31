@@ -47,7 +47,7 @@ class PurchaseReceiveController extends Controller
         $data .= "<tr>";
         $data .= "<td>$product->name</td>";
         $data .= "<td>$remainingQty</td>";
-        $data .= "<td> <input type='number' name='qty[]' max='$remainingQty' value='$remainingQty' class='form-control' required min='1' ></td>";
+        $data .= "<td> <input type='number' name='qty[]' max='$remainingQty' value='$remainingQty' class='form-control' required min='0' ></td>";
         $data .= "<input type='hidden' name='product[]' value='$productId'>";
         $data .= "</tr>";
         }
@@ -72,30 +72,33 @@ class PurchaseReceiveController extends Controller
 
         $ref = getRef();
         $pro = Product::find($product);
-        PurchaseReceive::create(
-            [
-                'purchaseID' => $req->purchaseID,
-                'productID' => $pro->productID,
-                'batchNumber' => $pro->defaultBatch,
-                'receivedQty' => $req->qty[$key],
-                'date' => now(),
-                'createdBy' => auth()->user()->email,
-                'refID' => $ref,
-            ]
-        );
+        if($req->qty[$key] > 0)
+        {
+            PurchaseReceive::create(
+                [
+                    'purchaseID' => $req->purchaseID,
+                    'productID' => $pro->productID,
+                    'batchNumber' => $pro->defaultBatch,
+                    'receivedQty' => $req->qty[$key],
+                    'date' => now(),
+                    'createdBy' => auth()->user()->email,
+                    'refID' => $ref,
+                ]
+            );
 
-        Stock::create(
-            [
-                'warehouseID' => $purchase->warehouseID,
-                'productID' => $pro->productID,
-                'batchNumber' => $pro->defaultBatch,
-                'date' => now(),
-                'credit' => $req->qty[$key],
-                'refID' => $ref,
-                'description' => "Stock Purchased",
-                'createdBy' => auth()->user()->email,
-            ]
-        );
+            Stock::create(
+                [
+                    'warehouseID' => $purchase->warehouseID,
+                    'productID' => $pro->productID,
+                    'batchNumber' => $pro->defaultBatch,
+                    'date' => now(),
+                    'credit' => $req->qty[$key],
+                    'refID' => $ref,
+                    'description' => "Stock Purchased",
+                    'createdBy' => auth()->user()->email,
+                ]
+            );
+        }
        }
 
        return back()->with('message', "Products Received");

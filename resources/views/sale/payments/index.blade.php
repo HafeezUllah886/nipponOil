@@ -32,6 +32,7 @@
                     <th>Account</th>
                     <th>Notes</th>
                     <th>Amount</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -44,6 +45,7 @@
                             <td>{{ $payment->account->name }}</td>
                             <td>{{ $payment->description }}</td>
                             <td>{{ $payment->amount }}</td>
+                            <td><a href="{{ url('/sales/payment/delete') }}/{{ $payment->refID }}" class="btn btn-danger">Delete</a></td>
                         </tr>
                     @endforeach
                 </tbody>

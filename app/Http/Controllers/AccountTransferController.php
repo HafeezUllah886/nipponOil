@@ -14,7 +14,7 @@ class AccountTransferController extends Controller
      */
     public function index()
     {
-        $data = AccountTransfer::with('accountFrom', 'accountTo')->get();
+        $data = AccountTransfer::with('accountFrom', 'accountTo')->orderBy('date', 'desc')->get();
         return view('account.transfer.index', compact('data'));
     }
 

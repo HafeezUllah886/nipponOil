@@ -376,15 +376,21 @@ class reportsController extends Controller
                     ->latest()
                     ->first();
                 }
-
                 $product = Product::find($sale->productID);
+                $returns = SaleReturnDetail::whereHas('salereturn', function($query) use ($start, $end){
+                    $query->whereBetween('date', [$start, $end]);
+                    $query->where('warehouseID', auth()->user()->warehouseID);
+                })->where('productID', $product->productID)->get();
 
+                $qty = $sale->quantity - $returns->sum('returnQuantity');
+                $sale->quantity = $qty;
                 $purchasePrice = $purchase->subTotal / $purchase->quantity;
                 $sale->purchasePrice = round($purchasePrice);
                 $sale->salePrice = round($sale->total / $sale->quantity);
                 $sale->profit = round($sale->salePrice - $sale->purchasePrice);
                 $sale->brand = $product->brand->name;
                 $sale->netProfit = round(($sale->profit * $sale->quantity));
+
             }
 
 

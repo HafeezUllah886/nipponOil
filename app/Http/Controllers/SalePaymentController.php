@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sale;
 use App\Models\SalePayment;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class SalePaymentController extends Controller
@@ -54,9 +55,11 @@ class SalePaymentController extends Controller
         //
     }
 
-    public function destroy(SalePayment $salePayment)
+    public function destroy($ref)
     {
-        //
+        SalePayment::where('refID', $ref)->delete();
+        Transaction::where('refID', $ref)->delete();
+        return back()->with('message', "Payment Deleted");
     }
 
     public function payments($start, $end)

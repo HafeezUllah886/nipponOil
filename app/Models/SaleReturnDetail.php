@@ -16,5 +16,9 @@ class SaleReturnDetail extends Model
     {
         return $this->belongsTo(SaleReturn::class, 'saleReturnID', 'saleReturnID');
     }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'productID');
+    }
 }
 

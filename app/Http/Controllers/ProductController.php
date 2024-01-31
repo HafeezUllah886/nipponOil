@@ -70,8 +70,7 @@ class ProductController extends Controller
             $filename = $request->code.".".$image->getClientOriginalExtension();
             $image_path = public_path('/images/products/'.$filename);
             $image_path1 = '/images/products/'.$filename;
-            $img = Image::make($image);
-            $img->save($image_path,70);
+            $image->move(public_path('/images/products/'), $filename);
         }
         $request->request->add(['createdBy' => auth()->user()->email]);
         $product = Product::create($request->all());
@@ -111,13 +110,12 @@ class ProductController extends Controller
         } */
         $input = $request->all();
         if ($request->hasFile('image')) {
-            @unlink(public_path($category->image));
+            @unlink(public_path($product->image));
             $image = $request->file('image');
             $filename = $request->name.".".$image->getClientOriginalExtension();
             $image_path = public_path('/images/products/'.$filename);
             $image_path1 = '/images/products/'.$filename;
-            $img = Image::make($image);
-            $img->save($image_path,70);
+            $image->move(public_path('/images/products/'), $filename);
             $input['image'] = $image_path1;
         }
         $product->update($input);
