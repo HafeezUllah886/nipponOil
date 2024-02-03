@@ -50,7 +50,7 @@
                         <h5 class="card-title">Products Details</h5>
                     </div> --}}
                     <div class="card-body table-responsive">
-                        <table class="w-100 table table-bordered datatable" id="datatable">
+                        <table class="w-100 table table-bordered">
                             <thead>
                                 <th>Product</th>
                                 <th>Brand</th>
@@ -103,17 +103,10 @@
 
 @section('more-css')
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link href="{{ asset('src/plugins/src/apex/apexcharts.css') }}" rel="stylesheet" type="text/css">
 
     <link href="{{ asset('src/assets/css/light/scrollspyNav.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('src/plugins/css/light/apex/custom-apexcharts.css') }}" rel="stylesheet" type="text/css">
 
     <link href="{{ asset('src/assets/css/dark/scrollspyNav.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('src/plugins/css/dark/apex/custom-apexcharts.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('src/assets/css/dark/dashboard/dash_2.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('src/assets/css/light/dashboard/dash_2.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('src/assets/css/dark/components/tabs.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('src/assets/css/light/components/tabs.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 
 @section('more-script')
@@ -122,9 +115,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     <script src="{{ asset('src/assets/js/scrollspyNav.js') }}"></script>
-    <script src="{{ asset('src/plugins/src/apex/apexcharts.min.js') }}"></script>
-    {{-- <script src="{{ asset('src/plugins/src/apex/custom-apexcharts.js') }}"></script> --}}
-    <script src=" {{ asset('../src/assets/js/dashboard/dash_1.js') }} "></script>
+
     <script type="text/javascript">
        $(function() {
         var currentDate = moment();
@@ -181,16 +172,17 @@ function fetchData(start, end){
                 endDate: endDate
             }, */
             success: function(response) {
+                console.log(response);
                 var grossProfit = 0;
                 response.items.forEach(function(pa){
                 html += '<tr>';
-                html += '<td>'+pa.product.name+'</td>';
-                html += '<td>'+pa.brand+'</td>';
-                html += '<td class="text-end">'+pa.purchasePrice+'</td>';
-                html += '<td class="text-end">'+pa.salePrice+'</td>';
-                html += '<td class="text-end">'+pa.profit+'</td>';
-                html += '<td class="text-end">'+pa.quantity+'</td>';
-                html += '<td class="text-end">'+pa.netProfit+'</td>';
+                html += '<td>'+pa.name+'</td>';
+                html += '<td>'+pa.brand.name+'</td>';
+                html += '<td class="text-end">'+pa.purchasePrice.toFixed(2)+'</td>';
+                html += '<td class="text-end">'+pa.salePrice.toFixed(2)+'</td>';
+                html += '<td class="text-end">'+pa.profit.toFixed(2)+'</td>';
+                html += '<td class="text-end">'+pa.sold+'</td>';
+                html += '<td class="text-end">'+pa.netProfit.toFixed(2)+'</td>';
                 html += '</tr>';
                 grossProfit += pa.netProfit;
                });

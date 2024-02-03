@@ -172,7 +172,9 @@ class reportsController extends Controller
         }
         if($purchases->sum('subTotal') > 0 && $purchases->sum('quantity') > 0)
         {
-            $product->purchasePrice = $purchases->sum('subTotal') / ($purchases->sum('quantity') + $purchaseReturn->sum('returnQuantity')) ;
+            $totalPurchase = $purchases->sum('quantity') - $purchaseReturn->sum('returnQuantity');
+            $totalPurchaseAmount = $purchases->sum('subTotal') - $purchaseReturn->sum('subTotal');
+            $product->purchasePrice = $totalPurchaseAmount / $totalPurchase;
         }
         else
         {
@@ -182,7 +184,9 @@ class reportsController extends Controller
 
         if($sales->sum('subTotal') > 0 && $sales->sum('quantity') > 0)
         {
-            $product->salePrice = $sales->sum('subTotal') / ($sales->sum('quantity') + $saleReturn->sum('returnQuantity'));
+            $totalSold = $sales->sum('quantity') - $saleReturn->sum('returnQuantity');
+            $totalSoldAmount = $sales->sum('subTotal') - $saleReturn->sum('subTotal');
+            $product->salePrice = $totalSoldAmount / $totalSold;
         }
         else
         {
@@ -243,7 +247,6 @@ class reportsController extends Controller
         ->groupBy('productID', 'expiryDate')
         ->orderBy('expiryDate', 'asc')
         ->get();
-
     }
 
     $expiryData = [];
@@ -355,42 +358,56 @@ class reportsController extends Controller
 
         }
 
-            $sales = SaleOrder::with("product")->whereBetween('date', [$start, $end])
-            ->where("warehouseID", auth()->user()->warehouseID)
-            ->groupBy('productID')
-            ->selectRaw('productID, sum(quantity) as quantity, sum(subTotal) as total')
-            ->get();
+            $products = Product::with('brand', 'category')->get();
 
-
-            foreach($sales as $sale)
+            foreach($products as $product)
             {
-                $purchase = PurchaseOrder::where("warehouseID", auth()->user()->warehouseID)
-                ->where("productID", $sale->productID)
-                ->whereDate("date", "<=", $start)
-                ->first();
 
-                if(!$purchase)
-                {
-                    $purchase = PurchaseOrder::where("warehouseID", auth()->user()->warehouseID)
-                    ->where("productID", $sale->productID)
-                    ->latest()
-                    ->first();
-                }
-                $product = Product::find($sale->productID);
-                $returns = SaleReturnDetail::whereHas('salereturn', function($query) use ($start, $end){
+                $purchases = PurchaseOrder::whereHas('purchase', function($query) use ($start, $end){
                     $query->whereBetween('date', [$start, $end]);
                     $query->where('warehouseID', auth()->user()->warehouseID);
                 })->where('productID', $product->productID)->get();
 
-                $qty = $sale->quantity - $returns->sum('returnQuantity');
-                $sale->quantity = $qty;
-                $purchasePrice = $purchase->subTotal / $purchase->quantity;
-                $sale->purchasePrice = round($purchasePrice);
-                $sale->salePrice = round($sale->total / $sale->quantity);
-                $sale->profit = round($sale->salePrice - $sale->purchasePrice);
-                $sale->brand = $product->brand->name;
-                $sale->netProfit = round(($sale->profit * $sale->quantity));
+                $sales = SaleOrder::whereHas('sale', function($query){
+                    $query->where('warehouseID', auth()->user()->warehouseID);
+                })->where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
 
+                $purchaseReturn = PurchaseReturnDetail::whereHas('purchaseReturn', function($query){
+                    $query->where('warehouseID', auth()->user()->warehouseID);
+                })->where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
+
+                $saleReturn = SaleReturnDetail::whereHas('saleReturn', function($query){
+                    $query->where('warehouseID', auth()->user()->warehouseID);
+                })->where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
+
+                if($purchases->sum('subTotal') > 0 && $purchases->sum('quantity') > 0)
+                {
+                    $totalPurchase = $purchases->sum('quantity') - $purchaseReturn->sum('returnQuantity');
+                    $totalPurchaseAmount = $purchases->sum('subTotal') - $purchaseReturn->sum('subTotal');
+                    $product->purchasePrice = $totalPurchaseAmount / $totalPurchase;
+                }
+                else
+                {
+                    $purchase = PurchaseOrder::where('productID', $product->productID)->orderBy('purchaseOrderID', 'desc')->first();
+                    $product->purchasePrice = $purchase->netUnitCost ?? 0;
+                }
+
+                if($sales->sum('subTotal') > 0 && $sales->sum('quantity') > 0)
+                {
+                    $totalSold = $sales->sum('quantity') - $saleReturn->sum('returnQuantity');
+                    $totalSoldAmount = $sales->sum('subTotal') - $saleReturn->sum('subTotal');
+                    $product->salePrice = $totalSoldAmount / $totalSold;
+                }
+                else
+                {
+                    $sale = saleOrder::where('productID', $product->productID)->orderBy('saleOrderID', 'desc')->first();
+                    $product->salePrice = $sale->netUnitCost ?? 0;
+                    $totalSold = $sale->quantity ?? 0;
+                }
+
+                $product->profit = $product->salePrice - $product->purchasePrice;
+                $product->sold = $totalSold;
+                $product->netProfit = $product->sold * $product->profit;
             }
 
 
@@ -415,7 +432,7 @@ class reportsController extends Controller
             $extraDiscounts = discounts::whereBetween('date', [$start, $end])->sum('amount');
             return response()->json(
                 [
-                    'items' => $sales,
+                    'items' => $products,
                     'salary' => round($currentSalary),
                     'obsolete_loss' => $obsolete_loss,
                     'expenses' => $expenses,
@@ -479,28 +496,6 @@ class reportsController extends Controller
     public function customers()
     {
         $areas = Account::where('type', 'customer')->distinct()->pluck('area');
-        /* if($id == 0)
-        {
-            $customer = Account::where('type', 'Customer')->orderBy('accountID', 'desc')->first();
-            $currentYear = date('Y');
-            $currentMonth = date('m');
-            $start = date('Y-m-01', strtotime("$currentYear-$currentMonth-01"));
-            $end = date('Y-m-t', strtotime("$currentYear-$currentMonth-01"));
-        }
-        else
-        {
-            $customer = Account::find($id);
-        }
-
-        $customers = Account::where('type', 'Customer')->get();
-
-        // You can then retrieve the product details using the productID
-
-
-        $transactions = Transaction::where('accountID', $customer->accountID)
-        ->where('debt', '>', 0)
-        ->whereBetween('date', [$start, $end])
-        ->get(); */
 
         return view('reports.customerSummary.index', compact('areas'));
     }
@@ -552,17 +547,20 @@ class reportsController extends Controller
         ->select('saleOrders.productID', DB::raw('SUM(saleOrders.quantity) as totalQuantity'))
         ->get();
 
+
         $product_names = [];
         $product_qtys = [];
         foreach ($topProducts as $product) {
             $productId = $product->productID;
             $product1 = Product::find($productId);
             $product->name = $product1->name;
+            $saleReturn = SaleReturnDetail::where('productID', $product->productID)
+            ->whereBetween('date', [$req->start, $req->end])->get();
 
             $product_names[] = $product->name;
-            $product_qtys[] = $product->totalQuantity;
+            $product_qtys[] = $product->totalQuantity - $saleReturn->sum('returnQuantity');
         }
-
+        array_multisort($product_qtys, SORT_DESC, $product_names);
         $types = ['Sale', 'Sale Payment', 'Transfer'];
 
         $transactions = Transaction::with('account')
