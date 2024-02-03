@@ -178,11 +178,11 @@ function fetchData(start, end){
                 html += '<tr>';
                 html += '<td>'+pa.name+'</td>';
                 html += '<td>'+pa.brand.name+'</td>';
-                html += '<td class="text-end">'+parseFloat(pa.purchasePrice.toFixed(2))+'</td>';
-                html += '<td class="text-end">'+parseFloat(pa.salePrice.toFixed(2))+'</td>';
-                html += '<td class="text-end">'+parseFloat(pa.profit.toFixed(2))+'</td>';
+                html += '<td class="text-end">'+Math.round(pa.purchasePrice)+'</td>';
+                html += '<td class="text-end">'+Math.round(pa.salePrice)+'</td>';
+                html += '<td class="text-end">'+Math.round(pa.profit)+'</td>';
                 html += '<td class="text-end">'+pa.sold+'</td>';
-                html += '<td class="text-end">'+parseFloat(pa.netProfit.toFixed(2))+'</td>';
+                html += '<td class="text-end">'+Math.round(pa.netProfit)+'</td>';
                 html += '</tr>';
                 grossProfit += pa.netProfit;
                });
