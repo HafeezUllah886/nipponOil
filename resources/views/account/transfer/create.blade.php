@@ -20,7 +20,7 @@
                                 @endforeach
                             </select>
                             <div class="input-group-append">
-                                <span class="input-group-text" id="balance">Balance</span>
+                                <input type="number" value="0" disabled class="input-group-text" id="balance">
                             </div>
                         </div>
 
@@ -40,7 +40,7 @@
                                 @endforeach
                             </select>
                             <div class="input-group-append">
-                                <span class="input-group-text" id="balance1">Balance</span>
+                                <input type="number" value="0" disabled class="input-group-text" id="balance1">
                             </div>
                         </div>
 
@@ -53,7 +53,10 @@
                 <div class="form-group row mt-2">
                     <label for="initialBalance" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Amount: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        <input type="number" name="amount" class="form-control" value="{{ old('amount') }}" value="0" placeholder="Enter Amount">
+                        <input type="number" name="amount"  id="amount" oninput="checkAfter()" class="form-control" value="{{ old('amount') }}" value="0" placeholder="Enter Amount">
+                        <div class="input-group-append">
+                            <input type="text" value="0" disabled class="input-group-text" id="balance2">
+                        </div>
                         @error('amount')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -119,8 +122,10 @@
             method : "get",
             success: function (balance)
             {
-               $("#balance").text(balance);
+               $("#balance").val(balance);
+               checkAfter();
             }
+
            });
         }
         function accountChanged1()
@@ -131,9 +136,16 @@
             method : "get",
             success: function (balance)
             {
-               $("#balance1").text(balance);
+               $("#balance1").val(balance);
             }
            });
+        }
+
+        function checkAfter()
+        {
+            $balance = $("#balance").val();
+            $amount = $("#amount").val();
+            $balance2 = $("#balance2").val($balance - $amount);
         }
     </script>
 @endsection

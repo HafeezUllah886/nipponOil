@@ -172,7 +172,7 @@ class reportsController extends Controller
         }
         if($purchases->sum('subTotal') > 0 && $purchases->sum('quantity') > 0)
         {
-            $product->purchasePrice = round($purchases->sum('subTotal') / $purchases->sum('quantity'),2);
+            $product->purchasePrice = $purchases->sum('subTotal') / ($purchases->sum('quantity') + $purchaseReturn->sum('returnQuantity')) ;
         }
         else
         {
@@ -182,7 +182,7 @@ class reportsController extends Controller
 
         if($sales->sum('subTotal') > 0 && $sales->sum('quantity') > 0)
         {
-            $product->salePrice = round($sales->sum('subTotal') / $sales->sum('quantity'),2);
+            $product->salePrice = $sales->sum('subTotal') / ($sales->sum('quantity') + $saleReturn->sum('returnQuantity'));
         }
         else
         {

@@ -95,16 +95,6 @@ class SaleController extends Controller
             'createdBy' => auth()->user()->email,
         ]);
 
-        /* if ($request['paymentStatus'] === 'received'){
-            SalePayment::create([
-                'saleID' => $sale->saleID,
-                'amount' => $request['paying-amount'],
-                'accountID' => $request['accountID'],
-                'description' => $request['description'],
-                'refID' => $ref,
-                'date' => $request['date']
-            ]);
-        } */
         $pro_total = 0;
         foreach ($request->all() as $key => $value) {
             if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
@@ -192,7 +182,7 @@ class SaleController extends Controller
             addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $ref, "Payment of Sale #". $sale->saleID. "<br> $request->paymentNotes");
             addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $ref, "Payment of Sale #". $sale->saleID . "<br> $request->paymentNotes");
         }
-        $request->session()->flash('message', 'Sale Created Successfully!');
+
         if($request->has("reminder"))
         {
             $customer = Account::find($request->customerID);
@@ -208,6 +198,7 @@ class SaleController extends Controller
                 ]
             );
         }
+        $request->session()->flash('message', 'Sale Created Successfully!');
         return redirect("/sale/printBill/".$sale->saleID);
     }
 

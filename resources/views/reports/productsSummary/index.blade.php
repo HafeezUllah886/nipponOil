@@ -208,7 +208,7 @@
                         html += '<td>' + pa.saleReturnQty + '</td>';
                         html += '<td>' + pa.profit.toFixed(2) + '</td>';
                         html += '<td>' + pa.stock + '</td>';
-                        html += '<td>Rs. ' + pa.purchasePrice + ' / Rs. ' + pa.salePrice + '</td>';
+                        html += '<td>Rs. ' + pa.purchasePrice.toFixed(2) + ' / Rs. ' + pa.salePrice.toFixed(2) + '</td>';
                         html += '</tr>';
                     });
                     $("#data").html(html);

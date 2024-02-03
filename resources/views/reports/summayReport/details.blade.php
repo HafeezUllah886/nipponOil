@@ -41,6 +41,14 @@
                     <td style="font-weight:900;">Paid</td>
                     <td style="font-weight:900;text-align:right;">{{$salePaid}}</td>
                 </tr>
+                <tr>
+                    <td style="font-weight:900;">Return</td>
+                    <td style="font-weight:900;text-align:right;">{{$saleReturns_amount}}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:900;">Net Sale</td>
+                    <td style="font-weight:900;text-align:right;">{{$sale_amount - $saleReturns_amount}}</td>
+                </tr>
 
             </table>
         </div>

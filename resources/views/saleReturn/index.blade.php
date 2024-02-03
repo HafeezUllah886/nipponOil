@@ -28,13 +28,20 @@
                 </tr>
                 </thead>
                 <tbody>
-
+                    @php
+                        $t_amount = 0;
+                        $r_amount = 0;
+                        $d_amount = 0;
+                    @endphp
                 @foreach($saleReturns as $key => $return)
 {{--                    @dd($return->saleReturnDetails[0]->subTotal)--}}
                     @php
                         $subTotal = $return->saleReturnDetails->sum('subTotal');
                         $paidAmount = $return->saleReturnPayments->sum('amount');
                         $dueAmount = $return->amount - $paidAmount;
+                        $t_amount += $return->amount;
+                        $r_amount += $paidAmount;
+                        $d_amount += $dueAmount;
                       /*$allPayments = $purchase->purchasePayments;*/
                     @endphp
                     <tr>
@@ -130,6 +137,14 @@
                     </div>
                 @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="4" class="text-end">Total</th>
+                        <th>{{ $t_amount }}</th>
+                        <th>{{ $r_amount }}</th>
+                        <th>{{ $d_amount }}</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="modal fade" id="createReturn" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">

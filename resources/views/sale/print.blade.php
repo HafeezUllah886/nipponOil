@@ -208,8 +208,14 @@
             </table>
         </div>
         <div class="notes">
-            <h5>Notes:</h5>
-            <span>{{ $sale->points }}</span>
+            <div class="row">
+                <div class="col-sm-6">
+                    <p>Notes: <span class="text-sm">{{ $sale->points }}</span></p>
+                </div>
+                <div class="col-sm-6">
+                    <p>Payment Notes: <span class="text-sm">{{ @$sale->salePayments[0]->description }}</span></p>
+                </div>
+            </div>
         </div>
         <div class="footer">
             <hr>
