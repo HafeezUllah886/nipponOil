@@ -9,6 +9,7 @@ use App\Models\PurchaseReturn;
 use App\Models\Sale;
 use App\Models\SaleOrder;
 use App\Models\SaleReturn;
+use App\Models\SaleReturnDetail;
 use App\Models\Stock;
 use App\Models\Transaction;
 use App\Models\Warehouse;
@@ -140,6 +141,12 @@ class HomeController extends Controller
         ->take(10) // Change the number as per your requirement
         ->get();
         }
+        foreach($topSellingProducts as $product)
+        {
+            $returns = SaleReturnDetail::where('productID', $product->productID)->sum('returnQuantity');
+            $product->total_sold = $product->total_sold - $returns;
+        }
+        $topSellingProducts = $topSellingProducts->sortByDesc('total_sold')->values();
          ////////////////////////////// Last 5 Activities //////////////////////////
         $lastSales = Sale::with('saleOrders', 'salePayments')->orderBy('saleID', 'desc')->take(5)->get();
         if($warehouse != 0)
