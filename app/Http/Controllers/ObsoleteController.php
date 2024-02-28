@@ -52,10 +52,11 @@ class ObsoleteController extends Controller
 
     public function store(request $req)
     {
+       
         $ids = $req->productID;
         foreach($ids as $key => $id)
         {
-
+           
             $qty = $req->quantity[$key];
             $ref = getRef();
             $expiry = null;
