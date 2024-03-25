@@ -194,7 +194,7 @@
                     @endphp
                     <tr>
                         <td colspan="5" class="text-right">Previous Balance:</td>
-                        <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($account_balance - $bill_balance, 2) }}</strong></td>
+                        <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($pre_balance, 2) }}</strong></td>
                     </tr>
                     <tr>
                         <td colspan="5" class="text-right">Bill Balance:</td>
@@ -202,7 +202,7 @@
                     </tr>
                     <tr>
                         <td colspan="5" class="text-right">Account Balance:</td>
-                        <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format(getAccountBalance($sale->account->accountID), 2) }}</strong></td>
+                        <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($pre_balance + $bill_balance, 2) }}</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -245,19 +245,12 @@
                 <tr>
                     <td width=""> Address: </td>
                     <td width="" colspan="2"> {{ $sale->account->address }}</td>
-                    <td width=""> Sales Man: </td>
-                    <td class="text-right"> {{ $sale->salesMan->name }}</td>
-                </tr>
-                <tr>
-                    <td width=""> Items: </td>
-                    <td width=""> {{ $items }}</td>
-                    <td width=""></td>
                     <td width=""> Total Bill: </td>
                     <td class="text-right"> {{ number_format($net, 2) }}</td>
                 </tr>
                 <tr>
-                    <td width=""> Quantity: </td>
-                    <td width=""> {{ $qty }}</td>
+                    <td width=""> Items: </td>
+                    <td width=""> {{ $items }}</td>
                     <td width=""></td>
                     <td width=""> Paid: </td>
                     @php
@@ -266,11 +259,18 @@
                     <td class="text-right"> {{ number_format($paid, 2) }}</td>
                 </tr>
                 <tr>
+                    <td width=""> Quantity: </td>
+                    <td width=""> {{ $qty }}</td>
                     <td width=""></td>
-                    <td width=""></td>
-                    <td width=""></td>
-                    <td width=""> Balance </td>
+                    <td width=""> Bill Balance </td>
                     <td class="text-right"> {{ number_format($net - $paid, 2) }}</td>
+                </tr>
+                <tr>
+                    <td width=""> Sales Man: </td>
+                    <td class=""> {{ $sale->salesMan->name }}</td>
+                    <td width=""></td>
+                    <td width=""> Account Balance </td>
+                    <td class="text-right"> {{ number_format($pre_balance + $bill_balance, 2) }}</td>
                 </tr>
                 <tr>
                     <td width=""></td>

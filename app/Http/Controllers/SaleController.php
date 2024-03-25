@@ -382,12 +382,18 @@ class SaleController extends Controller
 
     public function printBill($id, $pos = 0){
         $sale = Sale::find($id);
+
         if($pos == 1)
         {
             return view('pos.print', compact('sale'));
         }
+        $trans = Transaction::where('accountID', $sale->customerID)
+        ->where('refID', '<', $sale->refID)->get();
+        $cr = $trans->sum('credit');
+        $db = $trans->sum('debt');
+        $pre_balance = $cr - $db;
 
-        return view('sale.print', compact('sale'));
+        return view('sale.print', compact('sale', 'pre_balance'));
     }
 
     public function proHistory($id, $customer){
