@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\productPrices;
 use App\Models\Purchase;
+use App\Models\PurchaseOrder;
 use App\Models\PurchaseReceive;
 use App\Models\Sale;
 use App\Models\SaleDelivered;
@@ -90,6 +91,11 @@ class AjaxController extends Controller
             $stock->lastSaleUnit = $prevSale->saleUnit ?? 1;
             $stock->ltr = $product->ltr;
             $stock->prices = productPrices::where('productID', $product->productID)->get(['title', 'price']);
+            $purchase = PurchaseOrder::where('productID', $product->productID)
+            ->orderBy('purchaseOrderID', 'desc')->take(5)->get();
+            $purchase_amount = $purchase->sum('subTotal');
+            $purchase_qty = $purchase->sum('quantity');
+            $stock->purchasePrice = $purchase_amount / $purchase_qty;
         });
         return response()->json($productsWithCreditDebtSum);
     }

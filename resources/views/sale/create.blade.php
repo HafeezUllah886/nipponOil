@@ -434,6 +434,7 @@
                                     v.prices.forEach(function (item) {
                                     strHTML += '<option value="' + item.price + '">' + item.title + ' | ' + item.price +'</option>';
                                 });
+                                strHTML += '<option value="' + v.purchasePrice + '"> Purchase | ' + v.purchasePrice +'</option>';
                                 strHTML += '</select></td>';
                                 strHTML += '<td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="discount_' + id + '" min="0" value="0" oninput="changeDiscount(this, ' + id + ')"></td>';
                                 strHTML += '<td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="tax_' + id + '" min="0" value="0" oninput="changeTax(this, ' + id + ')"></td>';
