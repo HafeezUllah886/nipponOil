@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Sale;
 use App\Models\SalePayment;
 use App\Models\Transaction;
@@ -14,9 +15,21 @@ class SalePaymentController extends Controller
         //
     }
 
-    public function create()
+    public function create($id)
     {
-        //
+        $customer = Account::findOrFail($id);
+        $accounts = Account::where('type', 'business')->where('status','Active')->get();
+        $sales = Sale::where('customerID', $id)->get();
+
+        foreach($sales as $sale)
+        {
+            $sale->subTotal       = $sale->saleOrders->sum('subTotal') - $sale->discountValue + $sale->shippingCost + $sale->orderTax;
+            $sale->paidAmount     = $sale->salePayments->sum('amount');
+            $sale->dueAmount      = $sale->subTotal - $sale->paidAmount;
+        }
+        $balance = getAccountBalance($id);
+
+        return view('sale.payments.create', compact('sales', 'balance', 'customer', 'accounts'));
     }
 
     public function store(Request $request)

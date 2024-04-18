@@ -60,4 +60,6 @@ class Account extends Model
         return $this->hasOne(Warehouse::class, 'warehouseID', 'warehouseID');
     }
 
+
+
 }

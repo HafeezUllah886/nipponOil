@@ -79,7 +79,7 @@
 <body>
     <div class="main" id="main">
         <div class="logo">
-            <img src="{{ asset('images/logo.jpeg') }}" alt="">
+            <img src="{{ asset('images/logo.jpeg') }}" style="height: 100px" alt="">
         </div>
         <div class="header">
           {{--   <p class="text-center"><strong>{{ $sale->warehouse->phone }}</strong></p>
@@ -209,10 +209,10 @@
         </div>
         <div class="notes">
             <div class="row">
-                <div class="col-sm-6">
+                {{-- <div class="col-6">
                     <p>Notes: <span class="text-sm">{{ $sale->points }}</span></p>
-                </div>
-                <div class="col-sm-6">
+                </div> --}}
+                <div class="col-6">
                     <p>Payment Notes: <span class="text-sm">{{ @$sale->salePayments[0]->description }}</span></p>
                 </div>
             </div>
@@ -259,6 +259,13 @@
                     <td class="text-right"> {{ number_format($paid, 2) }}</td>
                 </tr>
                 <tr>
+                    <td width=""> Sales Man: </td>
+                    <td class=""> {{ $sale->salesMan->name }}</td>
+                    <td width=""></td>
+                    <td width=""> Previous Balance: </td>
+                    <td class="text-right"> {{ number_format($pre_balance, 2) }}</td>
+                </tr>
+                <tr>
                     <td width=""> Quantity: </td>
                     <td width=""> {{ $qty }}</td>
                     <td width=""></td>
@@ -266,19 +273,13 @@
                     <td class="text-right"> {{ number_format($net - $paid, 2) }}</td>
                 </tr>
                 <tr>
-                    <td width=""> Sales Man: </td>
-                    <td class=""> {{ $sale->salesMan->name }}</td>
-                    <td width=""></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td width=""> Account Balance </td>
                     <td class="text-right"> {{ number_format($pre_balance + $bill_balance, 2) }}</td>
                 </tr>
-                <tr>
-                    <td width=""></td>
-                    <td width=""></td>
-                    <td width=""></td>
-                    <td width=""></td>
-                    <td class="text-right"></td>
-                </tr>
+
                 <tr>
                     <td width="">Customer</td>
                     <td width="">______________</td>

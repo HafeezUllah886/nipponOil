@@ -152,6 +152,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/sales/payments/{start}/{end}',[SalePaymentController::class, 'payments']);
     Route::get('/sales/payment/delete/{ref}',[SalePaymentController::class, 'destroy']);
 
+    Route::get('/salePayment/create/{id}',[SalePaymentController::class, 'create']);
+
     Route::resource('/saleReturnPayment',\App\Http\Controllers\SaleReturnPaymentController::class);
 
     Route::resource('/purchaseReceive',\App\Http\Controllers\PurchaseReceiveController::class);

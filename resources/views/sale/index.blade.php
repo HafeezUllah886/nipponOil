@@ -133,7 +133,7 @@
                                         <i class="text-yellow fa fa-plus"></i> Deliver Products
                                     </a>
 
-                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addPaymentModal_{{ $sale->saleID }}">
+                                    <a class="dropdown-item" href="{{ url('/salePayment/create', $sale->customerID) }}" {{-- data-bs-toggle="modal" data-bs-target="#addPaymentModal_{{ $sale->saleID }}" --}}>
                                         <i class="text-yellow fa fa-plus"></i> Add Payment
                                     </a>
 
