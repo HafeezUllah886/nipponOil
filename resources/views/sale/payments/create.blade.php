@@ -42,7 +42,7 @@
                                     <tr>
                                         <td>Invoice No. {{ $sale->saleID }}</td>
                                         <td>{{$sale->dueAmount}}</td>
-                                        <td><input type="number" step="any" min="0" oninput="check()" value="{{ $sale->dueAmount }}" max="{{ $sale->dueAmount }}" class="form-control" id="amount_{{ $sale->saleID }}" name="amount[]"></td>
+                                        <td><input type="number" step="any" min="0" oninput="check()" max="{{ $sale->dueAmount }}" class="form-control" id="amount_{{ $sale->saleID }}" name="amount[]"></td>
                                         <td><input type="text" class="form-control" id="notes_{{ $sale->saleID }}" name="notes[]"></td>
                                         <input type="hidden" value="{{ $sale->saleID }}" name="saleID[]">
                                     </tr>
@@ -75,9 +75,7 @@
 <script src="{{ asset('src/plugins/src/bootstrap-select/bootstrap-select.min.js') }}"></script>
 <script>
      $('.selectize').selectize()[0].selectize;
-     $('document').ready(function (){
-        check();
-     });
+    
      function check()
      {
         var total = 0;
@@ -95,5 +93,9 @@
         $("#total").text(total + balance);
         $("#balance").attr("max", pre_bal - total);
      }
+
+     $('document').ready(function (){
+        check();
+     });
 </script>
 @endsection
