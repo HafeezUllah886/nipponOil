@@ -8,7 +8,7 @@
             </h4>
         </div>
         <div class="card-body">
-            <form class="form-horizontal" action="{{ url('/hrm/attendance/store') }}" enctype="multipart/form-data" method="POST">
+            <form class="form-horizontal" action="{{ route('salePaymentBulkStore') }}" enctype="multipart/form-data" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-md-3 mt-2">
@@ -25,6 +25,7 @@
                                     <option value="{{ $account->accountID }}">{{ $account->name }}</option>
                                 @endforeach
                             </select>
+                            <input type="hidden" name="customerID" value="{{ $customer->accountID }}">
                         </div>
                     </div>
 
@@ -42,7 +43,7 @@
                                     <tr>
                                         <td>Invoice No. {{ $sale->saleID }}</td>
                                         <td>{{$sale->dueAmount}}</td>
-                                        <td><input type="number" step="any" min="0" oninput="check()" max="{{ $sale->dueAmount }}" class="form-control" id="amount_{{ $sale->saleID }}" name="amount[]"></td>
+                                        <td><input type="number" step="any" value="0" min="0" oninput="check()" max="{{ $sale->dueAmount }}" class="form-control" id="amount_{{ $sale->saleID }}" name="amounts[]"></td>
                                         <td><input type="text" class="form-control" id="notes_{{ $sale->saleID }}" name="notes[]"></td>
                                         <input type="hidden" value="{{ $sale->saleID }}" name="saleID[]">
                                     </tr>
@@ -51,7 +52,7 @@
                                 <tr>
                                     <td>Accunt Balance</td>
                                     <td id="balance_td">{{ $balance }}</td>
-                                    <td><input type="number" step="any" min="0" oninput="check()" value="0" class="form-control" id="balance" name="amount"></td>
+                                    <td><input type="number" step="any" min="0" oninput="check()" value="0" class="form-control" id="balance" name="balance"></td>
                                     <td><input type="text" class="form-control" id="balance_notes" name="balance_notes"></td>
                                     <input type="hidden" value="{{ $balance }}" id="pre_balance">
                                 </tr>
@@ -75,7 +76,7 @@
 <script src="{{ asset('src/plugins/src/bootstrap-select/bootstrap-select.min.js') }}"></script>
 <script>
      $('.selectize').selectize()[0].selectize;
-    
+
      function check()
      {
         var total = 0;
@@ -89,7 +90,7 @@
 
 
         $("#balance_td").text(pre_bal - total);
-        var balance =$("#balance").val();
+        var balance = parseInt($("#balance").val());
         $("#total").text(total + balance);
         $("#balance").attr("max", pre_bal - total);
      }

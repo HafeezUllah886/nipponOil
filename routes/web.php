@@ -153,6 +153,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/sales/payment/delete/{ref}',[SalePaymentController::class, 'destroy']);
 
     Route::get('/salePayment/create/{id}',[SalePaymentController::class, 'create']);
+    Route::post('/salePayment/bulk/store',[SalePaymentController::class, 'bulkStore'])->name('salePaymentBulkStore');
 
     Route::resource('/saleReturnPayment',\App\Http\Controllers\SaleReturnPaymentController::class);
 
