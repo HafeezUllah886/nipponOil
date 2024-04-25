@@ -2,12 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\notifications;
 use App\Models\todo;
 use Illuminate\Http\Request;
 
 class TodoController extends Controller
 {
     public function index(){
+
+        $todos = todo::whereDate('due', '<', now())->get();
+        foreach ($todos as $todo) {
+            // Create a notification for each expired todo
+            $check = notifications::where('refID', $todo->refID)->count();
+            if($check == 0){
+                notifications::create([
+                    'warehouseID' => $todo->warehouseID,
+                    'content' => $todo->title,
+                    'date' => $todo->due,
+                    'level' => $todo->level,
+                    'refID' => $todo->refID,
+                ]);
+            }
+
+        }
 
         $todos = todo::where('warehouseID', auth()->user()->warehouseID)->orderBy('id', 'desc')->get();
         $trasheds = todo::where('warehouseID', auth()->user()->warehouseID)->orderBy('id', 'desc')->onlyTrashed()->get();

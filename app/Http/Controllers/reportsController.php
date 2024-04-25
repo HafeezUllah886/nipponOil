@@ -402,7 +402,7 @@ class reportsController extends Controller
                 {
                     $sale = saleOrder::where('productID', $product->productID)->orderBy('saleOrderID', 'desc')->first();
                     $product->salePrice = $sale->netUnitCost ?? 0;
-                    $totalSold = $sale->quantity ?? 0;
+                    $totalSold = 0;
                 }
 
                 $product->profit = $product->salePrice - $product->purchasePrice;

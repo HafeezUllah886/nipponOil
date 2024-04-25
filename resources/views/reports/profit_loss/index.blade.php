@@ -172,19 +172,23 @@ function fetchData(start, end){
                 endDate: endDate
             }, */
             success: function(response) {
-                console.log(response);
+                
                 var grossProfit = 0;
                 response.items.forEach(function(pa){
-                html += '<tr>';
-                html += '<td>'+pa.name+'</td>';
-                html += '<td>'+pa.brand.name+'</td>';
-                html += '<td class="text-end">'+Math.round(pa.purchasePrice)+'</td>';
-                html += '<td class="text-end">'+Math.round(pa.salePrice)+'</td>';
-                html += '<td class="text-end">'+Math.round(pa.profit)+'</td>';
-                html += '<td class="text-end">'+pa.sold+'</td>';
-                html += '<td class="text-end">'+Math.round(pa.netProfit)+'</td>';
-                html += '</tr>';
+                    if(pa.sold > 0)
+                    {
+                        html += '<tr>';
+                        html += '<td>'+pa.name+'</td>';
+                        html += '<td>'+pa.brand.name+'</td>';
+                        html += '<td class="text-end">'+Math.round(pa.purchasePrice)+'</td>';
+                        html += '<td class="text-end">'+Math.round(pa.salePrice)+'</td>';
+                        html += '<td class="text-end">'+Math.round(pa.profit)+'</td>';
+                        html += '<td class="text-end">'+pa.sold+'</td>';
+                        html += '<td class="text-end">'+Math.round(pa.netProfit)+'</td>';
+                        html += '</tr>';
+                    }
                 grossProfit += pa.netProfit;
+
                });
                html += '</table>';
                $("#data").html(html);
@@ -194,7 +198,7 @@ function fetchData(start, end){
                $("#expenses").html(response.expenses);
                $("#fixed").html(response.fixed);
                $("#discounts").html(response.discounts);
-               var net = grossProfit - response.salary - response.obsolete_loss - response.expenses - response.fixed - response.discounts;
+               var net = grossProfit - response.salary - response.obsolete_loss - response.expenses - response.discounts;
                $("#net").html(net);
                $("#loader").addClass("d-none");
                if(net > 0)
