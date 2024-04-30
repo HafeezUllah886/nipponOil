@@ -67,19 +67,19 @@ class AccountTransferController extends Controller
                 addTransaction($request->from, $request->date, "Transfer", 0, $request->amount, $ref, $desc );
                 addTransaction($request->to, $request->date, "Transfer", $request->amount, 0, $ref, $desc1 );
         }
-        if($from->type == 'Vendor' && $to->type == 'Vendor')
+        if($from->type == 'supplier' && $to->type == 'supplier')
            {
             addTransaction($request->from, $request->date, "Transfer", $request->amount, 0, $ref, $desc );
             addTransaction($request->to, $request->date, "Transfer", 0, $request->amount, $ref, $desc1 );
         }
 
-        if($from->type == 'Vendor' && $to->type == 'Business'
+        if($from->type == 'supplier' && $to->type == 'business'
             || $from->type == 'Vendor' && $to->type == 'Customer'){
                 addTransaction($request->from, $request->date, "Transfer", $request->amount, 0, $ref, $desc );
                 addTransaction($request->to, $request->date, "Transfer", $request->amount, 0, $ref, $desc1 );
         }
-        if($from->type == 'Business' && $to->type == 'Vendor'
-            || $from->type == 'Customer' && $to->type == 'Vendor'){
+        if($from->type == 'business' && $to->type == 'supplier'
+            || $from->type == 'customer' && $to->type == 'supplier'){
                 addTransaction($request->from, $request->date, "Transfer", 0, $request->amount, $ref, $desc );
                 addTransaction($request->to, $request->date, "Transfer", 0, $request->amount, $ref, $desc );
         }
