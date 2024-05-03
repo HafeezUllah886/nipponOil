@@ -19,38 +19,32 @@ use App\Models\Unit;
 use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class SaleController extends Controller
 {
     public function index($start = 1, $end = 1, $warehouse = 0)
     {
-        if($start == 1)
-        {
+        if ($start == 1) {
             $start = date('Y-m-d');
         }
-        if($end == 1)
-        {
+        if ($end == 1) {
             $end = date('Y-m-d');
         }
-        if($warehouse == 0)
-        {
-            if(auth()->user()->can('All Warehouses')){
-
-            }
-            else{
+        if ($warehouse == 0) {
+            if (auth()->user()->can('All Warehouses')) {
+            } else {
                 $warehouse = auth()->user()->warehouseID;
             }
         }
         $accounts = Account::where('type', 'business')
-        ->where('status', 'Active')
-        ->get();
+            ->where('status', 'Active')
+            ->get();
         $warehouses = Warehouse::all();
-        if($warehouse == 0)
-        {
+        if ($warehouse == 0) {
             $sales = Sale::whereBetween('date', [$start, $end])->orderBy('saleID', 'desc')->get();
-        }
-        else{
+        } else {
             $sales = Sale::whereBetween('date', [$start, $end])->where('warehouseID', $warehouse)->orderBy('saleID', 'desc')->get();
         }
         $ware = $warehouse;
@@ -62,11 +56,11 @@ class SaleController extends Controller
         $units = Unit::all();
         $warehouses = Warehouse::all();
         $paymentAccounts = Account::where('type', 'business')
-        ->where('status', 'Active')
-        ->get();
+            ->where('status', 'Active')
+            ->get();
         $accounts = Account::where('type', 'customer')
-        ->where('status', 'Active')
-        ->get();
+            ->where('status', 'Active')
+            ->get();
         $purchaseStatuses = PurchaseStatus::all();
         $products = Product::all();
         $emps = employees::orderBy('id', 'desc')->get();
@@ -79,127 +73,135 @@ class SaleController extends Controller
         $date = Carbon::now();
         $ref = getRef();
         $warehouseID = $request['warehouseID'];
-        $sale = Sale::create([
-            'customerID' => $request['customerID'],
-            'orderTax' => $request['taxAmount'],
-            'saleStatus' => $request['saleStatus'],
-            'discountValue' => $request['discount'],
-            'shippingCost' => $request['shippingCost'],
-            'referenceNo' => $request['referenceNo'],
-            'description' => $request['description'],
-            'salesManID' => $request->salesManID,
-            'date' => $request['date'],
-            'points' => $request['point'],
-            'warehouseID' => $request->warehouseID,
-            'refID' => $ref,
-            'createdBy' => auth()->user()->email,
-        ]);
+        try {
+            DB::beginTransaction();
+            $sale = Sale::create([
+                'customerID' => $request['customerID'],
+                'orderTax' => $request['taxAmount'],
+                'saleStatus' => $request['saleStatus'],
+                'discountValue' => $request['discount'],
+                'shippingCost' => $request['shippingCost'],
+                'referenceNo' => $request['referenceNo'],
+                'description' => $request['description'],
+                'salesManID' => $request->salesManID,
+                'date' => $request['date'],
+                'points' => $request['point'],
+                'warehouseID' => $request->warehouseID,
+                'refID' => $ref,
+                'createdBy' => auth()->user()->email,
+            ]);
 
-        $pro_total = 0;
-        foreach ($request->all() as $key => $value) {
-            if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
-                $pregMatchID = $matches[1];
-                $productCode = $request['code_' . $pregMatchID];
-                $productQuantity = $request['quantity_' . $pregMatchID];
-                $productBatchNumber = $request['batchNumber_' . $pregMatchID];
-                $productExpiryDate = $request['expiryDate_' . $pregMatchID];
-                $productNetUnitCost = $request['netUnitCost_' . $pregMatchID];
-                $productDiscount = $request['discount_' . $pregMatchID];
-                $productTax = $request['tax_' . $pregMatchID];
-                $productSaleUnit = $request['saleUnit_' . $pregMatchID];
+            $pro_total = 0;
+            foreach ($request->all() as $key => $value) {
+                if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
+                    $pregMatchID = $matches[1];
+                    $productCode = $request['code_' . $pregMatchID];
+                    $productQuantity = $request['quantity_' . $pregMatchID];
+                    $productBatchNumber = $request['batchNumber_' . $pregMatchID];
+                    $productExpiryDate = $request['expiryDate_' . $pregMatchID];
+                    $productNetUnitCost = $request['netUnitCost_' . $pregMatchID];
+                    $productDiscount = $request['discount_' . $pregMatchID];
+                    $productTax = $request['tax_' . $pregMatchID];
+                    $productSaleUnit = $request['saleUnit_' . $pregMatchID];
 
-                $unit = Unit::where('unitID', $productSaleUnit)->first();
+                    $unit = Unit::where('unitID', $productSaleUnit)->first();
 
-                $productID = $request['productID_' . $pregMatchID];
-                $product = Product::find($productID);
+                    $productID = $request['productID_' . $pregMatchID];
+                    $product = Product::find($productID);
 
-                $subTotal = ($productNetUnitCost * $productQuantity  * $unit->value) +  - $productDiscount + $productTax;
-                $pro_total += $subTotal;
-                SaleOrder::create([
-                    'saleID' => $sale->saleID,
-                    'productID' => $productID,
-                    'code' => $productCode,
-                    'warehouseID' => $warehouseID,
-                    'quantity' => $productQuantity * $unit->value ,
-                    'batchNumber' => $productBatchNumber,
-                    'expiryDate' => $productExpiryDate,
-                    'netUnitCost' => $productNetUnitCost,
-                    'discountValue' => $productDiscount,
-                    'tax' => $productTax,
-                    'subTotal' => $subTotal,
-                    'saleUnit' => $productSaleUnit,
-                    'salesManID' => $request->salesManID,
-                    'createdBy' => auth()->user()->email,
-                    'date' => $sale->date,
-                ]);
-                SaleDelivered::create([
-                    'saleID' => $sale->saleID,
-                    'productID' => $productID,
-                    'batchNumber' => $productBatchNumber,
-                    'expiryDate' => $productExpiryDate,
-                    'orderedQty' => $productQuantity * $unit->value,
-                    'saleUnit' => $productSaleUnit,
-                    'createdBy' => auth()->user()->email,
-                ]);
-                if($request['saleStatus'] === 'completed')
-                {
+                    $subTotal = ($productNetUnitCost * $productQuantity  * $unit->value) +  -$productDiscount + $productTax;
+                    $pro_total += $subTotal;
+                    SaleOrder::create([
+                        'saleID' => $sale->saleID,
+                        'productID' => $productID,
+                        'code' => $productCode,
+                        'warehouseID' => $warehouseID,
+                        'quantity' => $productQuantity * $unit->value,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'netUnitCost' => $productNetUnitCost,
+                        'discountValue' => $productDiscount,
+                        'tax' => $productTax,
+                        'subTotal' => $subTotal,
+                        'saleUnit' => $productSaleUnit,
+                        'salesManID' => $request->salesManID,
+                        'createdBy' => auth()->user()->email,
+                        'date' => $sale->date,
+                    ]);
                     SaleDelivered::create([
                         'saleID' => $sale->saleID,
                         'productID' => $productID,
                         'batchNumber' => $productBatchNumber,
                         'expiryDate' => $productExpiryDate,
-                        'receivedQty' => $productQuantity * $unit->value,
+                        'orderedQty' => $productQuantity * $unit->value,
                         'saleUnit' => $productSaleUnit,
                         'createdBy' => auth()->user()->email,
+                    ]);
+                    if ($request['saleStatus'] === 'completed') {
+                        SaleDelivered::create([
+                            'saleID' => $sale->saleID,
+                            'productID' => $productID,
+                            'batchNumber' => $productBatchNumber,
+                            'expiryDate' => $productExpiryDate,
+                            'receivedQty' => $productQuantity * $unit->value,
+                            'saleUnit' => $productSaleUnit,
+                            'createdBy' => auth()->user()->email,
 
-                    ]);
-                    Stock::create([
-                        'warehouseID' =>  $warehouseID,
-                        'productID' => $productID,
-                        'date' => $date,
-                        'batchNumber' => $productBatchNumber,
-                        'expiryDate' => $productExpiryDate,
-                        'debt' => $productQuantity * $unit->value,
-                        'refID' => $ref,
-                        'createdBy' => auth()->user()->email,
-                    ]);
+                        ]);
+                        $to = $sale->account->name;
+                        Stock::create([
+                            'warehouseID' =>  $warehouseID,
+                            'productID' => $productID,
+                            'date' => $date,
+                            'batchNumber' => $productBatchNumber,
+                            'expiryDate' => $productExpiryDate,
+                            'debt' => $productQuantity * $unit->value,
+                            'refID' => $ref,
+                            'description' => "Sold in Invoice # $sale->saleID to $to",
+                            'createdBy' => auth()->user()->email,
+                        ]);
+                    }
                 }
             }
-        }
-        $total_bill = $pro_total + $request['taxAmount'] + $request['shippingCost'] - $request['discount'];
-        addTransaction($request->customerID, $request->date, "Sale", $total_bill, 0, $ref, "Pending of Sale #". $sale->saleID);
-        if ($request['paymentStatus'] == 'received'){
-            SalePayment::create([
-                'saleID' => $sale->saleID,
-                'amount' => $request['paying-amount'],
-                'accountID' => $request['accountID'],
-                'description' => $request['paymentNotes'],
-                'refID' => $ref,
-                'date' => $request['date'],
-                'createdBy' => auth()->user()->email,
-            ]);
+            $total_bill = $pro_total + $request['taxAmount'] + $request['shippingCost'] - $request['discount'];
+            addTransaction($request->customerID, $request->date, "Sale", $total_bill, 0, $ref, "Pending of Sale #" . $sale->saleID);
+            if ($request['paymentStatus'] == 'received') {
+                SalePayment::create([
+                    'saleID' => $sale->saleID,
+                    'amount' => $request['paying-amount'],
+                    'accountID' => $request['accountID'],
+                    'description' => $request['paymentNotes'],
+                    'refID' => $ref,
+                    'date' => $request['date'],
+                    'createdBy' => auth()->user()->email,
+                ]);
 
-            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $ref, "Payment of Sale #". $sale->saleID. "<br> $request->paymentNotes");
-            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $ref, "Payment of Sale #". $sale->saleID . "<br> $request->paymentNotes");
-        }
+                addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $ref, "Payment of Sale #" . $sale->saleID . "<br> $request->paymentNotes");
+                addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $ref, "Payment of Sale #" . $sale->saleID . "<br> $request->paymentNotes");
+            }
 
-        if($request->has("reminder"))
-        {
-            $customer = Account::find($request->customerID);
-            todo::create(
-                [
-                    'title' => "Remaining amount of Bill# " . $sale->saleID,
-                    'notes' => "Recovery of Pending / Remaining amount of Bill# " . $sale->saleID . " from ". $customer->name,
-                    'level' => "medium",
-                    'status' => "normal",
-                    'due' => $request->due,
-                    'warehouseID' =>  $warehouseID,
-                    'refID' =>  $ref,
-                ]
-            );
+            if ($request->has("reminder")) {
+                $customer = Account::find($request->customerID);
+                todo::create(
+                    [
+                        'title' => "Remaining amount of Bill# " . $sale->saleID,
+                        'notes' => "Recovery of Pending / Remaining amount of Bill# " . $sale->saleID . " from " . $customer->name,
+                        'level' => "medium",
+                        'status' => "normal",
+                        'due' => $request->due,
+                        'warehouseID' =>  $warehouseID,
+                        'refID' =>  $ref,
+                    ]
+                );
+            }
+            DB::commit();
+            $request->session()->flash('message', 'Sale Created Successfully!');
+            return redirect("/sale/printBill/" . $sale->saleID);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $request->session()->flash('error', 'Something Went Wrong!');
+            return redirect()->back();
         }
-        $request->session()->flash('message', 'Sale Created Successfully!');
-        return redirect("/sale/printBill/".$sale->saleID);
     }
 
     public function show(Sale $sale)
@@ -211,9 +213,9 @@ class SaleController extends Controller
         $salePayments   = $sale->salePayments;
         $saleReceives   = $sale->saleReceive()->where('orderedQty', null)->get();
         return view('sale.show', compact('saleAmount', 'saleOrders', 'paidAmount', 'dueAmount', 'salePayments', 'sale', 'saleReceives'));
-
     }
-    public function edit(Sale $sale , Request $request)
+
+    public function edit(Sale $sale, Request $request)
     {
         foreach ($sale->saleReceive as $order) {
             $productID = $order['productID'];
@@ -231,11 +233,10 @@ class SaleController extends Controller
                 $summedData[$productID]['receivedQty'] += $receivedQty;
             }
         }
-        if (!Empty($receivedQty)){
+        if (!empty($receivedQty)) {
             $request->session()->flash('warning', 'You can not update this sale as it has received some products');
             return to_route('sale.index');
-        }
-        elseif(!$sale->salePayments->isEmpty()){
+        } elseif (!$sale->salePayments->isEmpty()) {
             $request->session()->flash('warning', 'You can not update this sale as it has some Payments');
             return to_route('sale.index');
         }
@@ -243,18 +244,22 @@ class SaleController extends Controller
         $units = Unit::all();
         $warehouses = Warehouse::all();
         $accounts = Account::where('type', 'customer')
-        ->where('status', 'Active')
-        ->get();
+            ->where('status', 'Active')
+            ->get();
         $purchaseStatuses = PurchaseStatus::all();
         $saleOrders = $sale->saleOrders;
         $paymentAccounts = Account::where('type', 'business')
-        ->where('status', 'Active')
-        ->get();
+            ->where('status', 'Active')
+            ->get();
         $selectedWarehouseID = $sale->saleOrders->pluck('warehouseID')->first();
-        return view('sale.edit', compact('warehouses', 'accounts', 'purchaseStatuses', 'units', 'sale', 'saleOrders', 'selectedWarehouseID','paymentAccounts'));
+        return view('sale.edit', compact('warehouses', 'accounts', 'purchaseStatuses', 'units', 'sale', 'saleOrders', 'selectedWarehouseID', 'paymentAccounts'));
     }
+
     public function update(Request $request, Sale $sale)
     {
+        try
+        {
+            DB::beginTransaction();
         $sale->saleOrders()->delete();
         $sale->saleReceive()->delete();
         Transaction::where('refID', $sale->refID)->delete();
@@ -289,7 +294,7 @@ class SaleController extends Controller
                 $unit = Unit::where('unitID', $productSaleUnit)->first();
 
                 $productID = $request['productID_' . $pregMatchID];
-                $subTotal = ($productNetUnitCost * $productQuantity  * $unit->value) +  - $productDiscount + $productTax;
+                $subTotal = ($productNetUnitCost * $productQuantity  * $unit->value) +  -$productDiscount + $productTax;
 
                 $pro_total += $subTotal;
                 SaleOrder::create([
@@ -297,7 +302,7 @@ class SaleController extends Controller
                     'productID' => $productID,
                     'code' => $productCode,
                     'warehouseID' => $warehouseID,
-                    'quantity' => $productQuantity * $unit->value ,
+                    'quantity' => $productQuantity * $unit->value,
                     'batchNumber' => $productBatchNumber,
                     'expiryDate' => $productExpiryDate,
                     'netUnitCost' => $productNetUnitCost,
@@ -317,8 +322,7 @@ class SaleController extends Controller
                     'saleUnit' => $productSaleUnit,
                     'createdBy' => auth()->user()->email,
                 ]);
-                if($request['saleStatus'] === 'completed')
-                {
+                if ($request['saleStatus'] === 'completed') {
                     SaleDelivered::create([
                         'saleID' => $sale->saleID,
                         'productID' => $productID,
@@ -329,6 +333,7 @@ class SaleController extends Controller
                         'createdBy' => auth()->user()->email,
 
                     ]);
+                    $to = $sale->account->name;
                     Stock::create([
                         'warehouseID' =>  $warehouseID,
                         'productID' => $productID,
@@ -337,15 +342,15 @@ class SaleController extends Controller
                         'expiryDate' => $productExpiryDate,
                         'debt' => $productQuantity * $unit->value,
                         'refID' => $ref,
+                        'description' => "Sold in Invoice # $sale->saleID to $to",
                         'createdBy' => auth()->user()->email,
                     ]);
                 }
             }
-
         }
         $total_bill = $pro_total + $request['taxAmount'] + $request['shippingCost'] - $request['discount'];
-        addTransaction($request->customerID, $request->date, "Sale", $total_bill, 0, $sale->refID, "Pending of Sale #". $sale->saleID);
-        if ($request['paymentStatus'] === 'received'){
+        addTransaction($request->customerID, $request->date, "Sale", $total_bill, 0, $sale->refID, "Pending of Sale #" . $sale->saleID);
+        if ($request['paymentStatus'] === 'received') {
             SalePayment::create([
                 'saleID' => $sale->saleID,
                 'amount' => $request['paying-amount'],
@@ -355,22 +360,31 @@ class SaleController extends Controller
                 'date' => $request['date'],
                 'createdBy' => auth()->user()->email,
             ]);
-            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $sale->refID, "Payment of Sale #". $sale->saleID);
-        addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $sale->refID, "Payment of Sale #". $sale->saleID);
+            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $sale->refID, "Payment of Sale #" . $sale->saleID);
+            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $sale->refID, "Payment of Sale #" . $sale->saleID);
         }
+        DB::commit();
         $request->session()->flash('message', 'Sale Update Successfully!');
         return redirect()->route('sale.index');
+    }
+    catch(\Exception $e)
+    {
+        DB::rollBack();
+        $request->session()->flash('error', 'Something Went Wrong');
+        return redirect()->route('sale.index');
+    }
+
     }
 
     public function destroy(Sale $sale, Request $request)
     {
         $receive = $sale->saleReceive->sum('receivedQty');
         $payment = $sale->salePayments->count();
-        if ($receive > 0){
+        if ($receive > 0) {
             return back()->with('error', 'You can not delete this sale as it has some products delivered');
-        }elseif($payment > 0){
+        } elseif ($payment > 0) {
             return back()->with('error', 'You can not delete this sale as it has some payments received');
-        }else {
+        } else {
             $sale->saleOrders()->delete();
             $sale->saleReceive()->delete();
             $sale->salePayments()->delete();
@@ -380,15 +394,15 @@ class SaleController extends Controller
         }
     }
 
-    public function printBill($id, $pos = 0){
+    public function printBill($id, $pos = 0)
+    {
         $sale = Sale::find($id);
 
-        if($pos == 1)
-        {
+        if ($pos == 1) {
             return view('pos.print', compact('sale'));
         }
         $trans = Transaction::where('accountID', $sale->customerID)
-        ->where('refID', '<', $sale->refID)->get();
+            ->where('refID', '<', $sale->refID)->get();
         $cr = $trans->sum('credit');
         $db = $trans->sum('debt');
         $pre_balance = $cr - $db;
@@ -396,22 +410,22 @@ class SaleController extends Controller
         return view('sale.print', compact('sale', 'pre_balance'));
     }
 
-    public function proHistory($id, $customer){
+    public function proHistory($id, $customer)
+    {
         $products = SaleOrder::whereHas('sale', function ($query) use ($customer) {
             $query->where('customerID', $customer);
         })
-        ->where('productID', $id)
-        ->orderBy('saleOrderID', 'desc')
-        ->limit(5)
-        ->get();
+            ->where('productID', $id)
+            ->orderBy('saleOrderID', 'desc')
+            ->limit(5)
+            ->get();
 
         $purchaseOrder = PurchaseOrder::where('productID', $id)->orderBy('purchaseOrderID', "desc")->first();
         $purchaseQty = $purchaseOrder->quantity;
         $amount = $purchaseOrder->subTotal;
         $purchase = $amount / $purchaseQty;
 
-        if($products->count() == 0)
-        {
+        if ($products->count() == 0) {
             return response()->json([
                 'history' => "<span>No History Found</span>",
                 'purchase' => $purchase
@@ -430,8 +444,7 @@ class SaleController extends Controller
                     <th>Subtotal</th>
                     </thead>
                     <tbody>";
-        foreach($products as $product)
-        {
+        foreach ($products as $product) {
             $table .= "<tr>";
             $table .= "<td>" . $product->date . "</td>";
             $table .= "<td>" . $product->quantity . "</td>";
