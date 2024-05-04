@@ -97,7 +97,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form class="form-horizontal" action="{{ route('purchase.store') }}" method="POST">
+                                    <form class="form-horizontal" action="{{ route('purchasePayment.store') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="purchaseID" value="{{ $purchase->purchaseID }}">
                                         <div class="row">

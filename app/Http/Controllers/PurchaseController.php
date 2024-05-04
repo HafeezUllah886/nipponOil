@@ -53,130 +53,109 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
-
-        $date = Carbon::now();
+       
         try {
             DB::beginTransaction();
             $ref = getRef();
-            if ($request->has('paidBy')) {
-                $warehouseID = auth()->user()->warehouseID;
-                $purchase = Purchase::find($request['purchaseID']);
-                $purchasePayment =  PurchasePayment::create([
-                    'purchaseID' => $request['purchaseID'],
-                    'amount' => $request['amount'],
-                    'accountID' => $request['accountID'],
-                    'description' => $request['description'],
-                    'refID' => $ref,
-                    'date' => $request['date'],
-                    'createdBy' => auth()->user()->email,
-                    'warehouseID' => $warehouseID,
-                ]);
-                addTransaction($request['accountID'], $request['date'], 'Purchase', 0, $request['amount'], $ref, $request['description']);
-                addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'Purchase', 0, $request['amount'], $ref, $request['description']);
-                $request->session()->flash('message', 'Purchase Payment Created Successfully!');
-                return redirect()->route('purchase.index');
-            } else {
+            $warehouseID = $request['warehouseID'];
+            $purchase = Purchase::create([
+                'date' => $request['date'],
+                'supplierID' => $request['supplierID'],
+                'purchaseStatus' => $request['purchaseStatus'],
+                'orderTax' => $request['taxAmount'],
+                'discount' => $request['discount'],
+                'shippingCost' => $request['shippingCost'],
+                'description' => $request['description'],
+                'refID' => $ref,
+                'createdBy' => auth()->user()->email,
+                'warehouseID' => $warehouseID,
+            ]);
+            $att_path1 = null;
+            if ($request->hasFile('att')) {
+                $att = $request->file('att');
+                $filename = $purchase->purchaseID . "." . $att->getClientOriginalExtension();
+                $att_path = public_path('/files/purchases/' . $filename);
+                $att_path1 = '/files/purchases/' . $filename;
+                $att->move(public_path('/files/purchases/'), $filename);
 
-                $warehouseID = $request['warehouseID'];
-                $purchase = Purchase::create([
-                    'date' => $request['date'],
-                    'supplierID' => $request['supplierID'],
-                    'purchaseStatus' => $request['purchaseStatus'],
-                    'orderTax' => $request['taxAmount'],
-                    'discount' => $request['discount'],
-                    'shippingCost' => $request['shippingCost'],
-                    'description' => $request['description'],
-                    'refID' => $ref,
-                    'createdBy' => auth()->user()->email,
-                    'warehouseID' => $warehouseID,
-                ]);
-                $att_path1 = null;
-                if ($request->hasFile('att')) {
-                    $att = $request->file('att');
-                    $filename = $purchase->purchaseID . "." . $att->getClientOriginalExtension();
-                    $att_path = public_path('/files/purchases/' . $filename);
-                    $att_path1 = '/files/purchases/' . $filename;
-                    $att->move(public_path('/files/purchases/'), $filename);
+                $purchase->image = $att_path1;
+                $purchase->save();
+            }
+            $netAmount = 0;
+            foreach ($request->all() as $key => $value) {
+                if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
+                    $productID = $matches[1];
+                    $productCode = $request['code_' . $productID];
+                    $productQuantity = $request['quantity_' . $productID];
+                    $productBatchNumber = $request['batchNumber_' . $productID];
+                    $productExpiryDate = $request['expiryDate_' . $productID];
+                    $productNetUnitCost = $request['netUnitCost_' . $productID];
+                    $productDiscount = $request['discount_' . $productID];
+                    $productTax = $request['tax_' . $productID];
+                    $productPurchaseUnit = $request['purchaseUnit_' . $productID];
 
-                    $purchase->image = $att_path1;
-                    $purchase->save();
-                }
-                $netAmount = 0;
-                foreach ($request->all() as $key => $value) {
-                    if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
-                        $productID = $matches[1];
-                        $productCode = $request['code_' . $productID];
-                        $productQuantity = $request['quantity_' . $productID];
-                        $productBatchNumber = $request['batchNumber_' . $productID];
-                        $productExpiryDate = $request['expiryDate_' . $productID];
-                        $productNetUnitCost = $request['netUnitCost_' . $productID];
-                        $productDiscount = $request['discount_' . $productID];
-                        $productTax = $request['tax_' . $productID];
-                        $productPurchaseUnit = $request['purchaseUnit_' . $productID];
+                    $unit = Unit::where('unitID', $productPurchaseUnit)->first();
 
-                        $unit = Unit::where('unitID', $productPurchaseUnit)->first();
-
-                        $subTotal = ($productNetUnitCost * $productQuantity * $unit->value) - $productDiscount + $productTax;
-                        $netAmount += $subTotal;
-                        $refID = getRef();
-                        PurchaseOrder::create([
-                            'purchaseID' => $purchase->purchaseID,
-                            'productID' => $productID,
-                            'code' => $productCode,
-                            'quantity' => $productQuantity * $unit->value,
-                            'batchNumber' => $productBatchNumber,
-                            'expiryDate' => $productExpiryDate,
-                            'netUnitCost' => $productNetUnitCost,
-                            'discount' => $productDiscount,
-                            'tax' => $productTax,
-                            'subTotal' => $subTotal,
-                            'warehouseID' => $warehouseID,
-                            'date' => $request['date'],
-                            'purchaseUnit' => $productPurchaseUnit,
-                            'createdBy' => auth()->user()->email,
-                        ]);
+                    $subTotal = ($productNetUnitCost * $productQuantity * $unit->value) - $productDiscount + $productTax;
+                    $netAmount += $subTotal;
+                    $refID = getRef();
+                    PurchaseOrder::create([
+                        'purchaseID' => $purchase->purchaseID,
+                        'productID' => $productID,
+                        'code' => $productCode,
+                        'quantity' => $productQuantity * $unit->value,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'netUnitCost' => $productNetUnitCost,
+                        'discount' => $productDiscount,
+                        'tax' => $productTax,
+                        'subTotal' => $subTotal,
+                        'warehouseID' => $warehouseID,
+                        'date' => $request['date'],
+                        'purchaseUnit' => $productPurchaseUnit,
+                        'createdBy' => auth()->user()->email,
+                    ]);
+                    PurchaseReceive::create([
+                        'purchaseID' => $purchase->purchaseID,
+                        'productID' => $productID,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'orderedQty' => $productQuantity * $unit->value,
+                        'createdBy' => auth()->user()->email,
+                        'refID' => $ref,
+                    ]);
+                    if ($request['purchaseStatus'] === 'received') {
                         PurchaseReceive::create([
                             'purchaseID' => $purchase->purchaseID,
                             'productID' => $productID,
                             'batchNumber' => $productBatchNumber,
                             'expiryDate' => $productExpiryDate,
-                            'orderedQty' => $productQuantity * $unit->value,
+                            'receivedQty' => $productQuantity * $unit->value ?? 'NULL',
                             'createdBy' => auth()->user()->email,
-                            'refID' => $ref,
+                            'refID' => $refID,
                         ]);
-                        if ($request['purchaseStatus'] === 'received') {
-                            PurchaseReceive::create([
-                                'purchaseID' => $purchase->purchaseID,
-                                'productID' => $productID,
-                                'batchNumber' => $productBatchNumber,
-                                'expiryDate' => $productExpiryDate,
-                                'receivedQty' => $productQuantity * $unit->value ?? 'NULL',
-                                'createdBy' => auth()->user()->email,
-                                'refID' => $refID,
-                            ]);
 
-                            Stock::create([
-                                'warehouseID' =>  $warehouseID,
-                                'productID' => $productID,
-                                'date' => $date,
-                                'batchNumber' => $productBatchNumber,
-                                'expiryDate' => $productExpiryDate,
-                                'credit' => $productQuantity * $unit->value,
-                                'refID' => $refID,
-                                'createdBy' => auth()->user()->email,
+                        Stock::create([
+                            'warehouseID' =>  $warehouseID,
+                            'productID' => $productID,
+                            'date' => $request['date'],
+                            'batchNumber' => $productBatchNumber,
+                            'expiryDate' => $productExpiryDate,
+                            'credit' => $productQuantity * $unit->value,
+                            'refID' => $refID,
+                            'createdBy' => auth()->user()->email,
 
-                            ]);
-                        }
+                        ]);
                     }
                 }
-                $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'] + $request['taxAmount'];
-
-                $desc = "<b>Purchase</b><br> Pending Amount of Purchase #" . $purchase->purchaseID;
-                addTransaction($request['supplierID'], $request['date'], 'Purchase', $netAmount1, 0, $ref, $desc);
-                DB::commit();
-                $request->session()->flash('message', 'Purchase Created Successfully!');
-                return redirect()->route('purchase.index');
             }
+            $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'] + $request['taxAmount'];
+
+            $desc = "<b>Purchase</b><br> Pending Amount of Purchase #" . $purchase->purchaseID;
+            addTransaction($request['supplierID'], $request['date'], 'Purchase', $netAmount1, 0, $ref, $desc);
+            DB::commit();
+            $request->session()->flash('message', 'Purchase Created Successfully!');
+            return redirect()->route('purchase.index');
         } catch (\Exception $e) {
             DB::rollBack();
             $request->session()->flash('error', 'Something Went Wrong!');
@@ -197,7 +176,7 @@ class PurchaseController extends Controller
 
     public function edit(Purchase $purchase, Request $request)
     {
-       
+
         $units = Unit::all();
         $warehouses = Warehouse::all();
         $accounts = Account::where('status', 'Active')->get();
@@ -209,24 +188,25 @@ class PurchaseController extends Controller
 
     public function update(Request $request, Purchase $purchase)
     {
-       
+
         $date = Carbon::now();
         $ref = getRef();
         $warehouseID = $request['warehouseID'];
         try {
             DB::beginTransaction();
-            $purchase->purchaseOrders()->delete();
-            foreach($purchase->purchaseReceive() as $receive)
-            {
-                Stock::where('refID', $receive->refID)->delete();
-                $receive->delete();
-            }
-            foreach($purchase->purchasePayments as $payment)
-            {
-                Transaction::where('refID', $payment->refID)->delete();
-                $payment->delete();
-            }
-            Transaction::where('refID', $purchase->refID)->delete();
+            
+        $purchase->purchaseOrders()->delete();
+        $purchaseReceive = PurchaseReceive::where('purchaseID', $purchase->purchaseID)->get();
+
+        foreach ($purchaseReceive as $receive) {
+            Stock::where('refID', $receive->refID)->delete();
+        }
+        $purchase->purchaseReceive()->delete();
+        foreach ($purchase->purchasePayments as $payment) {
+            Transaction::where('refID', $payment->refID)->delete();
+            $payment->delete();
+        }
+        Transaction::where('refID', $purchase->refID)->delete();
             $ref = getRef();
 
             $purchase->update([
@@ -258,7 +238,7 @@ class PurchaseController extends Controller
             } else {
 
                 $warehouseID = $request['warehouseID'];
-                
+
                 $att_path1 = null;
                 if ($request->hasFile('att')) {
                     $att = $request->file('att');
@@ -284,7 +264,7 @@ class PurchaseController extends Controller
                         $productPurchaseUnit = $request['purchaseUnit_' . $productID];
                         $unit = Unit::where('unitID', $productPurchaseUnit)->first();
                         $refID = getRef();
-                        $subTotal = ($productNetUnitCost * $productQuantity) - $productDiscount + $productTax;
+                        $subTotal = ($productNetUnitCost * $productQuantity * $unit->value) - $productDiscount + $productTax;
                         $netAmount += $subTotal;
                         PurchaseOrder::create([
                             'purchaseID' => $purchase->purchaseID,
@@ -361,8 +341,7 @@ class PurchaseController extends Controller
             Stock::where('refID', $receive->refID)->delete();
         }
         $purchase->purchaseReceive()->delete();
-        foreach($purchase->purchasePayments as $payment)
-        {
+        foreach ($purchase->purchasePayments as $payment) {
             Transaction::where('refID', $payment->refID)->delete();
             $payment->delete();
         }

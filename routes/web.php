@@ -22,6 +22,7 @@ use App\Http\Controllers\POSController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\profileController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\PurchasePaymentController;
 use App\Http\Controllers\PurchaseReceiveController;
 use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\QuotationController;
@@ -158,6 +159,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/saleReturnPayment',\App\Http\Controllers\SaleReturnPaymentController::class);
 
     Route::resource('/purchaseReceive',\App\Http\Controllers\PurchaseReceiveController::class);
+    Route::resource('/purchasePayment',PurchasePaymentController::class);
     Route::resource('/purchaseReturn',\App\Http\Controllers\PurchaseReturnController::class);
     Route::resource('/purchaseReturnPayment',\App\Http\Controllers\PurchaseReturnPaymentsController::class);
 
