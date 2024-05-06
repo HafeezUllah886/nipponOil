@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Reference;
+use App\Models\Stock;
 use App\Models\Transaction;
 use App\Models\Unit;
 
@@ -73,4 +74,13 @@ function getInitials($string) {
         return "$packs Ctn";
     }
     return "$packs Ctn, $remains Pcs";
+ }
+
+ function getStock($id)
+ {
+    $cr = Stock::where('productID', $id)->sum('credit');
+    $db = Stock::where('productID', $id)->sum('debt');
+    $stock = $cr - $db;
+
+    return $stock;
  }

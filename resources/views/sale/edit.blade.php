@@ -1,150 +1,134 @@
-<style>
-    .no-padding{
-        padding: 5px 5px !important;
-    }
-    .cut-text{
-        display: block;
-        white-space: nowrap;
-  width: 150px !important;
-  overflow: hidden;
-  text-overflow: ellipsis;
-    }
-
-</style>
 @extends('layouts.admin')
 @section('title', 'Sale Edit')
 @section('content')
     <div class="card card-default color-palette-box">
-{{--        <div class="card-header">--}}
-{{--            <h4 class="card-title fw-semibold">--}}
-{{--                <i class="fas fa-users-cog"></i>Edit Sale {{ $sale->saleID }}--}}
-{{--            </h4>--}}
-{{--        </div>--}}
+<style>
+      .fixed-tbody tr td {
+   padding: 0 3px !important;
+   text-align: center;
+  }
+  th{
+    padding: 5px 3px !important;
+   text-align: center;
+  }
+</style>
+<script>
+    var existingProducts = [];
+
+    @foreach ($sale->saleOrders as $product)
+        @php
+            $productID = $product->productID;
+        @endphp
+        existingProducts.push({{$productID}});
+    @endforeach
+</script>
+@php
+    use App\Models\productPrices;
+@endphp
         <div class="card-body">
-            <form class="form-horizontal" action="{{ route('sale.update',$sale->saleID) }}" method="POST">
+            <form class="form-horizontal" action="{{ route('sale.update', $sale->saleID) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
-
-                <input type="hidden" name="purchaseID" value="{{ $sale->saleID }}">
-
+                @method('put')
                 <div class="form-group row">
                     <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Date:
-                        <input type="date" name="date" class="form-control" id="date" value="{{ old('date', $sale->date) }}" required>
+                        <input type="date" name="date" class="form-control" id="date" value="{{ $sale->date }}" required>
                     </label>
 
                     <label for="referenceNo" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Reference No:
-                        <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo', $sale->referenceNo) }}" >
+                        <input type="number" name="referenceNo" class="form-control" value="{{ $sale->referenceNo }}" placeholder="Reference No">
                     </label>
 
-                    <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Customer:
-                        <select name="customerID" class="form-select" required>
-                            <option value="">Select Customer</option>
-                            @foreach ($accounts as $account)
-                                <option value="{{ $account->accountID }}" {{ $account->accountID == $sale->customerID ? 'selected' : '' }}>{{ $account->name }}</option>
-                            @endforeach
-                        </select>
+                    <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Customer: <span class="text-success" id="balance">Balance</span>
+
+                            <select name="customerID" style="width:100%;" required onchange="check_customer()" id="customerID" required>
+                                @foreach ($accounts as $account)
+                                    <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }} {{ $sale->customerID == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
+                                @endforeach
+                            </select>
+
                     </label>
 
-                    <label for="warehouse" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Warehouse:
-                        <select name="warehouseID" class="form-select" onchange="getProduct(this.value)">
-                            <option value="">Select Warehouse</option>
+                    <label for="warehouseID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Warehouse:
+                        <select name="warehouseID" id="warehouseID" required autofocus class="form-select">
                             @foreach ($warehouses as $warehouse)
-                                <option value="{{ $warehouse->warehouseID }}" {{ old('warehouseID', $selectedWarehouseID) == $warehouse->warehouseID ? 'selected' : ''   }}>{{ $warehouse->name }}</option>
+                            <option value="{{ $warehouse->warehouseID }}" {{ $sale->warehouseID== $warehouse->warehouseID ? 'selected' : '' }}>{{ $warehouse->name }}</option>
                             @endforeach
+
                         </select>
                     </label>
 
-                    <label for="supplier" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Supplier:
-                        <select name="customerID" class="form-select">
-                            <option value="">Select Supplier</option>
-                            @foreach ($accounts as $account)
-                                <option value="{{ $account->accountID }}" {{ old('customerID', $sale->customerID) == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
+                  <label for="salesManID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Sales Man:
+                        <select name="salesManID" id="salesManID" required class="form-select">
+                            <option value="">Select Sales Man</option>
+                            @foreach ($emps as $emp)
+                                <option value="{{ $emp->id }}" {{ old('salesManID') == $emp->id ? 'selected' : '' }} {{ $sale->salesManID == $emp->id ? 'selected' : '' }}>{{ $emp->name }}</option>
                             @endforeach
                         </select>
                     </label>
                 </div>
 
                 <div class="form-group row" id="product-container">
-                    <label for="productID" class="form-label col-form-label col-sm-12"> Products:
-                        <div class="col-sm-12">
-                            <select name="productID" id="productID" class="selectize" onchange="productDetails(this.value)">
-                                <option value="">Select Product</option>
-                            </select>
-                        </div>
-                    </label>
                 </div>
+
                 <div class="form-group">
                     <div class="row mt-4">
                         <div class="col-md-12">
-                            <h5>Order Table *</h5>
+                            <h5>Sale Table *</h5>
                             <div class="table-responsive table-responsive-sm mt-3">
                                 <table id="myTable" class="table table-hover order-list">
                                     <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Code</th>
-                                        <th width="15%">Quantity</th>
-                                        <th width="12%">Batch No</th>
-                                        <th width="3%">Expired Date</th>
-                                        <th width="10%">Net Unit Cost</th>
-                                        <th width="16%">Sale Unit</th>
-                                        <th width="10%">Discount</th>
-                                        <th width="10%">Tax</th>
-                                        <th>SubTotal</th>
-                                        <th width="4"><i class="fa fa-trash"></i></th>
+                                        <th  width="12%">Quantity</th>
+                                        {{-- <th>Batch No</th> --}}
+                                        <th>Sale Unit</th>
+                                        <th>Price</th>
+                                        <th width="8%">Discount</th>
+                                        <th width="8%">Tax</th>
+                                        <th width="8%">SubTotal</th>
+                                        <th><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></th>
                                     </tr>
                                     </thead>
-                                    <tbody id="tbody">
-                                    @foreach($saleOrders as $order)
-                                        <?php
-                                            $warehouseID = $order['warehouseID'];
-                                            $productID = $order->productID;
-                                            $batchNumber = $order->batchNumber;
-                                            $stock  = \App\Models\Stock::where('productID', $productID)
-                                                ->where('warehouseID', $warehouseID)
-                                                ->where('batchNumber', $batchNumber)
-                                                ->select('warehouseID', 'productID', 'batchNumber', \DB::raw('SUM(credit) as totalCredit'), \DB::raw('SUM(debt) as totalDebt'))
-                                                ->groupBy('warehouseID', 'productID', 'batchNumber')
-                                                ->first();
-                                            $totalQuantity = $stock->totalCredit - $stock->totalDebt;
-                                        ?>
-                                        <tr id="rowID_{{ $order->batchNumber }}">
-                                            <td class="no-padding">{{ $order->product->name }}</td>
-                                            <td class="no-padding">{{ $order->code }}</td>
 
-                                            <td class="row align-items-center no-padding"><div class="col-8"><input type="number" class="form-control" name="quantity_{{$order->batchNumber}}" min="1" max="{{ $totalQuantity }}" value="{{ $order->quantity }}" oninput="changeQuantity(this,{{$order->batchNumber}})" style="border: none"></div> <div class="col-4"><span id="totalQuantity_{{$order->batchNumber}}">{{ $totalQuantity }}</span> </div></td>
-                                            <td class="no-padding"><input type="number" class="form-control" name="batchNumber_{{$order->batchNumber}}" value="{{ $order->batchNumber }}"></td>
-                                            <td class="no-padding" style="text-align: center;">
-                                                @if($order->expiryDate == '')
-                                                    <div style="display: inline-block; text-align: center;">N/A</div>
-                                                @else
-                                                    <input type="date" class="form-control" id="date" name="expiryDate_{{$order->batchNumber}}" value="{{ $order->expiryDate }}">
-                                                @endif
-                                            </td>
-                                            <td class="no-padding"><input type="number" class="form-control" name="netUnitCost_{{$order->batchNumber}}" min="1" value="{{ $order->netUnitCost }}" oninput="changeNetUnitCost(this, {{$order->batchNumber}})" > </td>
-                                            <td class="no-padding">
-                                                <select name="saleUnit_{{$order->batchNumber}}" id="" class="form-select" required onchange="changeSaleUnit(this,{{$order->batchNumber}} )">
-                                                    @foreach($units as $unit)
-                                                        <option value="{{ $unit->unitID }}" @if ($unit->unitID == $order->saleUnit) selected @endif > {{ $unit->name }}</option>
+                                    <tbody id="tbody" class="fixed-tbody">
+                                        @foreach ($sale->saleOrders as $product)
+                                            @php
+                                                $id = $product->productID;
+                                                $qty = $product->quantity / $product->unit->value;
+                                                $prices = productPrices::where('productID', $product->productID)->get();
+                                                $stock = getStock($product->productID);
+                                             @endphp
+                                                <tr id="rowID_{{$id}}">
+                                                <td style="text-align:left;"><i class="fa fa-history" title="Sale History" onclick="proHistory({{$id}})" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></i> {{$product->product->name}} ({{$product->product->ltr}}Ltrs)</td>
+                                                <td class="row align-items-center">
+                                                <div class="input-group">
+                                                <input type="number" id="qty_{{$id}}" name="quantity_{{$id}}" style="padding-left:0px;padding-right:0px;text-align:center;" min="1" max="{{$stock}}" value="{{$qty}}" class="form-control" required oninput="changeQuantity(this, {{$id}})" aria-label="Recipients username" aria-describedby="button-addon2">
+                                                <span class="badge badge-success d-flex align-items-center" id="totalQuantity_{{$id}}">{{$stock}}</span></div>
+                                                <td width="15%"><select class="form-select" name="saleUnit_{{$id}}" required onchange="changeSaleUnit(this,{{$id}})">
+                                                    @foreach ($units as $unit)
+                                                        <option value="{{$unit->unitID}}" {{$unit->unitID == $product->saleUnit ? "selected" : ""}}>{{$unit->name}}</option>
                                                     @endforeach
-                                                </select>
-                                            </td>
-                                            <td class="no-padding"><input type="number" class="form-control" name="discount_{{$order->batchNumber}}" min="0" value="{{ $order->discountValue }}" oninput="changeDiscount(this, {{$order->batchNumber}} )"></td>
-                                            <td class="no-padding"><input type="number" class="form-control" name="tax_{{$order->batchNumber}}" min="0" value="{{ $order->tax }}" oninput="changeTax(this, {{$order->batchNumber}})"></td>
-                                            <td class="no-padding"> <span id="subTotal_{{$order->batchNumber}}"> {{ $order->subTotal }} </span></td>
-                                            <input type="hidden" name="code_{{ $order->batchNumber }}" value="{{ $order->code }}">
-                                            <input type="hidden" name="netUnitCost_{{ $order->batchNumber }}" value="{{ $order->netUnitCost }}">
-                                            <td class="no-padding"><input type="hidden" name="productID_{{ $order->batchNumber }}" value="{{ $order->productID }}"><button type="button" class="btn btn-sm" onclick="deleteRow(this, {{$order->batchNumber}})"><i class="fa fa-trash"></i></button></td>
-                                        </tr>
-                                    @endforeach
+                                                </select></td>
+                
+                                                <td width="15%"><select class="form-select" onchange="changeNetUnitCost(this,{{$id}})" name="netUnitCost_{{$id}}" required>
+                                                    @foreach ($prices as $price)
+                                                    <option value="{{$price->price}}" {{($product->netUnitCost + $product->discountValue) == $price->price ? "selected" : ""}}>{{$price->title}} | {{$price->price}}</option>
+                                                    @endforeach
+                                                </select></td>
+                                                <td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="discount_{{$id}}" min="0" value="{{$product->discountValue}}" oninput="changeDiscount(this, {{$id}})"></td>
+                                                <td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="tax_{{$id}}" min="0" value="{{$product->tax}}" oninput="changeTax(this, {{$id}})"></td>
+                                                <td><span id="subTotal_{{$id}}">{{$product->subTotal}}</span></td>
+                                                <td><input type="hidden" name="productID_{{$id}}" value="{{$id}}"><button type="button" class="btn btn-sm" onclick="deleteRow({{$id}})" id="{{$id}}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></td>
+                                                <input type="hidden" name="code_{{$id}}" value="{{$product->code}}">
+                                                <input type="hidden" name="batchNumber_{{$id}}" value="{{$product->batchNumber}}">
+                                                </tr>
+                                        @endforeach
                                     </tbody>
                                     <thead class="active" style="font-weight: bolder; font-size: large; color: red">
                                     <tr>
-                                        <th colspan="2">Total</th>
+                                        <th>Total</th>
                                         <th id="total-qty">0</th>
-                                        <th class="recieved-product-qty d-none"></th>
-                                        <th></th>
-                                        <th></th>
+                                        {{-- <th></th> --}}
                                         <th></th>
                                         <th></th>
                                         <th id="total-discount">0.00</th>
@@ -158,35 +142,35 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label for="orderTax" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3" > Order Tax:
-                        <select name="orderTax" id="orderTax" class="form-select" >
-                            <option value="No" >No</option>
+                <div class="form-group row d-none">
+                    <label for="orderTax" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Order Tax:
+                        <select name="orderTax" readonly id="orderTax" class="form-select">
+                            <option value="No">No</option>
                             <option value="Yes">Yes</option>
                         </select>
                     </label>
 
                     <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3 d-none" id="taxAmountLabel"> Tax Amount:
-                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount" min="0" value="{{ isset($sale->orderTax) ? $sale->orderTax : 0 }}" oninput="overallTaxAmount()">
+                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" min="0" readonly value="0" oninput="overallTaxAmount()" placeholder="Tax Amount" >
                     </label>
 
                     <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Discount:
-                        <input type="number" name="discount" class="form-control" min="0" value="{{ isset($sale->discount) ? $sale->discount : 0 }}" oninput="overallDiscount()" >
+                        <input type="number" name="discount" class="form-control" value="0" min="0" readonly oninput="overallDiscount()" placeholder="Discount">
                     </label>
 
                     <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Shipping Cost:
-                        <input type="number" name="shippingCost" class="form-control" min="0" value="{{ isset($sale->shippingCost) ? $sale->shippingCost : 0 }}" oninput="overallShippingCost()">
+                        <input type="number" name="shippingCost" class="form-control" value="0" readonly min="0" oninput="overallShippingCost()" placeholder="Shipping Cost">
                     </label>
                 </div>
                 <div class="form-group row">
-                    <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Sale Status:
+                    <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-6"> Sale Status:
                         <select name="saleStatus" id="saleStatus" class="form-select">
-                            <option value="completed" {{$sale->saleStatus == 'completed' ? 'selected' : ''}}>Completed</option>
-                            <option value="pending" {{$sale->saleStatus == 'pending' ? 'selected' : ''}}>Pending</option>
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
                         </select>
                     </label>
 
-                    <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Payment Status:
+                    <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-6"> Payment Status:
                         <select name="paymentStatus" id="paymentStatus" class="form-select" onchange="toggleReceivedFields()">
                             <option value="pending">Pending</option>
                             <option value="received">Received</option>
@@ -196,11 +180,11 @@
                 <div class="received-fields d-none">
                     <div class="form-group row">
                         <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Paying Amount *:
-                            <input type="number" name="paying-amount" class="form-control paying-amount" step="any">
+                            <input type="number" name="paying-amount" id="payingAmount" class="form-control paying-amount" step="any">
                             <div class="invalid-feedback" style="display: none;"></div>
                         </label>
                         <label for="account" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Account *:
-                            <select name="accountID" class="form-select">
+                            <select name="accountID" class="form-select" >
                                 @foreach ($paymentAccounts as $account)
                                     <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
                                 @endforeach
@@ -208,17 +192,42 @@
                         </label>
 
                         <label for="paymentNote" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Payment Note *:
-                            <textarea type="text" name="description" rows="5" class="form-control"></textarea>
+                            <input type="text" name="paymentNotes" class="form-control">
                         </label>
                     </div>
                 </div>
+                <div class="reminder-fields d-none">
+
+                    <div class="form-group row">
+                        <h6>Payment Reminder</h6>
+                       <div class="col-sm-3">
+                        <div class="switch form-switch-custom switch-inline form-switch-primary">
+                            <input class="switch-input" name="reminder" type="checkbox" role="switch" id="form-custom-switch-primary" >
+                            <label class="switch-label" for="form-custom-switch-primary">Enable Reminder</label>
+                        </div>
+                       </div>
+                        <label for="account" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Due Date:
+                           <input type="date" name="due" min="{{ date("Y-m-d") }}" id="due" class="form-control">
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="point">Invoice Notes:</label>
+                            <input type="text" name="point" value="" id="point" class="form-control">
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group row">
-                    <label for="description" class="form-label col-form-label "> Sale Note:
-                        <textarea type="text" name="description" rows="5" class="form-control">{{ $sale->description }}</textarea>
+                    <label for="description" class="form-label col-form-label"> Sale Note:
+                        <textarea type="text" name="description" rows="5" class="form-control"></textarea>
                     </label>
                 </div>
+
                 <div class="form-group row mt-2">
-                    <input class="btn btn-primary" id="saveButton" type="submit" value="Update">
+                    <input class="btn btn-primary" id="saveButton" type="submit" value="Save">
                 </div>
             </form>
         </div>
@@ -255,28 +264,97 @@
             </table>
         </div>
     </div>
+    <div class="modal fade" id="productHistory" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg"> <!-- Add "modal-dialog-white" class -->
+            <div class="modal-content" style="background-color: white; color: #000000"> <!-- Add "modal-content-white" class -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPaymentModalLabel" style="color: black; font-weight: bold">Product Sale History - <span id="purchaseLbl"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                   <div class="d-flex justify-content-center" id="historyData"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('more-css')
+    <link rel="stylesheet" href="{{ asset('src/assets/css/light/forms/switches.css') }}">
+    <link rel="stylesheet" href="{{ asset('src/assets/css/dark/forms/switches.css') }}">
+
 @endsection
 @section('more-script')
+
     <script>
+
+        $("#customerID").selectize();
+        check_customer();
+        function proHistory(id){
+            var customer = $("#customerID").find(":selected").val();
+            $.ajax({
+                url: "{{url('/sale/product/history/')}}/"+id+"/"+customer,
+                method: "get",
+                success: function (history){
+                    console.log(history);
+                    $("#historyData").html(history.history);
+                    $("#purchaseLbl").html(history.purchase);
+                    $("#productHistory").modal('show');
+                }
+            });
+        }
+
+        function check_customer(){
+            var customer = $("#customerID").find(":selected").val();
+            if(customer == 1)
+            {
+                $("#paymentStatus").val("received");
+                $("#paymentStatus option:eq(0)").prop('disabled', true);
+                toggleReceivedFields();
+                $("#payingAmount").prop('readonly', true);
+            }
+            else{
+                /* $("#paymentStatus").val("pending");
+                const receivedFields = document.querySelector('.received-fields');
+                receivedFields.classList.add('d-none'); */
+                $("#paymentStatus option:eq(0)").prop('disabled', false);
+                $("#payingAmount").prop('readonly', false);
+                $("#paymentStatus").val("pending");
+            }
+            accountBalance(customer)
+        }
+
+        $('#form-custom-switch-primary').on('change', function(){
+            if ($(this).is(":checked")) {
+                $("#due").attr('required', true);
+        } else {
+            $("#due").attr('required', false);
+        }
+        });
+
+        
         var pAmount =  $('input[name="paying-amount"]');
-        $(document).ready(function() {
-            var selectedWarehouseID = $('select[name="warehouseID"]').val();
+        var selectized = null;
+
+        $('#warehouseID').on('change', function() {
+            var selectedWarehouseID = $(this).val();
             getProduct(selectedWarehouseID);
-            footerData();
 
         });
+        var selectedWarehouseID = $('#warehouseID').val();
+            getProduct(selectedWarehouseID);
         function productDetail(){
             var id = selectized.getValue();
             productDetails(id);
         }
-        $(document).ready(function() {
-            var selectized = $('.selectize').selectize()[0].selectize;
-        selectized.focus();
-        })
-
+        $('#productID').on('click', function() {
+            if ($('#productID').children('option').length === 1) {
+                alert("Please select a warehouse first");
+                $('#productID').val(''); // Reset the product dropdown to the default "Select Product" option
+            }
+        });
         function getProduct(warehouseID) {
             var strHTMLI = "";
-            strHTMLI += '<label for="product" class="form-label col-form-label col-sm-12"> Products: </label>';
+            strHTMLI += '<label for="" class="form-label col-form-label col-sm-12"> Products: </label>';
             strHTMLI += '<select name="productID" id="productID" onchange="productDetail()" class="selectize form-select">';
             strHTMLI += ' <option value="">Select Product</option>';
             strHTMLI += '</select>';
@@ -293,8 +371,7 @@
                         $('#productID').empty();
                         $('#productID').append('<option value="">Select Product</option>');
                         var data = $.each(response.productsWithCreditDebtSum, function(index, product) {
-
-                            $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">' + product.product.code +' | '+ product.product.name +' | '+ product.batchNumber +' | '+ product.difference +' | '+ product.product.brand_name +' | '+ product.product.category_name + '</option>');
+                            $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">'  + product.product.code +' | '+ product.product.name +' | '+ product.product.grade +' | '+ product.product.ltr + ' Ltrs | '+ product.difference +'</option>');
                         });
                         $('.selectize').removeClass("form-select");
                         selectized = $('.selectize').selectize({
@@ -302,32 +379,24 @@
                                 productDetails(this.currentResults.items[0].id);
                             } */
                         })[0].selectize;
+
+
                     },
                     error: function() {
                         alert('Failed to fetch products.');
                     }
                 });
-            }
-            else {
+            } else {
                 $('#productID').empty().append('<option value="">Select Product</option>');
             }
         }
-
         var units = @json($units);
-        var existingProducts = [];
-
-        var saleOrders  = @json( $saleOrders);
-        saleOrders.forEach(function(order) {
-            existingProducts.push(order.batchNumber);
-        });
-
+        
         function getSelectedWarehouseID() {
-            return  $('select[name="warehouseID"]').val();
+            return $('#warehouseID').val();
         }
-
-        function productDetails(productID)
-        {
-            selectized.focus();
+        function productDetails(productID) {
+            /* selectized.focus(); */
             selectized.clear();
             var warehouseID = getSelectedWarehouseID();
             var strHTML = "";
@@ -339,25 +408,23 @@
                     warehouseID : warehouseID,
                     productID: productID,
                 },
-                success: function (result)
+                success: function (result) {
                     {
-                        if(result[0].difference === 0){
+
+                        if(result[0].difference == 0){
                             alert('Out Of Stock');
                             document.getElementById("productID").value = "";
                             return;
                         }
                         let found = $.grep(existingProducts, function(element) {
-                            return element === result[0].batchNumber;
+                            return element == result[0].productID;
                         });
-
                         if (found.length > 0) {
                             let unitValue = 0;
-
-                            var rowId = result[0].batchNumber;
+                            var rowId = result[0].productID;
                             var row = $("#tbody #" +'rowID_'+ rowId);
                             var quantityInput = row.find('[name="quantity_' + rowId + '"]');
-                            var netUnitCostInput = row.find('input[name="netUnitCost_' + rowId + '"]');
-
+                            var netUnitCostInput = $('select[name="netUnitCost_' + rowId + '"]');
                             let saleUnit = row.find('select[name="saleUnit_' + rowId + '"]').val()
                             if (saleUnit === '') {
                                 alert('Please select Sale Unit First');
@@ -368,66 +435,77 @@
                                     unitValue = unit.value;
                                 }
                             });
-
-
                             var discountInput = row.find('[name="discount_' + rowId + '"]');
                             var taxInput = row.find('[name="tax_' + rowId + '"]');
                             var quantity = parseInt(quantityInput.val());
-                            var netUnitCost = parseInt(netUnitCostInput.val());
+                            var netUnitCost = parseInt(netUnitCostInput.find(":selected").val());
+                            console.log(netUnitCost);
                             var discount = parseInt(discountInput.val());
                             var tax = parseInt(taxInput.val());
                             quantity++;
                             quantityInput.val(quantity);
                             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
                             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-                            $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal);
-                            footerData();
+                            $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal.toFixed(2));
 
                         }else {
                             result.forEach(function (v) {
-                                console.log(v)
-                                let id = v.batchNumber;
-                                strHTML += '<tr id="rowID_' + v.batchNumber + '">';
-                                strHTML += '<td class="no-padding">' + v.product.name + '</td>';
-                                strHTML += '<td class="no-padding">' + v.product.code + '</td>';
-                                strHTML += '<td class="row align-items-center no-padding"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.credit_sum + '" value="1" onchange="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.credit_sum + '</span> </div></td>';
-                                strHTML += '<td class="no-padding"><input type="number" class="form-control" name="batchNumber_' + v.batchNumber + '" value="' + v.batchNumber + '"></td>';
-                                strHTML += `<td class="no-padding" style="text-align: center;">${
-                                    v.product.isExpire === 0 ?
-                                        `<input type="date" id="date" class="form-control" name="expiryDate_${v.batchNumber}" value="${getCurrentDate()}">`
-                                        : '<div style="display: inline-block; text-align: center;">N/A</div>'
-                                }</td>`;
-                                strHTML += '<td class="no-padding"><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" oninput="changeNetUnitCost(this, ' + id + ')" > </td>';
-                                strHTML += '<td class="no-padding" width="10%"><select class="form-control" name="saleUnit_' + v.batchNumber + '" required onchange="changeSaleUnit(this,'+ id +')">';
-                                units.forEach(function (unit) {
-                                    var isSelected = (unit.unitID === v.product.productUnit);
+
+                                let id = v.product.productID;
+                                strHTML += '<tr id="rowID_' + id + '">';
+                                strHTML += '<td style="text-align:left;"><i class="fa fa-history" title="Sale History" onclick="proHistory('+v.product.productID+')" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></i> ' + v.product.name + ' ('+v.ltr+' Ltrs)</td>';
+                                strHTML += '<td class="row align-items-center">';
+                                strHTML += '<div class="input-group">';
+                                strHTML += '<input type="number" id="qty_'+id+'" name="quantity_' + id + '" style="padding-left:0px;padding-right:0px;text-align:center;" min="1" max="' + v.difference + '" value="1" class="form-control" required oninput="changeQuantity(this, ' + id + ')" aria-label="Recipients username" aria-describedby="button-addon2">';
+                                strHTML += '<span class="badge badge-success d-flex align-items-center" id="totalQuantity_' + id + '"">'+v.difference+'</span></div>';
+                                strHTML += '<td width="15%"><select class="form-select" name="saleUnit_' + id + '" required onchange="changeSaleUnit(this,'+ id +')">';
+                                    var unit_value = 0;
+                                    units.forEach(function (unit) {
+                                    var isSelected = (unit.unitID == v.lastSaleUnit);
                                     strHTML += '<option value="' + unit.unitID + '" ' + (isSelected ? 'selected' : '') + '>' + unit.name + '</option>';
+                                    if (isSelected){
+                                    unit_value = unit.value;
+                                }
                                 });
+                                var new_price = unit_value * v.prices[0].price;
+
                                 strHTML += '</select></td>';
-                                strHTML += '<td class="no-padding"><input type="number" class="form-control" name="discount_' + v.batchNumber + '" min="0" value="0" oninput="changeDiscount(this, ' + id + ')"></td>';
-                                strHTML += '<td class="no-padding"><input type="number" class="form-control" name="tax_' + v.batchNumber + '" min="0" value="0" oninput="changeTax(this, ' + id + ')"></td>';
-                                strHTML += '<td class="no-padding"> <span id="subTotal_' + v.batchNumber + '">' + v.product.purchasePrice + '</span></td>';
-                                strHTML += '<td class="no-padding"><input type="hidden" name="productID_' + v.batchNumber + '" value="' + v.productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(this, ' + v.productID + ')" id="' + v.productID + '"><i class="fa fa-trash"></i></button></td>';
-                                strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.product.code + '">';
+
+                                strHTML += '<td width="15%"><select class="form-select" onchange="changeNetUnitCost(this,'+ id +')" name="netUnitCost_' + id + '" required>';
+                                    v.prices.forEach(function (item) {
+                                    strHTML += '<option value="' + item.price + '">' + item.title + ' | ' + item.price +'</option>';
+                                });
+                                strHTML += '<option value="' + v.purchasePrice.toFixed(2) + '"> Purchase | ' + v.purchasePrice.toFixed(2) +'</option>';
+                                strHTML += '</select></td>';
+                                strHTML += '<td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="discount_' + id + '" min="0" value="0" oninput="changeDiscount(this, ' + id + ')"></td>';
+                                strHTML += '<td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="tax_' + id + '" min="0" value="0" oninput="changeTax(this, ' + id + ')"></td>';
+                                strHTML += '<td><span id="subTotal_' + id + '">' + new_price.toFixed(2) + '</span></td>';
+                                strHTML += '<td><input type="hidden" name="productID_' + id + '" value="' + v.productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(' + v.productID + ')" id="' + v.productID + '"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></td>';
+                                strHTML += '<input type="hidden" name="code_'+ id +'" value="' + v.product.code + '">';
+                                strHTML += '<input type="hidden" name="batchNumber_'+ id +'" value="' + v.batchNumber + '">';
                                 strHTML += '</tr>';
                             });
-                            if (!existingProducts.includes(result[0].batchNumber)) {
-                                existingProducts.push(result[0].batchNumber);
+                            if (!existingProducts.includes(result[0].productID)) {
+                                existingProducts.push(result[0].productID);
                             }
                         }
-                        $('#tbody').append(strHTML);
-                        footerData();
                     }
+                    $('#tbody').prepend(strHTML);
+                    footerData();
+                    $('input[name^="quantity_"]:first').focus().select();
+                }
             });
             document.getElementById("productID").value = "";
+            $("#productID-selectized").val("");
+            /* $("#productID-selectized").focus(); */
         }
         function changeQuantity(input, id) {
-            let unitValue = 0;
+            var unitValue = 0;
 
             let row = $(input).closest('tr');
-            let quantityElement= row.find('input[name="quantity_' + id + '"]');
+            let quantityElement = row.find('input[name="quantity_' + id + '"]');
             let quantity = quantityElement.val();
-            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            let netUnitCost = row.find('select[name="' + 'netUnitCost_' + id + '"]').val();
 
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
@@ -443,9 +521,10 @@
             let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
             let saleQty = quantity * unitValue;
             if(saleQty > totalRemainingQuantity){
+
+                saleUnitElement.val(1);
+                quantityElement.val(totalRemainingQuantity);
                 alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
-                saleUnitElement.val('')
-                quantityElement.val('')
             }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
@@ -455,17 +534,15 @@
             var tax = parseInt(taxInput);
             if (isNaN(tax)){tax = 0;}
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
             footerData();
         }
         function changeNetUnitCost(input, id) {
             var unitValue = 0;
 
             let row = $(input).closest('tr');
-            let quantityElement= row.find('input[name="quantity_' + id + '"]');
-            let quantity = quantityElement.val();
-            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-
+            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let netUnitCost = row.find('select[name="' + 'netUnitCost_' + id + '"]').val();
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
@@ -481,11 +558,9 @@
             let saleQty = quantity * unitValue;
             if(saleQty > totalRemainingQuantity){
                 alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
-                saleUnitElement.val('')
-                quantityElement.val('')
+                saleUnitElement.val(1)
             }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
-
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
             var discount = parseInt(discountInput);
@@ -497,16 +572,15 @@
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
             footerData();
         }
         function changeDiscount(input, id) {
-            var unitValue = 0;
+            let unitValue = 0;
 
             let row = $(input).closest('tr');
-            let quantityElement= row.find('input[name="quantity_' + id + '"]');
-            let quantity = quantityElement.val();
-            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let netUnitCost = row.find('select[name="' + 'netUnitCost_' + id + '"]').val();
 
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
@@ -523,10 +597,10 @@
             let saleQty = quantity * unitValue;
             if(saleQty > totalRemainingQuantity){
                 alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
-                saleUnitElement.val('')
-                quantityElement.val('')
+                saleUnitElement.val(1)
             }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
+
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var discount = parseInt(discountInput);
             if(isNaN(discount)){
@@ -538,17 +612,15 @@
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
             footerData();
         }
         function changeTax(input, id) {
             var unitValue = 0;
 
             let row = $(input).closest('tr');
-            let quantityElement= row.find('input[name="quantity_' + id + '"]');
-            let quantity = quantityElement.val();
-            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-
+            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let netUnitCost = row.find('select[name="' + 'netUnitCost_' + id + '"]').val();
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
@@ -564,11 +636,9 @@
             let saleQty = quantity * unitValue;
             if(saleQty > totalRemainingQuantity){
                 alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
-                saleUnitElement.val('')
-                quantityElement.val('')
+                saleUnitElement.val(1)
             }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
-
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
             var discount = parseInt(discountInput);
@@ -580,17 +650,16 @@
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
             footerData();
         }
+
         function changeSaleUnit(input, id){
             var unitValue = 0;
-
             let row = $(input).closest('tr');
-            let quantityElement= row.find('input[name="quantity_' + id + '"]');
+            let quantityElement = row.find('input[name="quantity_' + id + '"]');
             let quantity = quantityElement.val();
-            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-
+            let netUnitCost = row.find('select[name="' + 'netUnitCost_' + id + '"]').val();
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
@@ -606,8 +675,9 @@
             let saleQty = quantity * unitValue;
             if(saleQty > totalRemainingQuantity){
                 alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
-                saleUnitElement.val('')
-                quantityElement.val('')
+                saleUnitElement.val(1)
+                quantityElement.val(totalRemainingQuantity)
+                quantity = 0;
             }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
@@ -621,9 +691,10 @@
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
             footerData();
         }
+
         function footerData(){
             var subTotalAmount = 0;
             var totalQuantity = 0;
@@ -637,17 +708,18 @@
             var inputOverallDiscount = $('input[name="discount"]');
             var inputAllDiscount  = parseInt(inputOverallDiscount.val());
             if (!isNaN(inputAllDiscount)) {
-                overallDiscount = inputAllDiscount ;
+                overallDiscount += inputAllDiscount ;
             }
             var inputOverallShippingCost = $('input[name="shippingCost"]');
             var inputAllShippingCost  = parseInt(inputOverallShippingCost.val());
             if (!isNaN(inputAllShippingCost)) {
-                overallShippingCost = inputAllShippingCost ;
+                overallShippingCost += inputAllShippingCost ;
             }
+
             var inputOverallTaxAmount = $('input[name="taxAmount"]');
             var inputAllTaxAmount  = parseInt(inputOverallTaxAmount.val());
             if (!isNaN(inputAllTaxAmount)) {
-                overAllTaxAmount = inputAllTaxAmount ;
+                overAllTaxAmount += inputAllTaxAmount ;
             }
 
             $('tr').each(function() {
@@ -662,7 +734,7 @@
                 if (!isNaN(subtotalValue)) {
                     subTotalAmount += subtotalValue;
                 }
-                $('th#total').text(subTotalAmount).html();
+                $('th#total').text(subTotalAmount.toFixed(2)).html();
                 var discountInput = $(this).find('input[name^="discount_"]');
                 var discount = parseInt(discountInput.val());
                 if (!isNaN(discount)) {
@@ -676,35 +748,40 @@
                 }
                 $('th#total-tax').text(totalTax).html();
             });
-            var payingAmount = subTotalAmount + overAllTaxAmount - totalDiscount + totalTax + overallShippingCost - overallDiscount;
+            var payingAmount = subTotalAmount + overAllTaxAmount + overallShippingCost - overallDiscount;
             pAmount.val(payingAmount);
             pAmount.attr('max', payingAmount);
 
             $('#fItems').text( existingProducts.length + '( ' + totalQuantity + ' )');
-            $('#fSubtotal').text(subTotalAmount);
+            $('#fSubtotal').text(subTotalAmount.toFixed(2));
             $('#fOrderDiscount').text(overallDiscount.toFixed(2));
             $('#fShippingCost').text(overallShippingCost.toFixed(2));
             $('#fOrderTax').text(overAllTaxAmount.toFixed(2));
             $('#fGrandTotal').text(payingAmount.toFixed(2));
+
         }
-        function deleteRow(button, id) {
+        footerData();
+        function deleteRow(id) {
             existingProducts = $.grep(existingProducts, function(value) {
                 return value !== id;
             });
-            $(button).closest('tr').remove();
+            $('#rowID_'+id).remove();
             footerData();
         }
+        function toggleReceivedFields() {
+            const paymentStatus = document.getElementById('paymentStatus').value;
+            const receivedFields = document.querySelector('.received-fields');
+            if (paymentStatus == 'received') {
+                receivedFields.classList.remove('d-none');
+                $(".reminder-fields").addClass('d-none');
+                $('#form-custom-switch-primary').prop('checked', false);
+                $('#due').attr('required', false);
 
-        function overallDiscount(){
-            footerData();
+            } else {
+                receivedFields.classList.add('d-none');
+                $(".reminder-fields").removeClass('d-none');
+            }
         }
-        function overallShippingCost() {
-            footerData();
-        }
-        function overallTaxAmount() {
-            footerData();
-        }
-
         $('#orderTax').change(function() {
             var selectedValue = $(this).val();
             if (selectedValue === 'Yes') {
@@ -713,17 +790,10 @@
                 $('#taxAmountLabel').addClass('d-none');
             }
         });
+        $(document).ready(function() {
+        $('.selectize').addClass("form-select");
 
-        function toggleReceivedFields() {
-            const paymentStatus = document.getElementById('paymentStatus').value;
-            const receivedFields = document.querySelector('.received-fields');
-            if (paymentStatus === 'received') {
-                receivedFields.classList.remove('d-none');
-            } else {
-                receivedFields.classList.add('d-none');
-            }
-        }
-
+        })
         function handlePayingAmountChange() {
             var inputPayingAmount = $('input[name="paying-amount"]');
             var maxPayingAmount = parseFloat(inputPayingAmount.attr('max'));
@@ -749,5 +819,37 @@
         pAmount.on('input', handlePayingAmountChange);
         handlePayingAmountChange();
 
+        function overallDiscount(){
+            footerData();
+        }
+        function overallShippingCost() {
+            footerData();
+        }
+        function overallTaxAmount() {
+            footerData();
+        }
+       /*  $("#productID").on('change', function(){
+            console.log("Working");
+            var id = $(this).find(":selected").val();
+            console.log(id);
+        }); */
+
+        function points(element)
+        {
+            var html = element.innerHTML;
+            $("#point").val(html);
+        }
+
+        function accountBalance(id)
+        {
+           $.ajax({
+            url : "{{ url('/account/balance/') }}/"+id,
+            method : "get",
+            success: function (balance)
+            {
+               $("#balance").text(balance);
+            }
+           });
+        }
     </script>
 @endsection
