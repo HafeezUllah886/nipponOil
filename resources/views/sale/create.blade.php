@@ -261,13 +261,14 @@
             });
         }
 
+        toggleReceivedFields();
         function check_customer(){
             var customer = $("#customerID").find(":selected").val();
             if(customer == 1)
             {
                 $("#paymentStatus").val("received");
                 $("#paymentStatus option:eq(0)").prop('disabled', true);
-                toggleReceivedFields();
+                
                 $("#payingAmount").prop('readonly', true);
             }
             else{
@@ -278,6 +279,7 @@
                 $("#payingAmount").prop('readonly', false);
                 $("#paymentStatus").val("pending");
             }
+            toggleReceivedFields();
             accountBalance(customer)
         }
 

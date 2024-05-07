@@ -45,7 +45,7 @@
                     <label for="supplier" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Supplier:
                         <select name="supplierID" class="form-select" required>
                             @foreach ($accounts as $account)
-                                <option value="{{ $account->accountID }}" {{$purchase->supplierID = $account->accountID ? "selected" : ""}}  {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
+                                <option value="{{ $account->accountID }}" {{$purchase->supplierID == $account->accountID ? "selected" : ""}}  {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
                             @endforeach
                         </select>
                     </label>

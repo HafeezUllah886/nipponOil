@@ -51,6 +51,7 @@ class SaleDeliveredController extends Controller
                     'saleUnit' => $request['saleUnit_' . $productId],
                     'receivedQty' => $receiveQty * $unit['value'],
                     'date' => $date,
+                    'refID' => $ref,
                     'createdBy' => auth()->user()->email,
                 ]);
                 $to = $sale->account->name;

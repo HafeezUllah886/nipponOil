@@ -162,7 +162,7 @@
                             <td class="text-center">{{ $detail->product->ltr }}</td>
                             <td class="text-center">{{ $detail->quantity }}</td>
                             <td class="text-center">{{ $detail->netUnitCost}}</td>
-                            <td class="text-center">{{ $discount }}</td>
+                            <td class="text-center">{{ number_format($discount) }}</td>
                             <td class="text-right">{{ round($detail->subTotal,2)}}</td>
                         </tr>
                    @endforeach
@@ -213,7 +213,13 @@
                     <p>Notes: <span class="text-sm">{{ $sale->points }}</span></p>
                 </div> --}}
                 <div class="col-6">
+                    @if (@$sale->salePayments[0]->description)
                     <p>Payment Notes: <span class="text-sm">{{ @$sale->salePayments[0]->description }}</span></p>
+                    @endif
+                   @if (@$sale->points)
+                   <p>Invoice Notes: <span class="text-sm">{{ @$sale->points }}</span></p>
+                   @endif
+                   
                 </div>
             </div>
         </div>
