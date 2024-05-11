@@ -171,19 +171,19 @@
                 </div>
                 <div class="row">
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="point">Invoice Notes:</label>
                             <input type="text" name="point" value="" id="point" class="form-control">
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="point">Payment Description:</label>
+                            <input type="text" name="description" value="" id="desc" class="form-control">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group row">
-                    <label for="description" class="form-label col-form-label"> Sale Note:
-                        <textarea type="text" name="description" rows="5" class="form-control"></textarea>
-                    </label>
-                </div>
-
                 <div class="form-group row mt-2">
                     <input class="btn btn-primary" id="saveButton" type="submit" value="Save">
                 </div>

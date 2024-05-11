@@ -84,7 +84,7 @@
                     <div class="widget-header">
                         <div class="row">
                             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4>Top Customers (By Payments)</h4>
+                                <h4>Top Customers (By Payments) - Total: Rs. <span id="totalPayments"></span></h4>
                             </div>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                             </div>
                         </div>
             </div>
-            <div class="col-12">
+           {{--  <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">Customers</h5>
@@ -149,7 +149,7 @@
                         </table>
                     </div>
                 </div>
-    </div>
+            </div> --}}
         </div>
 
     </div>
@@ -259,7 +259,6 @@
                     $('#customerTotal').html(response.customerTotal);
                     updateChart(response.topProductQtys, response.topProductNames);
                     updateChart1(response.topCustomerTotals, response.topCustomerNames);
-                    console.log(response.topProductQtys, response.topProductNames);
             }
         });
     }
@@ -282,7 +281,7 @@ function updateChart(sold, names) {
 var sBar = {
                 chart: {
                     fontFamily: 'Nunito, Arial, sans-serif',
-                    height: 350,
+                    height: 1050,
                     type: 'bar',
                     toolbar: {
                     show: false,
@@ -308,8 +307,16 @@ var sBar = {
 
 function updateChart1(amount, title) {
     // Update the data and categories in your configuration object
+
     xBar.series[0].data = amount;
     xBar.xaxis.categories = title;
+    var sum = 0;
+  
+  $.each(amount, function(index, value) {
+    sum += parseFloat(value) || 0;
+  });
+
+  $("#totalPayments").text(sum);
 
     // Create a new ApexCharts instance with the updated configuration
     var updatedChart1 = new ApexCharts(
@@ -324,7 +331,7 @@ function updateChart1(amount, title) {
 var xBar = {
                 chart: {
                     fontFamily: 'Nunito, Arial, sans-serif',
-                    height: 350,
+                    height: 1050,
                     type: 'bar',
                     toolbar: {
                     show: false,

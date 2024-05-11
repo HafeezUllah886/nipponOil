@@ -543,7 +543,7 @@ class reportsController extends Controller
         ->join('saleOrders', 'sales.saleID', '=', 'saleOrders.saleID')
         ->groupBy('saleOrders.productID')
         ->orderByRaw('SUM(saleOrders.quantity) DESC')
-        ->limit(15)
+        /* ->limit(15) */
         ->select('saleOrders.productID', DB::raw('SUM(saleOrders.quantity) as totalQuantity'))
         ->get();
 
@@ -578,8 +578,8 @@ class reportsController extends Controller
                     'totalDebt' => $transactions->sum('debt'),
                 ];
             })
-            ->sortByDesc('totalDebt')
-            ->take(10); // Adjust the limit as needed
+            ->sortByDesc('totalDebt');
+            /* ->take(10); */ // Adjust the limit as needed
 
             // Fetch customer names for the top customers
             $topCustomersData = $topCustomers->map(function ($customer) {

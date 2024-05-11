@@ -213,8 +213,8 @@
                     <p>Notes: <span class="text-sm">{{ $sale->points }}</span></p>
                 </div> --}}
                 <div class="col-6">
-                    @if (@$sale->salePayments[0]->description)
-                    <p>Payment Notes: <span class="text-sm">{{ @$sale->salePayments[0]->description }}</span></p>
+                    @if (@$sale->description)
+                    <p>Payment Notes: <span class="text-sm">{{ @$sale->description }}</span></p>
                     @endif
                    @if (@$sale->points)
                    <p>Invoice Notes: <span class="text-sm">{{ @$sale->points }}</span></p>
