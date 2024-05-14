@@ -23,6 +23,7 @@ use App\Models\Stock;
 use App\Models\Transaction;
 use App\Models\Warehouse;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -595,6 +596,62 @@ class reportsController extends Controller
                 $customer_names[] = $topCustomer['name'];
                 $customer_totals[] = $topCustomer['totalDebt'];
             }
+ ///////////////////////////////////////////////////////////// Sale vs Payments
+
+            // Define your date range
+            $startDate = $req->start;
+            $endDate = $req->end;
+
+            // Generate array of months and corresponding labels
+$months = [];
+$currentMonth = new DateTime($startDate);
+$lastMonth = new DateTime($endDate);
+
+while ($currentMonth <= $lastMonth) {
+    $months[$currentMonth->format('Y-m')] = $currentMonth->format('M-Y');
+    $currentMonth->modify('first day of next month');
+}
+
+// Get customer account IDs
+$customerAccountIDs = DB::table('accounts')
+    ->where('type', 'customer')
+    ->pluck('accountID');
+
+// Initialize arrays to store monthly sums
+$salesAmounts = [];
+$paymentsReceivedAmounts = [];
+
+// Loop through each month
+foreach ($months as $monthKey => $monthLabel) {
+    // Calculate sum of sales for current month
+    $salesAmount = DB::table('saleorders')
+        ->whereBetween('date', [$monthKey . '-01', $monthKey . '-31'])
+        ->sum('subTotal');
+    $salesAmounts[$monthKey] = $salesAmount;
+
+    // Calculate sum of transactions for customer accounts for current month
+    $customerTransactionsSum = DB::table('transactions')
+        ->whereIn('accountID', $customerAccountIDs)
+        ->whereBetween('date', [$monthKey . '-01', $monthKey . '-31'])
+        ->sum('debt');
+    
+    // Store sum in payments received amounts (assuming it's the same concept)
+    $paymentsReceivedAmounts[$monthKey] = $customerTransactionsSum;
+}
+
+// Fill missing months with zero amounts for sales
+foreach ($months as $monthKey => $monthLabel) {
+    if (!isset($salesAmounts[$monthKey])) {
+        $salesAmounts[$monthKey] = 0;
+    }
+}
+
+// Fill missing months with zero amounts for payments received
+foreach ($months as $monthKey => $monthLabel) {
+    if (!isset($paymentsReceivedAmounts[$monthKey])) {
+        $paymentsReceivedAmounts[$monthKey] = 0;
+    }
+}
 
             return response()->json(
                 [
@@ -606,6 +663,9 @@ class reportsController extends Controller
                     'topCustomerNames' => $customer_names,
                     'topCustomerTotals' => $customer_totals,
                     'customerTotal' => $customers->sum('balance'),
+                    'sales' => array_values($salesAmounts),
+                    'payments' => array_values($paymentsReceivedAmounts),
+                    'months' => array_values($months)
                 ]
             );
     }

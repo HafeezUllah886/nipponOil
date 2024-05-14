@@ -95,6 +95,24 @@
         </div>
         </div>
         <div class="row">
+            <div class="col-12">
+                <div id="chartBar2">
+                    <div class="statbox widget box box-shadow">
+                        <div class="widget-header">
+                            <div class="row">
+                                <div class="col-12 ">
+                                    <h4>Sales vs Payments</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-content widget-content-area" id="chart2">
+                            <div id="y-bar" class=""></div>
+                        </div>
+                    </div>
+            </div>
+            </div>
+        </div>
+        <div class="row">
 
             <div class="col-12">
                         <div class="card" >
@@ -217,7 +235,6 @@
 
     // Assuming you want to call getCustomers when the #area select changes
     $('#area').on("change", function () {
-        console.log("working");
         getCustomers();
     });
 });
@@ -259,6 +276,7 @@
                     $('#customerTotal').html(response.customerTotal);
                     updateChart(response.topProductQtys, response.topProductNames);
                     updateChart1(response.topCustomerTotals, response.topCustomerNames);
+                    updateChart3(response.months, response.sales, response.payments);
             }
         });
     }
@@ -352,6 +370,56 @@ var xBar = {
                     categories: ['product1', 'product2']
                 }
                 }
+ //////////////
+
+ function updateChart3(months, sales, payments) {
+    sLineArea.series[0].data = sales;
+    sLineArea.series[1].data = payments;
+    sLineArea.xaxis.categories = months;
+
+    var chart2 = new ApexCharts(
+    document.querySelector("#y-bar"),
+    sLineArea
+    );
+
+    chart2.render();
+}
+ var sLineArea = {
+    chart: {
+        height: 350,
+        type: 'area',
+        toolbar: {
+          show: false,
+        }
+    },
+    dataLabels: {
+        enabled: false
+    },
+    stroke: {
+        curve: 'smooth'
+    },
+    series: [{
+        name: 'Sales',
+        data: []
+    }, {
+        name: 'Payments',
+        data: []
+    }],
+
+    xaxis: {
+        type: 'date',
+        categories: [],                
+    },
+    tooltip: {
+        x: {
+            format: 'dd/MM/yy HH:mm'
+        },
+    }
+}
+var chart2 = new ApexCharts(document.querySelector("#y-bar"), chartOptions);
+
+// Render the chart initially
+chart2.render();
 
 
         </script>
