@@ -45,9 +45,9 @@
         <td>{{ date("d M Y",strtotime($item->date)) }}</td>
         <td>{{$item->type }}</td>
         <td>{!! $item->description !!}</td>
-        <td class="text-end">{{ $item->credit == null ? '-' : round($item->credit,2)}}</td>
-        <td class="text-end">{{ $item->debt == null ? '-' : round($item->debt,2)}}</td>
-        <td class="text-end">{{ round($balance,2) }}</td>
+        <td class="text-end">{{ $item->credit == null ? '-' : round($item->credit,3)}}</td>
+        <td class="text-end">{{ $item->debt == null ? '-' : round($item->debt,3)}}</td>
+        <td class="text-end">{{ round($balance,3) }}</td>
 
         </tr>
     @endforeach

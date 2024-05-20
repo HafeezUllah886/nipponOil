@@ -53,7 +53,7 @@
                 <div class="form-group row mt-2">
                     <label for="initialBalance" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Amount: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        <input type="number" name="amount"  id="amount" oninput="checkAfter()" class="form-control" value="{{ old('amount') }}" value="0" placeholder="Enter Amount">
+                        <input type="number" name="amount"  id="amount" oninput="checkAfter()" class="form-control" value="{{ old('amount') }}" required step="any" placeholder="Enter Amount">
                         <div class="input-group-append">
                             <input type="text" value="0" disabled class="input-group-text" id="balance2">
                         </div>

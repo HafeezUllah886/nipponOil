@@ -69,7 +69,7 @@
                 <div class="form-group row mt-2">
                     <label for="initialBalance" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Initial Balance: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        <input type="number" name="initialBalance" class="form-control" value="{{ old('initialBalance') }}" value="0" placeholder="Initial Balance">
+                        <input type="number" name="initialBalance" class="form-control" step="any" value="0" placeholder="Initial Balance">
                     </div>
                 </div>
 

@@ -37,7 +37,7 @@
                 <div class="form-group row mt-2">
                     <label for="initialBalance" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Amount: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        <input type="number" name="amount" class="form-control" value="{{ old('amount') }}" value="0" placeholder="Enter Amount">
+                        <input type="number" name="amount" class="form-control" value="{{ old('amount') }}" required step="any" placeholder="Enter Amount">
                     </div>
                     @error('amount')
                     <span class="text-danger">{{ $message }}</span>
