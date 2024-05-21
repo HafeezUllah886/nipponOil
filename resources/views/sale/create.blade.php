@@ -398,16 +398,16 @@
                             });
                             var discountInput = row.find('[name="discount_' + rowId + '"]');
                             var taxInput = row.find('[name="tax_' + rowId + '"]');
-                            var quantity = parseInt(quantityInput.val());
-                            var netUnitCost = parseInt(netUnitCostInput.find(":selected").val());
+                            var quantity = parseFloat(quantityInput.val());
+                            var netUnitCost = parseFloat(netUnitCostInput.find(":selected").val());
                             console.log(netUnitCost);
-                            var discount = parseInt(discountInput.val());
-                            var tax = parseInt(taxInput.val());
+                            var discount = parseFloat(discountInput.val());
+                            var tax = parseFloat(taxInput.val());
                             quantity++;
                             quantityInput.val(quantity);
                             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
                             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-                            $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal.toFixed(2));
+                            $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal.toFixed(3));
 
                         }else {
                             result.forEach(function (v) {
@@ -436,11 +436,11 @@
                                     v.prices.forEach(function (item) {
                                     strHTML += '<option value="' + item.price + '">' + item.title + ' | ' + item.price +'</option>';
                                 });
-                                strHTML += '<option value="' + v.purchasePrice.toFixed(2) + '"> Purchase | ' + v.purchasePrice.toFixed(2) +'</option>';
+                                strHTML += '<option value="' + v.purchasePrice.toFixed(3) + '"> Purchase | ' + v.purchasePrice.toFixed(3) +'</option>';
                                 strHTML += '</select></td>';
-                                strHTML += '<td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="discount_' + id + '" min="0" value="0" oninput="changeDiscount(this, ' + id + ')"></td>';
-                                strHTML += '<td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="tax_' + id + '" min="0" value="0" oninput="changeTax(this, ' + id + ')"></td>';
-                                strHTML += '<td><span id="subTotal_' + id + '">' + new_price.toFixed(2) + '</span></td>';
+                                strHTML += '<td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" step="any" name="discount_' + id + '" min="0" value="0" oninput="changeDiscount(this, ' + id + ')"></td>';
+                                strHTML += '<td><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" step="any" name="tax_' + id + '" min="0" value="0" oninput="changeTax(this, ' + id + ')"></td>';
+                                strHTML += '<td><span id="subTotal_' + id + '">' + new_price.toFixed(3) + '</span></td>';
                                 strHTML += '<td><input type="hidden" name="productID_' + id + '" value="' + v.productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(this, ' + v.productID + ')" id="' + v.productID + '"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></td>';
                                 strHTML += '<input type="hidden" name="code_'+ id +'" value="' + v.product.code + '">';
                                 strHTML += '<input type="hidden" name="batchNumber_'+ id +'" value="' + v.batchNumber + '">';
@@ -490,12 +490,12 @@
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
-            var discount = parseInt(discountInput);
+            var discount = parseFloat(discountInput);
             if (isNaN(discount)){discount = 0;}
-            var tax = parseInt(taxInput);
+            var tax = parseFloat(taxInput);
             if (isNaN(tax)){tax = 0;}
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(3));
             footerData();
         }
         function changeNetUnitCost(input, id) {
@@ -524,16 +524,16 @@
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
-            var discount = parseInt(discountInput);
+            var discount = parseFloat(discountInput);
             if (isNaN(discount)){
                 discount = 0;
             }
-            var tax = parseInt(taxInput);
+            var tax = parseFloat(taxInput);
             if (isNaN(tax)){
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(3));
             footerData();
         }
         function changeDiscount(input, id) {
@@ -563,17 +563,17 @@
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
 
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
-            var discount = parseInt(discountInput);
+            var discount = parseFloat(discountInput);
             if(isNaN(discount)){
                 discount = 0;
             }
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
-            var tax = parseInt(taxInput);
+            var tax = parseFloat(taxInput);
             if(isNaN(tax)){
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(3));
             footerData();
         }
         function changeTax(input, id) {
@@ -602,16 +602,16 @@
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
-            var discount = parseInt(discountInput);
+            var discount = parseFloat(discountInput);
             if(isNaN(discount)){
                 discount = 0;
             }
-            var tax = parseInt(taxInput);
+            var tax = parseFloat(taxInput);
             if(isNaN(tax)){
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(3));
             footerData();
         }
 
@@ -643,16 +643,16 @@
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
-            var discount = parseInt(discountInput);
+            var discount = parseFloat(discountInput);
             if(isNaN(discount)){
                 discount = 0;
             }
-            var tax = parseInt(taxInput);
+            var tax = parseFloat(taxInput);
             if(isNaN(tax)){
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(3));
             footerData();
         }
 
@@ -667,25 +667,25 @@
             var overAllTaxAmount = 0;
 
             var inputOverallDiscount = $('input[name="discount"]');
-            var inputAllDiscount  = parseInt(inputOverallDiscount.val());
+            var inputAllDiscount  = parseFloat(inputOverallDiscount.val());
             if (!isNaN(inputAllDiscount)) {
                 overallDiscount += inputAllDiscount ;
             }
             var inputOverallShippingCost = $('input[name="shippingCost"]');
-            var inputAllShippingCost  = parseInt(inputOverallShippingCost.val());
+            var inputAllShippingCost  = parseFloat(inputOverallShippingCost.val());
             if (!isNaN(inputAllShippingCost)) {
                 overallShippingCost += inputAllShippingCost ;
             }
 
             var inputOverallTaxAmount = $('input[name="taxAmount"]');
-            var inputAllTaxAmount  = parseInt(inputOverallTaxAmount.val());
+            var inputAllTaxAmount  = parseFloat(inputOverallTaxAmount.val());
             if (!isNaN(inputAllTaxAmount)) {
                 overAllTaxAmount += inputAllTaxAmount ;
             }
 
             $('tr').each(function() {
                 var quantityInput = $(this).find('input[name^="quantity_"]');
-                var quantity = parseInt(quantityInput.val());
+                var quantity = parseFloat(quantityInput.val());
                 if (!isNaN(quantity)) {
                     totalQuantity += quantity;
                 }
@@ -695,15 +695,15 @@
                 if (!isNaN(subtotalValue)) {
                     subTotalAmount += subtotalValue;
                 }
-                $('th#total').text(subTotalAmount.toFixed(2)).html();
+                $('th#total').text(subTotalAmount.toFixed(3)).html();
                 var discountInput = $(this).find('input[name^="discount_"]');
-                var discount = parseInt(discountInput.val());
+                var discount = parseFloat(discountInput.val());
                 if (!isNaN(discount)) {
                     totalDiscount += discount;
                 }
                 $('th#total-discount').text(totalDiscount).html();
                 var taxInput = $(this).find('input[name^="tax_"]');
-                var tax = parseInt(taxInput.val());
+                var tax = parseFloat(taxInput.val());
                 if (!isNaN(tax)) {
                     totalTax += tax;
                 }
@@ -714,11 +714,11 @@
             pAmount.attr('max', payingAmount);
 
             $('#fItems').text( existingProducts.length + '( ' + totalQuantity + ' )');
-            $('#fSubtotal').text(subTotalAmount.toFixed(2));
-            $('#fOrderDiscount').text(overallDiscount.toFixed(2));
-            $('#fShippingCost').text(overallShippingCost.toFixed(2));
-            $('#fOrderTax').text(overAllTaxAmount.toFixed(2));
-            $('#fGrandTotal').text(payingAmount.toFixed(2));
+            $('#fSubtotal').text(subTotalAmount.toFixed(3));
+            $('#fOrderDiscount').text(overallDiscount.toFixed(3));
+            $('#fShippingCost').text(overallShippingCost.toFixed(3));
+            $('#fOrderTax').text(overAllTaxAmount.toFixed(3));
+            $('#fGrandTotal').text(payingAmount.toFixed(3));
 
         }
         function deleteRow(button, id) {
@@ -765,7 +765,7 @@
 
             var errorMessage = $('.invalid-feedback');
             if (!isNaN(maxPayingAmount) && !isNaN(enteredPayingAmount) && enteredPayingAmount > maxPayingAmount) {
-                errorMessage.text("The amount cannot exceed " + maxPayingAmount.toFixed(2));
+                errorMessage.text("The amount cannot exceed " + maxPayingAmount.toFixed(3));
                 errorMessage.css({
                     'color': '#dc3545',
                     'font-size': '20px',

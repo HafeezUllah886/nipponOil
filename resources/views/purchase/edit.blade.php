@@ -113,8 +113,8 @@
                                                @endforeach
                                             </select></td>
                                             <td class="no-padding"><input type="number" style="padding-left:0px;padding-right:0px;text-align:center;" class="form-control" name="netUnitCost_{{$id}}" min="0.1" required step="any" value="{{$product->netUnitCost}}" oninput="changeNetUnitCost(this, {{$id}})" > </td>
-                                            <td class="no-padding"><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="discount_{{$id}}" min="0" value="{{$product->discount}}" oninput="changeDiscount(this, {{$id}})"></td>
-                                            <td class="no-padding"><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" name="tax_{{$id}}" min="0" value="{{$product->tax}}" oninput="changeTax(this, {{$id}})"></td>
+                                            <td class="no-padding"><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" step="any" name="discount_{{$id}}" min="0" value="{{$product->discount}}" oninput="changeDiscount(this, {{$id}})"></td>
+                                            <td class="no-padding"><input type="number" class="form-control" style="padding-left:0px;padding-right:0px;text-align:center;" step="any" name="tax_{{$id}}" min="0" value="{{$product->tax}}" oninput="changeTax(this, {{$id}})"></td>
                                             <td class="no-padding"> <span id="subTotal_{{$id}}">{{$product->subTotal}}</span></td>
                                             <input type="hidden" name="code_{{$id}}" value="{{$product->code}}">
                                             <input type="hidden" name="batchNumber_{{$id}}" value="{{$product->batchNumber}}">
@@ -257,16 +257,16 @@
                         });
                         var discountInput = row.find('[name="discount_' + rowId + '"]');
                         var taxInput = row.find('[name="tax_' + rowId + '"]');
-                        var quantity = parseInt(quantityInput.val());
-                        var netUnitCost = parseInt(netUnitCostInput.val());
-                        var discount = parseInt(discountInput.val());
-                        var tax = parseInt(taxInput.val());
+                        var quantity = parseFloat(quantityInput.val());
+                        var netUnitCost = parseFloat(netUnitCostInput.val());
+                        var discount = parseFloat(discountInput.val());
+                        var tax = parseFloat(taxInput.val());
                         quantity++;
                         quantityInput.val(quantity);
                         let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
 
                         var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-                        $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal.toFixed(2));
+                        $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal.toFixed(3));
 
                     } else {
                             result.forEach(function (v) {
@@ -326,16 +326,16 @@
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
-            var discount = parseInt(discountInput);
+            var discount = parseFloat(discountInput);
             if (isNaN(discount)){
                 discount = 0;
             }
-            var tax = parseInt(taxInput);
+            var tax = parseFloat(taxInput);
             if (isNaN(tax)){
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(3));
             rowData();
         }
         function preventUnderscore(event) {
@@ -361,16 +361,16 @@
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
-            var discount = parseInt(discountInput);
+            var discount = parseFloat(discountInput);
             if (isNaN(discount)){
                 discount = 0;
             }
-            var tax = parseInt(taxInput);
+            var tax = parseFloat(taxInput);
             if (isNaN(tax)){
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(3));
             rowData();
         }
         function changeDiscount(input, id) {
@@ -391,17 +391,17 @@
             });
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
-            var discount = parseInt(discountInput);
+            var discount = parseFloat(discountInput);
             if(isNaN(discount)){
                 discount = 0;
             }
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
-            var tax = parseInt(taxInput);
+            var tax = parseFloat(taxInput);
             if(isNaN(tax)){
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(3));
             rowData();
         }
         function changeTax(input, id) {
@@ -423,16 +423,16 @@
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
-            var discount = parseInt(discountInput);
+            var discount = parseFloat(discountInput);
             if(isNaN(discount)){
                 discount = 0;
             }
-            var tax = parseInt(taxInput);
+            var tax = parseFloat(taxInput);
             if(isNaN(tax)){
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(3));
             rowData();
         }
         function changePurchaseUnit(input, id){
@@ -453,16 +453,16 @@
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
-            var discount = parseInt(discountInput);
+            var discount = parseFloat(discountInput);
             if(isNaN(discount)){
                 discount = 0;
             }
-            var tax = parseInt(taxInput);
+            var tax = parseFloat(taxInput);
             if(isNaN(tax)){
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
-            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(2));
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal.toFixed(3));
             rowData();
         }
         rowData();
@@ -484,24 +484,24 @@
             var overAllTaxAmount = 0;
 
             var inputOverallDiscount = $('input[name="discount"]');
-            var inputAllDiscount  = parseInt(inputOverallDiscount.val());
+            var inputAllDiscount  = parseFloat(inputOverallDiscount.val());
             if (!isNaN(inputAllDiscount)) {
                 overallDiscount += inputAllDiscount ;
             }
             var inputOverallShippingCost = $('input[name="shippingCost"]');
-            var inputAllShippingCost  = parseInt(inputOverallShippingCost.val());
+            var inputAllShippingCost  = parseFloat(inputOverallShippingCost.val());
             if (!isNaN(inputAllShippingCost)) {
                 overallShippingCost += inputAllShippingCost ;
             }
             var inputOverallTaxAmount = $('input[name="taxAmount"]');
-            var inputAllTaxAmount  = parseInt(inputOverallTaxAmount.val());
+            var inputAllTaxAmount  = parseFloat(inputOverallTaxAmount.val());
             if (!isNaN(inputAllTaxAmount)) {
                 overAllTaxAmount += inputAllTaxAmount ;
             }
 
             $('tr').each(function() {
                 var quantityInput = $(this).find('input[name^="quantity_"]');
-                var quantity = parseInt(quantityInput.val());
+                var quantity = parseFloat(quantityInput.val());
                 if (!isNaN(quantity)) {
                     totalQuantity += quantity;
                 }
@@ -513,13 +513,13 @@
                 }
                 $('th#total').text(subTotalAmount).html();
                 var discountInput = $(this).find('input[name^="discount_"]');
-                var discount = parseInt(discountInput.val());
+                var discount = parseFloat(discountInput.val());
                 if (!isNaN(discount)) {
                     totalDiscount += discount;
                 }
                 $('th#total-discount').text(totalDiscount).html();
                 var taxInput = $(this).find('input[name^="tax_"]');
-                var tax = parseInt(taxInput.val());
+                var tax = parseFloat(taxInput.val());
                 if (!isNaN(tax)) {
                     totalTax += tax;
                 }
@@ -528,11 +528,11 @@
 
             $('#fItems').text( existingProducts.length + '( ' + totalQuantity + ' )');
             $('#fSubtotal').text(subTotalAmount);
-            $('#fOrderDiscount').text(overallDiscount.toFixed(2));
-            $('#fShippingCost').text(overallShippingCost.toFixed(2));
-            $('#fOrderTax').text(overAllTaxAmount.toFixed(2));
+            $('#fOrderDiscount').text(overallDiscount.toFixed(3));
+            $('#fShippingCost').text(overallShippingCost.toFixed(3));
+            $('#fOrderTax').text(overAllTaxAmount.toFixed(3));
             var payingAmount = subTotalAmount + overAllTaxAmount + overallShippingCost - overallDiscount;
-            $('#fGrandTotal').text(payingAmount.toFixed(2));
+            $('#fGrandTotal').text(payingAmount.toFixed(3));
         }
         function overallDiscount(){
             rowData();

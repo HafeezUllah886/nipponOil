@@ -163,7 +163,7 @@
                             <td class="text-center">{{ $detail->quantity }}</td>
                             <td class="text-center">{{ $detail->netUnitCost}}</td>
                             <td class="text-center">{{ number_format($discount) }}</td>
-                            <td class="text-right">{{ round($detail->subTotal,2)}}</td>
+                            <td class="text-right">{{ round($detail->subTotal,3)}}</td>
                         </tr>
                    @endforeach
                    <tr>
@@ -171,22 +171,22 @@
                         Item(s) = {{ $items }} |
                         Total Quantity = {{ $qty }}
                     </td>
-                    <td colspan="5" class="text-right" style="font-size: 18px"><strong>{{ number_format($total,2) }}</strong></td>
+                    <td colspan="5" class="text-right" style="font-size: 18px"><strong>{{ number_format($total,3) }}</strong></td>
                    </tr>
                    <tr>
                     <td colspan="5" class="text-right">Tax:</td>
-                    <td colspan="4" class="text-right">{{ number_format($sale->orderTax,2) }}</td>
+                    <td colspan="4" class="text-right">{{ number_format($sale->orderTax,3) }}</td>
                    </tr>
                    <tr>
                     <td colspan="5" class="text-right">Discount:</td>
-                    <td colspan="5" class="text-right">{{ number_format($sale->discountValue,2) }}</td>
+                    <td colspan="5" class="text-right">{{ number_format($sale->discountValue,3) }}</td>
                    </tr>
                    <tr>
                     <td colspan="5" class="text-right">Net Amount:</td>
                     @php
                         $net = ($total + $sale->orderTax) - $sale->discountValue;
                     @endphp
-                    <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($net, 2) }}</strong></td>
+                    <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($net, 3) }}</strong></td>
                     </tr>
                     @php
                         $bill_balance = $net - $sale->salePayments->sum('amount');
@@ -194,15 +194,15 @@
                     @endphp
                     <tr>
                         <td colspan="5" class="text-right">Previous Balance:</td>
-                        <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($pre_balance, 2) }}</strong></td>
+                        <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($pre_balance, 3) }}</strong></td>
                     </tr>
                     <tr>
                         <td colspan="5" class="text-right">Bill Balance:</td>
-                        <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($bill_balance, 2) }}</strong></td>
+                        <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($bill_balance, 3) }}</strong></td>
                     </tr>
                     <tr>
                         <td colspan="5" class="text-right">Account Balance:</td>
-                        <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($pre_balance + $bill_balance, 2) }}</strong></td>
+                        <td colspan="5" class="text-right" style="font-size: 20px"><strong>{{ number_format($pre_balance + $bill_balance, 3) }}</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -252,7 +252,7 @@
                     <td width=""> Address: </td>
                     <td width="" colspan="2"> {{ $sale->account->address }}</td>
                     <td width=""> Total Bill: </td>
-                    <td class="text-right"> {{ number_format($net, 2) }}</td>
+                    <td class="text-right"> {{ number_format($net, 3) }}</td>
                 </tr>
                 <tr>
                     <td width=""> Items: </td>
@@ -262,28 +262,28 @@
                     @php
                         $paid = $sale->salePayments->sum('amount')
                     @endphp
-                    <td class="text-right"> {{ number_format($paid, 2) }}</td>
+                    <td class="text-right"> {{ number_format($paid, 3) }}</td>
                 </tr>
                 <tr>
                     <td width=""> Sales Man: </td>
                     <td class=""> {{ $sale->salesMan->name }}</td>
                     <td width=""></td>
                     <td width=""> Previous Balance: </td>
-                    <td class="text-right"> {{ number_format($pre_balance, 2) }}</td>
+                    <td class="text-right"> {{ number_format($pre_balance, 3) }}</td>
                 </tr>
                 <tr>
                     <td width=""> Quantity: </td>
                     <td width=""> {{ $qty }}</td>
                     <td width=""></td>
                     <td width=""> Bill Balance </td>
-                    <td class="text-right"> {{ number_format($net - $paid, 2) }}</td>
+                    <td class="text-right"> {{ number_format($net - $paid, 3) }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td width=""> Account Balance </td>
-                    <td class="text-right"> {{ number_format($pre_balance + $bill_balance, 2) }}</td>
+                    <td class="text-right"> {{ number_format($pre_balance + $bill_balance, 3) }}</td>
                 </tr>
 
                 <tr>
