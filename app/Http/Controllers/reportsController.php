@@ -329,7 +329,7 @@ class reportsController extends Controller
         return view('reports.profit_loss.index', compact('warehouses'));
     }
 
-    public function profitLossData($start, $end)
+    public function profitLossData($start, $end, $warehouse)
     {
         $startDate = $start;
         $endDate = $end;
@@ -364,21 +364,21 @@ class reportsController extends Controller
             foreach($products as $product)
             {
 
-                $purchases = PurchaseOrder::whereHas('purchase', function($query) use ($start, $end){
+                $purchases = PurchaseOrder::whereHas('purchase', function($query) use ($start, $end, $warehouse){
                     $query->whereBetween('date', [$start, $end]);
-                    $query->where('warehouseID', auth()->user()->warehouseID);
+                    $query->where('warehouseID', $warehouse);
                 })->where('productID', $product->productID)->get();
 
-                $sales = SaleOrder::whereHas('sale', function($query){
-                    $query->where('warehouseID', auth()->user()->warehouseID);
+                $sales = SaleOrder::whereHas('sale', function($query) use ($warehouse){
+                    $query->where('warehouseID', $warehouse);
                 })->where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
 
-                $purchaseReturn = PurchaseReturnDetail::whereHas('purchaseReturn', function($query){
-                    $query->where('warehouseID', auth()->user()->warehouseID);
+                $purchaseReturn = PurchaseReturnDetail::whereHas('purchaseReturn', function($query) use ($warehouse){
+                    $query->where('warehouseID', $warehouse);
                 })->where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
 
-                $saleReturn = SaleReturnDetail::whereHas('saleReturn', function($query){
-                    $query->where('warehouseID', auth()->user()->warehouseID);
+                $saleReturn = SaleReturnDetail::whereHas('saleReturn', function($query) use ($warehouse){
+                    $query->where('warehouseID', $warehouse);
                 })->where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
 
                 if($purchases->sum('subTotal') > 0 && $purchases->sum('quantity') > 0)

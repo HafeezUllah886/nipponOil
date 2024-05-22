@@ -31,6 +31,27 @@
                     <div class="col-md-2 d-none d-flex align-items-center" id="loader">
                             <div class="spinner-border align-self-center loader-sm d-flex align-items-center justify-content-center"></div> &nbsp;Loading
                     </div>
+                    <div class="col-md-2">
+                        @can('All Warehouses')
+                            <label for="warehouse" class="form-label col-md-12"> Warehouse:
+                                <select name="warehouseID" id="warehouse" class="form-select" required>
+                                    @foreach ($warehouses as $warehouse)
+                                        <option value="{{ $warehouse->warehouseID }}"
+                                            {{ old('warehouseID') == $warehouse->warehouseID ? 'selected' : '' }}>
+                                            {{ $warehouse->name }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                        @endcan
+                        @cannot('All Warehouses')
+                            <label for="warehouse" class="form-label col-md-12"> Warehouse:
+                                <select name="warehouseID" id="warehouse" readonly class="form-select" required>
+                                    <option value="{{ auth()->user()->warehouse->warehouseID }}">
+                                        {{ auth()->user()->warehouse->name }}</option>
+                                </select>
+                            </label>
+                        @endcannot
+                    </div>
                 </div>
                 <!-- Hidden form for date range submission -->
                 <form id="date-range-form" method="POST" action="/your-route-for-processing-dates">
@@ -124,7 +145,6 @@
         var start = currentDate;
         var end = currentDate;
 
-
         $('#reportrange').daterangepicker({
         startDate: start,
         endDate: end,
@@ -160,12 +180,13 @@ function fetchData(start, end){
 
         var startDate = start.format('YYYY-MM-DD');
         var endDate = end.format('YYYY-MM-DD');
+        var warehouse = $("#warehouse").find(":selected").val();
 
         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         $("#loader").removeClass("d-none");
         // Send an AJAX request whenever the date range changes
         $.ajax({
-            url: "{{url('/reports/profitLoss/data/')}}/"+startDate+"/"+endDate,
+            url: "{{url('/reports/profitLoss/data/')}}/"+startDate+"/"+endDate+"/"+warehouse,
             type: 'GET',
            /*  data: {
                 startDate: startDate,
