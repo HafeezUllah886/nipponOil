@@ -9,17 +9,20 @@
                 <i class="fas fa-user-graduate"></i> Account Statement
             </h3>
             <div class="card-actions">
+                <button type="button" id="print" class="btn btn-info d-none d-sm-inline-block">
+                     Print
+                </button>
                 <a href="{{ url("/account") }}" class="btn btn-dark d-none d-sm-inline-block">
                      Back
                 </a>
             </div>
         </div>
         <div class="card-body">
-
                 <div class="row">
                     <div class="col-md-6">
                        <div class="row">
                         <table class="table w-90">
+                           
                                 <tr>
                                     <td>Account:</td>
                                     <td>{{ $account->name }}</td>
@@ -100,10 +103,11 @@
     });
     }
 
-    /* function printPage(id){
+    $("#print").on('click', function (){
         var from = $("#from").val();
         var to = $("#to").val();
-        var printWindow = window.open("{{url('/statement/pdf/')}}/"+id+"/"+from+"/"+to, '_blank');
+       
+        var printWindow = window.open("{{url('/statement/print/')}}/"+{{$account->accountID}}+"/"+from+"/"+to, '_blank');
         printWindow.onload = function() {
         printWindow.print();
         setTimeout(function() {
@@ -111,7 +115,7 @@
         }, 2000);
 
     };
-    } */
+    });
 
 
     </script>

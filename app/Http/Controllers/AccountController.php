@@ -134,6 +134,29 @@ class AccountController extends Controller
         return view('account.statement.statment_details')->with(compact('items', 'p_balance', 'c_balance'));
     }
 
+    public function statementprint($id, $from, $to)
+    {
+        $account = Account::find($id);
+        $items = Transaction::where('accountID', $id)->where('date', '>=', $from)->where('date', '<=', $to)->get();
+        $prev = Transaction::where('accountID', $id)->where('date', '<', $from)->get();
+
+        $p_balance = 0;
+        foreach ($prev as $item) {
+            $p_balance += $item->credit;
+            $p_balance -= $item->debt;
+        }
+
+        $all = Transaction::where('accountID', $id)->get();
+
+        $c_balance = 0;
+        foreach ($all as $item) {
+            $c_balance += $item->credit;
+            $c_balance -= $item->debt;
+        }
+        return view('account.statement.print')->with(compact('account', 'items', 'p_balance', 'c_balance', 'from', 'to'));
+    }
+
+
     public function status($id)
     {
         $account = Account::find($id);

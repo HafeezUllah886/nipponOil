@@ -545,12 +545,13 @@ class reportsController extends Controller
         ->groupBy('saleOrders.productID')
         ->orderByRaw('SUM(saleOrders.quantity) DESC')
         /* ->limit(15) */
-        ->select('saleOrders.productID', DB::raw('SUM(saleOrders.quantity) as totalQuantity'))
+        ->select('saleOrders.productID', DB::raw('SUM(saleOrders.quantity) as totalQuantity'), DB::raw('SUM(saleOrders.subTotal) as totalAmount'))
         ->get();
 
 
         $product_names = [];
         $product_qtys = [];
+        $product_amounts = [];
         foreach ($topProducts as $product) {
             $productId = $product->productID;
             $product1 = Product::find($productId);
@@ -560,8 +561,10 @@ class reportsController extends Controller
 
             $product_names[] = $product->name;
             $product_qtys[] = $product->totalQuantity - $saleReturn->sum('returnQuantity');
+            $product_amounts[] = $product->totalAmount - $saleReturn->sum('subTotal');
         }
         array_multisort($product_qtys, SORT_DESC, $product_names);
+        array_multisort($product_amounts, SORT_DESC, $product_names);
         $types = ['Sale', 'Sale Payment', 'Transfer'];
 
         $transactions = Transaction::with('account')
@@ -657,6 +660,7 @@ foreach ($months as $monthKey => $monthLabel) {
                 [
                     'topProductNames' =>  $product_names,
                     'topProductQtys' => $product_qtys,
+                    'topProductAmounts' => $product_amounts,
                     'customers' => $customers,
                     'transactions' => $transactions,
                     'trTotal' => $transactions->sum('debt'),

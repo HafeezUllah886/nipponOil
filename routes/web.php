@@ -104,6 +104,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/account/statement/{id}', [AccountController::class, 'statement']);
     Route::get('/account/details/{id}/{from}/{to}', [AccountController::class, 'statementDetails']);
+    Route::get('/statement/print/{id}/{from}/{to}', [AccountController::class, 'statementprint']);
 
     Route::get('/account/status/{id}', [AccountController::class, 'status']);
     Route::get('/account/balance/{id}', [AccountController::class, 'accountBalance']);
