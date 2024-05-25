@@ -364,22 +364,36 @@ class reportsController extends Controller
             foreach($products as $product)
             {
 
-                $purchases = PurchaseOrder::whereHas('purchase', function($query) use ($start, $end, $warehouse){
-                    $query->whereBetween('date', [$start, $end]);
-                    $query->where('warehouseID', $warehouse);
+                $purchases = PurchaseOrder::whereHas('purchase', function($query) use ($start, $end, $warehouse) {
+                    $query->whereBetween('date', [$start, $end])
+                          ->when($warehouse !== 'all', function($query) use ($warehouse) {
+                              $query->where('warehouseID', $warehouse);
+                          });
                 })->where('productID', $product->productID)->get();
 
-                $sales = SaleOrder::whereHas('sale', function($query) use ($warehouse){
-                    $query->where('warehouseID', $warehouse);
-                })->where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
+                $sales = SaleOrder::where('productID', $product->productID)
+                ->whereBetween('date', [$start, $end])
+                ->when($warehouse !== 'all', function ($query) use ($warehouse) {
+                    $query->whereHas('sale', function($query) use ($warehouse) {
+                        $query->where('warehouseID', $warehouse);
+                    });
+                })
+                ->get();
 
-                $purchaseReturn = PurchaseReturnDetail::whereHas('purchaseReturn', function($query) use ($warehouse){
-                    $query->where('warehouseID', $warehouse);
-                })->where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
+                $purchaseReturn = PurchaseReturnDetail::whereHas('purchaseReturn', function($query) use ($warehouse, $start, $end) {
+                    $query->whereBetween('date', [$start, $end])
+                          ->when($warehouse !== 'all', function($query) use ($warehouse) {
+                              $query->where('warehouseID', $warehouse);
+                          });
+                })->where('productID', $product->productID)->get();
 
-                $saleReturn = SaleReturnDetail::whereHas('saleReturn', function($query) use ($warehouse){
-                    $query->where('warehouseID', $warehouse);
-                })->where('productID', $product->productID)->whereBetween('date', [$start, $end])->get();
+                $saleReturn = SaleReturnDetail::whereHas('saleReturn', function($query) use ($warehouse, $start, $end) {
+                    $query->whereBetween('date', [$start, $end])
+                          ->when($warehouse !== 'all', function($query) use ($warehouse) {
+                              $query->where('warehouseID', $warehouse);
+                          });
+                })->where('productID', $product->productID)->get();
+
 
                 if($purchases->sum('subTotal') > 0 && $purchases->sum('quantity') > 0)
                 {
@@ -427,7 +441,11 @@ class reportsController extends Controller
             ->whereBetween('date', [$start, $end])
             ->sum('net_loss');
 
-            $expenses = Expense::where('warehouseID', auth()->user()->warehouseID)->whereBetween('date', [$start, $end])->sum('amount');
+            $expenses = Expense::whereBetween('date', [$start, $end])
+                   ->when($warehouse !== 'all', function($query) use ($warehouse) {
+                       $query->where('warehouseID', $warehouse);
+                   })
+                   ->sum('amount');
 
             $discounts = Sale::whereBetween('date', [$start, $end])->sum('discountValue');
             $extraDiscounts = discounts::whereBetween('date', [$start, $end])->sum('amount');

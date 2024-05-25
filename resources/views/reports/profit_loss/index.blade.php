@@ -35,6 +35,7 @@
                         @can('All Warehouses')
                             <label for="warehouse" class="form-label col-md-12"> Warehouse:
                                 <select name="warehouseID" id="warehouse" class="form-select" required>
+                                    <option value="all">All Warehouses</option>
                                     @foreach ($warehouses as $warehouse)
                                         <option value="{{ $warehouse->warehouseID }}"
                                             {{ old('warehouseID') == $warehouse->warehouseID ? 'selected' : '' }}>
@@ -201,11 +202,11 @@ function fetchData(start, end){
                         html += '<tr>';
                         html += '<td>'+pa.name+'</td>';
                         html += '<td>'+pa.brand.name+'</td>';
-                        html += '<td class="text-end">'+Math.round(pa.purchasePrice)+'</td>';
-                        html += '<td class="text-end">'+Math.round(pa.salePrice)+'</td>';
-                        html += '<td class="text-end">'+Math.round(pa.profit)+'</td>';
+                        html += '<td class="text-end">'+pa.purchasePrice.toFixed(3)+'</td>';
+                        html += '<td class="text-end">'+pa.salePrice.toFixed(3)+'</td>';
+                        html += '<td class="text-end">'+pa.profit.toFixed(3)+'</td>';
                         html += '<td class="text-end">'+pa.sold+'</td>';
-                        html += '<td class="text-end">'+Math.round(pa.netProfit)+'</td>';
+                        html += '<td class="text-end">'+pa.netProfit.toFixed(3)+'</td>';
                         html += '</tr>';
                     }
                 grossProfit += pa.netProfit;

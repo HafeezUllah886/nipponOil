@@ -125,6 +125,7 @@
                         $total = 0;
                     @endphp
                     @foreach ($accounts as $key => $account)
+                    @if($account->balance > 0)
                     @php
                         $total += $account->balance;
                     @endphp
@@ -137,6 +138,7 @@
                             <td>{{ $account->address }}</td>
                             <td class="text-right">{{ $account->balance }}</td>
                         </tr>
+                        @endif
                     @endforeach
                 </tbody>
                 <tfoot>
