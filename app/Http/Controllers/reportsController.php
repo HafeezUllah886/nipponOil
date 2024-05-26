@@ -529,8 +529,6 @@ class reportsController extends Controller
         {
             $customers = Account::whereIn('area', $req->area)->where('type', 'customer')->get();
         }
-
-
         return response()->json($customers);
     }
 
@@ -559,10 +557,10 @@ class reportsController extends Controller
 
         $topProducts = Sale::whereIn('customerID', $customers->pluck('accountID'))
         ->whereBetween('sales.date', [$req->start, $req->end])
+        ->where('sales.warehouseID', auth()->user()->warehouseID)
         ->join('saleOrders', 'sales.saleID', '=', 'saleOrders.saleID')
         ->groupBy('saleOrders.productID')
         ->orderByRaw('SUM(saleOrders.quantity) DESC')
-        /* ->limit(15) */
         ->select('saleOrders.productID', DB::raw('SUM(saleOrders.quantity) as totalQuantity'), DB::raw('SUM(saleOrders.subTotal) as totalAmount'))
         ->get();
 
@@ -581,8 +579,8 @@ class reportsController extends Controller
             $product_qtys[] = $product->totalQuantity - $saleReturn->sum('returnQuantity');
             $product_amounts[] = $product->totalAmount - $saleReturn->sum('subTotal');
         }
-        array_multisort($product_qtys, SORT_DESC, $product_names);
-        array_multisort($product_amounts, SORT_DESC, $product_names);
+        /* array_multisort($product_qtys, SORT_DESC, $product_names);
+        array_multisort($product_amounts, SORT_DESC, $product_names); */
         $types = ['Sale', 'Sale Payment', 'Transfer'];
 
         $transactions = Transaction::with('account')

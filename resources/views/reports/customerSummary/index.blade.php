@@ -400,7 +400,7 @@
         }
         //////////////
         function updateChart4(amount, names) {
-            // Update the data and categories in your configuration object
+             // Combine amount and names into a single array of objects for sorting
 
             zBar.series[0].data = amount;
             zBar.xaxis.categories = names;
