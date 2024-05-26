@@ -300,7 +300,7 @@
                     $('#customerTotal').html(response.customerTotal);
                     updateChart(response.topProductQtys, response.topProductNames);
                     updateChart1(response.topCustomerTotals, response.topCustomerNames);
-                    updateChart4(response.topProductAmounts, response.topProductNames);
+                    updateChart4(response.topProductAmounts, response.topProductNamesAmount);
                     updateChart3(response.months, response.sales, response.payments);
                    
                 }

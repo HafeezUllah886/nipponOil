@@ -564,10 +564,18 @@ class reportsController extends Controller
         ->select('saleOrders.productID', DB::raw('SUM(saleOrders.quantity) as totalQuantity'), DB::raw('SUM(saleOrders.subTotal) as totalAmount'))
         ->get();
 
+        $topProductsByAmount = Sale::whereIn('customerID', $customers->pluck('accountID'))
+        ->whereBetween('sales.date', [$req->start, $req->end])
+        ->where('sales.warehouseID', auth()->user()->warehouseID)
+        ->join('saleOrders', 'sales.saleID', '=', 'saleOrders.saleID')
+        ->groupBy('saleOrders.productID')
+        ->orderByRaw('SUM(saleOrders.subTotal) DESC')
+        ->select('saleOrders.productID',  DB::raw('SUM(saleOrders.subTotal) as totalAmount'))
+        ->get();
+
 
         $product_names = [];
         $product_qtys = [];
-        $product_amounts = [];
         foreach ($topProducts as $product) {
             $productId = $product->productID;
             $product1 = Product::find($productId);
@@ -577,6 +585,18 @@ class reportsController extends Controller
 
             $product_names[] = $product->name;
             $product_qtys[] = $product->totalQuantity - $saleReturn->sum('returnQuantity');
+        }
+
+        $product_names_amount = [];
+        $product_amounts = [];
+        foreach ($topProductsByAmount as $product) {
+            $productId = $product->productID;
+            $product1 = Product::find($productId);
+            $product->name = $product1->name;
+            $saleReturn = SaleReturnDetail::where('productID', $product->productID)
+            ->whereBetween('date', [$req->start, $req->end])->get();
+
+            $product_names_amount[] = $product->name;
             $product_amounts[] = $product->totalAmount - $saleReturn->sum('subTotal');
         }
         /* array_multisort($product_qtys, SORT_DESC, $product_names);
@@ -676,6 +696,7 @@ foreach ($months as $monthKey => $monthLabel) {
                 [
                     'topProductNames' =>  $product_names,
                     'topProductQtys' => $product_qtys,
+                    'topProductNamesAmount' => $product_names_amount,
                     'topProductAmounts' => $product_amounts,
                     'customers' => $customers,
                     'transactions' => $transactions,
