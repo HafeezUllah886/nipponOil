@@ -515,8 +515,9 @@ class reportsController extends Controller
     public function customers()
     {
         $areas = Account::where('type', 'customer')->distinct()->pluck('area');
+        $warehouses = Warehouse::all();
 
-        return view('reports.customerSummary.index', compact('areas'));
+        return view('reports.customerSummary.index', compact('areas', 'warehouses'));
     }
 
     public function getCustomers(request $req)
@@ -554,10 +555,12 @@ class reportsController extends Controller
         {
             $customer->balance = getAccountBalance($customer->accountID);
         }
-
+        $warehouse = $req->warehouse;
         $topProducts = Sale::whereIn('customerID', $customers->pluck('accountID'))
         ->whereBetween('sales.date', [$req->start, $req->end])
-        ->where('sales.warehouseID', auth()->user()->warehouseID)
+        ->when($warehouse !== 'all', function($query) use ($warehouse) {
+            $query->where('sales.warehouseID', $warehouse);
+        })
         ->join('saleOrders', 'sales.saleID', '=', 'saleOrders.saleID')
         ->groupBy('saleOrders.productID')
         ->orderByRaw('SUM(saleOrders.quantity) DESC')
@@ -566,13 +569,14 @@ class reportsController extends Controller
 
         $topProductsByAmount = Sale::whereIn('customerID', $customers->pluck('accountID'))
         ->whereBetween('sales.date', [$req->start, $req->end])
-        ->where('sales.warehouseID', auth()->user()->warehouseID)
+        ->when($warehouse !== 'all', function($query) use ($warehouse) {
+            $query->where('sales.warehouseID', $warehouse);
+        })
         ->join('saleOrders', 'sales.saleID', '=', 'saleOrders.saleID')
         ->groupBy('saleOrders.productID')
         ->orderByRaw('SUM(saleOrders.subTotal) DESC')
         ->select('saleOrders.productID',  DB::raw('SUM(saleOrders.subTotal) as totalAmount'))
         ->get();
-
 
         $product_names = [];
         $product_qtys = [];
@@ -692,8 +696,7 @@ foreach ($months as $monthKey => $monthLabel) {
     }
 }
 
-            return response()->json(
-                [
+            return view('reports.customerSummary.details', [
                     'topProductNames' =>  $product_names,
                     'topProductQtys' => $product_qtys,
                     'topProductNamesAmount' => $product_names_amount,
