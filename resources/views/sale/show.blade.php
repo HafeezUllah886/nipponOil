@@ -74,7 +74,7 @@
                                             <td>{{ $order->batchNumber ?? '' }}</td>
                                             <td>{{ $order->expiryDate ?? '' }}</td>
                                             <td>{{ $order->netUnitCost }}</td>
-                                            <td>{{ $order->discount }}</td>
+                                            <td>{{ $order->discountValue }}</td>
                                             <td>{{ $order->tax }}</td>
                                             <td>{{ $order->subTotal }}</td>
                                             <td>{{ $order->unit->name }}</td>

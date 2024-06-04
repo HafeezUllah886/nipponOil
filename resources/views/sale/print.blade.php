@@ -171,7 +171,7 @@
                         Item(s) = {{ $items }} |
                         Total Quantity = {{ $qty }}
                     </td>
-                    <td colspan="5" class="text-right" style="font-size: 18px"><strong>{{ number_format($total,3) }}</strong></td>
+                    <td colspan="5" class="text-right" style="font-size: 18px"><strong>{{ number_format($sale->saleOrders->sum('subTotal'), 3) }}</strong></td>
                    </tr>
                    <tr>
                     <td colspan="5" class="text-right">Tax:</td>

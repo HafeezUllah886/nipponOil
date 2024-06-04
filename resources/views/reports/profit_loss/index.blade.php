@@ -202,11 +202,11 @@ function fetchData(start, end){
                         html += '<tr>';
                         html += '<td>'+pa.name+'</td>';
                         html += '<td>'+pa.brand.name+'</td>';
-                        html += '<td class="text-end">'+pa.purchasePrice.toFixed(3)+'</td>';
-                        html += '<td class="text-end">'+pa.salePrice.toFixed(3)+'</td>';
-                        html += '<td class="text-end">'+pa.profit.toFixed(3)+'</td>';
-                        html += '<td class="text-end">'+pa.sold+'</td>';
-                        html += '<td class="text-end">'+pa.netProfit.toFixed(3)+'</td>';
+                        html += '<td class="text-end">'+Number(pa.purchasePrice).toFixed(3)+'</td>';
+                        html += '<td class="text-end">'+Number(pa.salePrice).toFixed(3)+'</td>';
+                        html += '<td class="text-end">'+Number(pa.profit).toFixed(3)+'</td>';
+                        html += '<td class="text-end">'+Number(pa.sold)+'</td>';
+                        html += '<td class="text-end">'+Number(pa.netProfit).toFixed(3)+'</td>';
                         html += '</tr>';
                     }
                 grossProfit += pa.netProfit;
@@ -214,14 +214,14 @@ function fetchData(start, end){
                });
                html += '</table>';
                $("#data").html(html);
-               $("#grossProfit").html(grossProfit);
-               $("#salary").html(response.salary);
-               $("#obsolete").html(response.obsolete_loss);
-               $("#expenses").html(response.expenses);
-               $("#fixed").html(response.fixed);
-               $("#discounts").html(response.discounts);
+               $("#grossProfit").html(Number(grossProfit).toFixed(3));
+               $("#salary").html(Number(response.salary).toFixed(3));
+               $("#obsolete").html(Number(response.obsolete_loss).toFixed(3));
+               $("#expenses").html(Number(response.expenses).toFixed(3));
+               $("#fixed").html(Number(response.fixed).toFixed(3));
+               $("#discounts").html(Number(response.discounts).toFixed(3));
                var net = grossProfit - response.salary - response.obsolete_loss - response.expenses - response.discounts;
-               $("#net").html(net);
+               $("#net").html(Number(net).toFixed(3));
                $("#loader").addClass("d-none");
                if(net > 0)
                {
