@@ -23,7 +23,7 @@
             $firstDayOfMonth = date('Y-m-01', strtotime("$currentYear-$currentMonth-01"));
             $lastDayOfMonth = date('Y-m-t', strtotime("$currentYear-$currentMonth-01"));
         @endphp
-       
+
         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-6 layout-spacing">
@@ -44,12 +44,12 @@
                                     <option value="all">All Warehouses</option>
                                     @foreach ($warehouses as $warehouse)
                                             <option value="{{ $warehouse->warehouseID }}" >{{ $warehouse->name }}</option>
-                                        @endforeach 
+                                        @endforeach
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="area">Area</label>
-                                <select name="area" id="area" multiple>
+                                <select name="area[]" id="area" multiple>
                                     @foreach ($areas as $key => $area)
                                         <option value="{{ $area }}">{{ $area }}</option>
                                     @endforeach
@@ -57,18 +57,18 @@
                             </div>
                             <div class="form-group">
                                 <label for="customer">Customer</label>
-                                <select name="customer" id="customer" multiple>
+                                <select name="customer[]" id="customer" multiple>
                                     {{--  @foreach ($customers as $customer1)
                                             <option value="{{ $customer1->accountID }}" {{ $customer1->accountID == $customer->accountID ? "selected" : "" }}>{{ $customer1->name }}</option>
                                         @endforeach --}}
                                 </select>
                             </div>
-                           
+
                             <button type="submit" class="btn btn-secondary w-100 mt-3">View Report</button>
                         </form>
                     </div>
                 </div>
-            </div>        
+            </div>
         </div>
 
     </div>
