@@ -364,12 +364,8 @@ class reportsController extends Controller
             foreach($products as $product)
             {
 
-                $purchases = PurchaseOrder::whereHas('purchase', function($query) use ($start, $end, $warehouse) {
-                    $query->whereBetween('date', [$start, $end])
-                          ->when($warehouse !== 'all', function($query) use ($warehouse) {
-                              $query->where('warehouseID', $warehouse);
-                          });
-                })->where('productID', $product->productID)->get();
+                $purchases = PurchaseOrder::where('productID', $product->productID)
+                ->orderBy('purchaseOrderID', 'desc')->take(5)->get();
 
                 $sales = SaleOrder::where('productID', $product->productID)
                 ->whereBetween('date', [$start, $end])
