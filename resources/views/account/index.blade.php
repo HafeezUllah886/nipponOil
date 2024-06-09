@@ -43,7 +43,7 @@
                         <td>{{ $account->name }}</td>
                         <td>{{ $account->type }}</td>
                         <td>{{ $account->accountNumber }}</td>
-                        <td>{{getAccountBalance($account->accountID)}}</td>
+                        <td>{{number_format(getAccountBalance($account->accountID),3)}}</td>
                         <td><a href="{{ url('/account/status/') }}/{{ $account->accountID }}">{{$account->status}}</a></td>
                         <td>
                             <div class="dropdown">

@@ -2,14 +2,14 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h6>Previous Balance: {{$p_balance}}</h6>
+                <h6>Previous Balance: {{number_format($p_balance,3)}}</h6>
             </div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h6>Current Balance: {{$c_balance}}</h6>
+                <h6>Current Balance: {{number_format($c_balance, 3)}}</h6>
             </div>
         </div>
     </div>
@@ -45,9 +45,9 @@
         <td>{{ date("d M Y",strtotime($item->date)) }}</td>
         <td>{{$item->type }}</td>
         <td>{!! $item->description !!}</td>
-        <td class="text-end">{{ $item->credit == null ? '-' : round($item->credit,3)}}</td>
-        <td class="text-end">{{ $item->debt == null ? '-' : round($item->debt,3)}}</td>
-        <td class="text-end">{{ round($balance,3) }}</td>
+        <td class="text-end">{{ $item->credit == null ? '-' : number_format($item->credit,3)}}</td>
+        <td class="text-end">{{ $item->debt == null ? '-' : number_format($item->debt,3)}}</td>
+        <td class="text-end">{{ number_format($balance,3) }}</td>
 
         </tr>
     @endforeach
