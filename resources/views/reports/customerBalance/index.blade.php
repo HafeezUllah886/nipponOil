@@ -102,11 +102,11 @@ function fetchData(){
                     html += '<td>'+acct.phone+'</td>';
                     html += '<td>'+acct.address+'</td>';
                     html += '<td>'+acct.area+'</td>';
-                    html += '<td>'+acct.balance+'</td>';
+                    html += '<td>'+acct.balance.toLocaleString(3)+'</td>';
                     html += '</tr>';
                });
                $("#data").html(html);
-               $("#total").text(total);
+               $("#total").text(total.toLocaleString(3));
                $("#datatable").dataTable();
             },
         });

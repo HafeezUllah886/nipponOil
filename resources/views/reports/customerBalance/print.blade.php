@@ -136,14 +136,14 @@
                             <td>{{ $account->phone }}</td>
                             <td>{{ $account->area }}</td>
                             <td>{{ $account->address }}</td>
-                            <td class="text-right">{{ $account->balance }}</td>
+                            <td class="text-right">{{ number_format($account->balance,3) }}</td>
                         </tr>
                         @endif
                     @endforeach
                 </tbody>
                 <tfoot>
                     <th colspan="6" class="text-right">Total Balance</th>
-                    <th class="text-right">{{ $total }}</th>
+                    <th class="text-right">{{ number_format($total,3) }}</th>
                 </tfoot>
             </table>
         </div>

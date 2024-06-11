@@ -98,7 +98,7 @@
                     <div class="widget-header">
                         <div class="row">
                             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4>Top Sellers (Products) by Amounts</h4>
+                                <h4>Top Sellers (Products) by Amounts - Total: Rs. {{array_sum($topProductAmounts)}}</h4></h4>
                             </div>
                         </div>
                     </div>

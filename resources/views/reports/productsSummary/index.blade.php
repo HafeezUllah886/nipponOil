@@ -197,18 +197,18 @@
                     response.products.forEach(function(pa) {
                         html += '<tr>';
                         html += '<td>' + pa.name + '</td>';
-                        html += '<td>' + pa.category.name + '</td>';
-                        html += '<td>' + pa.purchaseAmount + '</td>';
+                        html += '<td>' + pa.category.name.toLocaleString(3) + '</td>';
+                        html += '<td>' + pa.purchaseAmount.toLocaleString(3) + '</td>';
                         html += '<td>' + pa.purchaseQty + '</td>';
-                        html += '<td>' + pa.saleAmount + '</td>';
+                        html += '<td>' + pa.saleAmount.toLocaleString(3) + '</td>';
                         html += '<td>' + pa.saleQty + '</td>';
-                        html += '<td>' + pa.purchaseReturnAmount + '</td>';
+                        html += '<td>' + pa.purchaseReturnAmount.toLocaleString(3) + '</td>';
                         html += '<td>' + pa.purchaseReturnQty + '</td>';
-                        html += '<td>' + pa.saleReturnAmount + '</td>';
+                        html += '<td>' + pa.saleReturnAmount.toLocaleString(3) + '</td>';
                         html += '<td>' + pa.saleReturnQty + '</td>';
-                        html += '<td>' + Math.round(pa.profit) + '</td>';
+                        html += '<td>' + pa.profit.toLocaleString(3) + '</td>';
                         html += '<td>' + pa.stock + '</td>';
-                        html += '<td>Rs. ' +  Math.round(pa.purchasePrice) + ' / Rs. ' + Math.round(pa.salePrice) + '</td>';
+                        html += '<td>Rs. ' +  pa.purchasePrice.toLocaleString(3) + ' / Rs. ' + pa.salePrice.toLocaleString(3) + '</td>';
                         html += '</tr>';
                     });
                     $("#data").html(html);
