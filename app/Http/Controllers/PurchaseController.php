@@ -158,7 +158,7 @@ class PurchaseController extends Controller
             return redirect()->route('purchase.index');
         } catch (\Exception $e) {
             DB::rollBack();
-            $request->session()->flash('error', 'Something Went Wrong!');
+            $request->session()->flash('error', $e->getMessage());
             return redirect()->route('purchase.index');
         }
     }
