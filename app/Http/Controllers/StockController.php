@@ -166,7 +166,7 @@ class StockController extends Controller
                     'date' => $req->date,
                     'debt' => $qty,
                     'refID' => $ref,
-                    'description' => "Stock transfered to $warehouseTo->name",
+                    'description' => "Stock transfered to $warehouseTo->name Notes: $req->notes",
                     'createdBy' => auth()->user()->email,
                 ]
             );
