@@ -22,6 +22,7 @@
                     <th>Warehouse</th>
                     <th>Type</th>
                     <th>Expense</th>
+                    <th>Notes</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -48,6 +49,7 @@
                         <td>{{ $transfer->from == auth()->user()->warehouseID ? $transfer->to_warehouse->name : $transfer->from_warehouse->name }}</td>
                         <td>{{ $transfer->from == auth()->user()->warehouseID ? "Outgoing" : "Incoming" }}</td>
                         <td>{{ $transfer->expense }}</td>
+                        <td>{{ $transfer->notes }}</td>
                         <td><span class="badge {{$badgeColor}}">{{ $transfer->status }}</span></td>
                         <td>
                             <div class="dropdown">
