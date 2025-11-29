@@ -22,6 +22,7 @@
                     <th>Reference</th>
                     <th>Supplier</th>
                     <th>Purchase Status</th>
+                    <th>Notes</th>
                     <th>Grand Total</th>
                     <th>Paid Amount</th>
                     <th>Due</th>
@@ -49,6 +50,7 @@
                             $sum = $purchaseOrders - $purchaseDelivered;
                         @endphp
                         <td> @if($sum > 0) <div class="badge badge-danger">Pending</div> @else <div class="badge badge-success">Received</div> @endif</td>
+                        <td>{{ $purchase->description }}</td>
                         <td>{{ $subTotal - $purchase->discount + $purchase->shippingCost + $purchase->orderTax }}</td>
                         <td>{{ $paidAmount }}</td>
                         <td>{{ $dueAmount }}</td>

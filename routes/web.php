@@ -34,6 +34,7 @@ use App\Http\Controllers\rolesController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SalePaymentController;
 use App\Http\Controllers\SaleReturnController;
+use App\Http\Controllers\StockAdjustmentController;
 use App\Http\Controllers\TargetController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UnitController;
@@ -175,6 +176,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/stock/transfer/reject/{id}',[StockController::class, 'rejectTransfer']);
     Route::get('/stock/transfer/edit/{id}',[StockController::class, 'editTransfer']);
     Route::get('/stock/transfer/delete/{ref}',[StockController::class, 'deleteTransfer']);
+
+    Route::resource('/stock_adjustment',StockAdjustmentController::class);
+    Route::get('/stock_adjustments/delete/{ref}',[StockAdjustmentController::class, 'delete'])->name('stock_adjustments.delete');
 
     Route::get('/pos', [POSController::class, 'create']);
     Route::get('/pos/getSingleProduct/{batch}', [POSController::class, 'getSingleProduct']);
