@@ -626,7 +626,7 @@ $("#addTask").on("click", function(){
             menuHTML = '<a href="{{ route("stock.index") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/stock.svg") }}"> Stock</a>';
             menuHTML += '<a href="{{ url("/stock/transfer") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/stockTransfer.svg") }}"> Stock Transfer</a>';
             menuHTML += '@can("Adjust Stocks")<a href="{{ url("/stock_adjustment") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/stockAdjustment.svg") }}"> Stock Adjustment</a>@endcan';
-            menuHTML += '@cannot("Adjust Stocks")@if(Auth::user()->id == 1)<a href="{{ url("/stock_adjustment") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/stockAdjustment.svg") }}"> Stock Adjustment</a>@endif @endcannot';
+            menuHTML += '@cannot("Adjust Stocks")@if(Auth::user()->id == 4)<a href="{{ url("/stock_adjustment") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/stockAdjustment.svg") }}"> Stock Adjustment</a>@endif @endcannot';
             menuHTML += '<a href="{{ url("/obsolete") }}" class="btn btn-dark m-2"> <img src="{{ asset("svgs/obselete.svg") }}"> Obsolete Inventory</a>';
         }
         subMenu.html(menuHTML);
