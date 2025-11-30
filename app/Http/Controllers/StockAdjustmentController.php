@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\Warehouse;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StockAdjustmentController extends Controller
 {
@@ -41,8 +43,10 @@ class StockAdjustmentController extends Controller
             'type' => 'required',
             'qty' => 'required',
             'date' => 'required',
-            'notes' => 'required',
         ]);
+
+        try{
+            DB::beginTransaction();
 
         $ref= getRef();
 
@@ -58,13 +62,13 @@ class StockAdjustmentController extends Controller
             ]
         );
 
-        $batchNumber = Stock::where('productID', $request->product)->where('warehouseID', $request->warehouse)->first() ?? $ref;
+        $batchNumber = Stock::where('productID', $request->product)->where('warehouseID', $request->warehouse)->first()->batchNumber ?? $ref;
         if($request->type == 'Stock-In'){
               Stock::create(
                 [
                     'warehouseID' => $request->warehouse,
                     'productID' => $request->product,
-                    'batchNumber' => $batchNumber->batchNumber,
+                    'batchNumber' => $batchNumber,
                     'expiryDate' => null,
                     'date' => $request->date,
                     'credit' => $request->qty,
@@ -78,7 +82,7 @@ class StockAdjustmentController extends Controller
                 [
                     'warehouseID' => $request->warehouse,
                     'productID' => $request->product,
-                    'batchNumber' => $batchNumber->batchNumber,
+                    'batchNumber' => $batchNumber,
                     'expiryDate' => null,
                     'date' => $request->date,
                     'debt' => $request->qty,
@@ -88,7 +92,12 @@ class StockAdjustmentController extends Controller
                 ]
             );
         }
-        return redirect()->route('stock_adjustment.index')->with('success', 'Stock Adjustment created successfully');
+        DB::commit();
+        return redirect()->route('stock_adjustment.index')->with('message', 'Stock Adjustment created successfully');
+        }catch(Exception $e){
+            DB::rollBack();
+            return redirect()->route('stock_adjustment.index')->with('error', $e->getMessage());
+        }
     }
 
     /**
