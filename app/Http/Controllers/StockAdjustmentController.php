@@ -58,7 +58,7 @@ class StockAdjustmentController extends Controller
             ]
         );
 
-        $batchNumber = Stock::where('productID', $request->product)->where('warehouseID', $request->warehouse)->first();
+        $batchNumber = Stock::where('productID', $request->product)->where('warehouseID', $request->warehouse)->first() ?? $ref;
         if($request->type == 'Stock-In'){
               Stock::create(
                 [
