@@ -57,12 +57,14 @@ class StockAdjustmentController extends Controller
                 'refID' => $ref,
             ]
         );
+
+        $batchNumber = Stock::where('productID', $request->product)->where('warehouseID', $request->warehouse)->first();
         if($request->type == 'Stock-In'){
               Stock::create(
                 [
                     'warehouseID' => $request->warehouse,
                     'productID' => $request->product,
-                    'batchNumber' => $ref,
+                    'batchNumber' => $batchNumber->batchNumber,
                     'expiryDate' => null,
                     'date' => $request->date,
                     'credit' => $request->qty,
@@ -76,7 +78,7 @@ class StockAdjustmentController extends Controller
                 [
                     'warehouseID' => $request->warehouse,
                     'productID' => $request->product,
-                    'batchNumber' => $ref,
+                    'batchNumber' => $batchNumber->batchNumber,
                     'expiryDate' => null,
                     'date' => $request->date,
                     'debt' => $request->qty,
