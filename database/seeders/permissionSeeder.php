@@ -84,6 +84,8 @@ class permissionSeeder extends Seeder
         Permission::create(['name' => 'Create Employee Advances']);
         Permission::create(['name' => 'Edit Employee Advances']);
         Permission::create(['name' => 'Delete Employee Advances']);
+        Permission::create(['name' => 'Adjust Stocks']);
+        
 
         $role = Role::findByName('Owner');
         $permissions = Permission::all();

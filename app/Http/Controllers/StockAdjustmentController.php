@@ -72,7 +72,7 @@ class StockAdjustmentController extends Controller
                     'expiryDate' => null,
                     'date' => $request->date,
                     'credit' => $request->qty,
-                    'refID' => 0,
+                    'refID' => $ref,
                     'description' => "Stock Adjustment with Reason: ".$request->notes,
                     'createdBy' => auth()->user()->email,
                 ]
@@ -86,7 +86,7 @@ class StockAdjustmentController extends Controller
                     'expiryDate' => null,
                     'date' => $request->date,
                     'debt' => $request->qty,
-                    'refID' => 0,
+                    'refID' => $ref,
                     'description' => "Stock Adjustment with Reason: ". $request->notes,
                     'createdBy' => auth()->user()->email,
                 ]
